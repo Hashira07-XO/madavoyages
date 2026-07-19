@@ -2,11 +2,17 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/UserModel.js'; 
 
-// 1. INSCRIPTION CONFORME EXAMEN (Via l'API Resend)
+// 1. INSCRIPTION AVEC ENVOI VIA BREVO
 export const register = async (req, res) => {
     const { nom, prenom, email, password } = req.body;
 
+    // Détection automatique de l'environnement (Vercel ou Local)
     const isProduction = process.env.NODE_ENV === 'production' || (process.env.API_URL && !process.env.API_URL.includes('localhost'));
+
+    console.log("=== [INSCRIPTION BREVO - EXAMEN] ===");
+    console.log("Mode actif :", isProduction ? "PRODUCTION (Brevo)" : "DEVELOPPEMENT (Terminal)");
+    console.log("Clé Brevo présente :", process.env.BREVO_API_KEY ? "OUI" : "NON");
+    console.log("=====================================");
 
     if (!nom || !prenom || !email || !password) {
         return res.status(400).json({ error: "Tous les champs sont obligatoires." });
@@ -22,42 +28,57 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const verificationToken = globalThis.crypto.randomUUID().replace(/-/g, '');
 
-        // Sauvegarde Supabase
+        // Enregistrement dans la base PostgreSQL Supabase
         const newUser = await UserModel.create(nom, prenom, email, hashedPassword, verificationToken); 
 
         const verificationLink = `${process.env.API_URL}/api/auth/verify/${verificationToken}`;
 
         if (isProduction) {
-            // VRAI ENVOI EN LIGNE VIA RESEND
+            // --- ENVOI RÉEL VIA L'API BREVO EN PRODUCTION ---
             try {
-                await fetch('https://api.resend.com/emails', {
+                console.log(`📨 Appel API Brevo pour l'adresse : ${email}`);
+                const response = await fetch('https://api.brevo.com/v3/smtp/email', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-                        'Content-Type': 'application/json'
+                        'accept': 'application/json',
+                        'api-key': process.env.BREVO_API_KEY,
+                        'content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                        from: "MadaVoyages <onboarding@resend.dev>", // Domaine gratuit de Resend
-                        to: [email], 
+                        sender: { name: "MadaVoyages", email: " " }, // Ton adresse Gmail validée Brevo
+                        to: [{ email: email, name: `${prenom} ${nom}` }], 
                         subject: "Vérifiez votre compte MadaVoyages",
-                        html: `<h3>Bienvenue ${prenom} !</h3>
-                               <p>Merci de rejoindre MadaVoyages. Cliquez ci-dessous pour valider votre compte :</p>
-                               <a href="${verificationLink}" style="padding: 10px 20px; background-color: #b5431c; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">Vérifier mon e-mail</a>`
+                        htmlContent: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                                   <h2 style="color: #b5431c;">Bienvenue ${prenom} !</h2>
+                                   <p>Merci de rejoindre MadaVoyages. Pour finaliser votre inscription et activer votre compte, veuillez cliquer sur le bouton ci-dessous :</p>
+                                   <p style="margin: 30px 0;">
+                                       <a href="${verificationLink}" style="padding: 12px 24px; background-color: #b5431c; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Vérifier mon e-mail</a>
+                                   </p>
+                                   <p style="font-size: 0.85em; color: #666;">Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur : <br>${verificationLink}</p>
+                               </div>`
                     })
                 });
-                console.log(`✅ Mail de production envoyé via Resend à ${email}`);
+
+                const result = await response.json();
+                if (!response.ok) {
+                    console.error("❌ Erreur retournée par Brevo :", result);
+                } else {
+                    console.log("✅ E-mail envoyé avec succès via Brevo ! ID :", result.messageId);
+                }
             } catch (mailError) {
-                console.error("❌ Échec envoi Resend en production :", mailError.message);
+                console.error("❌ Exception réseau lors de l'appel Brevo :", mailError.message);
             }
         } else {
-            // AFFICHAGE TERMINAL EN LOCAL
+            // --- MODE LOCAL : AFFICHAGE DU LIEN DANS TON TERMINAL ---
             console.log("\n=======================================================================");
-            console.log(`📨 [LOCAL] Lien de vérification : ${verificationLink}`);
+            console.log(`📨 [LOCAL] Compte créé ! Simulé pour : ${email}`);
+            console.log("🔗 CLIQUE SUR CE LIEN POUR SIMULER LA VÉRIFICATION (Ctrl + Clic) :");
+            console.log(`    ${verificationLink}`);
             console.log("=======================================================================\n");
         }
 
         return res.status(201).json({
-            message: "Inscription réussie ! Veuillez vérifier votre boîte de réception pour activer votre compte.",
+            message: "Inscription réussie ! Un e-mail de confirmation vous a été envoyé pour activer votre compte.",
             user: { id: newUser.id, role: newUser.role } 
         });
         
