@@ -10,7 +10,7 @@ async function createAdmin() {
     nom: 'Admin',
     prenom: 'MadaVoyages',
     email: 'admin@madavoyages.com', // Remplace par ton email admin
-    password: 'TonMotDePasseSecurise123!' // Remplace par ton vrai mot de passe
+    password: 'admin123' // Remplace par ton vrai mot de passe
   };
 
   try {

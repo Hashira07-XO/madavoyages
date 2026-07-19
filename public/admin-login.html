@@ -1,338 +1,472 @@
 <!DOCTYPE html>
-<html lang="fr" class="h-100">
+<html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>MadaVoyages | Connexion Administration</title>
+    <title>Administration | MadaVoyages</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@200;400;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
     <style>
-        /* Palette Chromatique d'origine MadaVoyages */
         :root {
-            --color-primary: #051613;       
-            --color-secondary: #b5431c;     
-            --color-soft-peach: #ffe5c9;    
-            --color-surface-cream: #faf7f2; 
-            --color-input-bg: #f5f0e6;      
+            --color-primary: #000c09;
+            --color-secondary: #a53c19;
+            --color-surface-cream: #fbf9f5;
+            --color-text-variant: #414846;
             
             --font-display: 'Playfair Display', serif;
             --font-body: 'Montserrat', sans-serif;
         }
 
         html, body {
-            width: 100%;
-            height: 100vh;
-            max-height: 100vh;
-            overflow: hidden;
             background-color: var(--color-surface-cream);
             color: var(--color-primary);
             font-family: var(--font-body);
+            min-height: 100vh;
         }
 
         .magical-bg::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0.06;
-            pointer-events: none;
-            z-index: 10;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.04; pointer-events: none; z-index: -1;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         .font-display { font-family: var(--font-display); }
         .letter-magical { letter-spacing: 0.12em; }
-        .label-caps { font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.15em; color: var(--color-primary); opacity: 0.8; }
-        
-        .split-container {
-            height: 100vh;
-            display: flex;
-            flex-direction: row;
-        }
+        .label-caps { font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.15em; }
 
-        .illustration-panel {
-            width: 60%;
-            background: linear-gradient(135deg, #fbf0e0 0%, #ffe5c9 50%, #f7dfc1 100%);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 3rem;
-            border-right: 1px solid rgba(181, 67, 28, 0.08);
-        }
-
-        .form-panel {
-            width: 40%;
-            background-color: var(--color-surface-cream);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            padding: 3rem 4%;
-            overflow-y: auto;
-        }
-
-        @media (max-width: 991.98px) {
-            html, body {
-                max-height: none;
-                overflow: auto;
-            }
-            .split-container {
-                flex-direction: column;
-                height: auto;
-                min-height: 100vh;
-            }
-            .illustration-panel {
-                display: none !important;
-            }
-            .form-panel {
-                width: 100% !important;
-                min-height: 100vh;
-                padding: 3rem 2rem;
-            }
-        }
-
-        .form-control-soft {
-            background-color: var(--color-input-bg);
-            border: 1.5px solid rgba(5, 22, 19, 0.08);
-            border-radius: 12px;
-            padding: 12px 16px;
-            color: var(--color-primary);
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        .form-control-soft::placeholder {
-            color: rgba(5, 22, 19, 0.4);
-        }
-        .form-control-soft:focus {
-            background-color: #fff;
-            border-color: var(--color-secondary);
-            box-shadow: 0 0 0 4px rgba(181, 67, 28, 0.1);
-            outline: none;
+        .glass-nav {
+            background: rgba(251, 249, 245, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(165, 60, 25, 0.08);
+            z-index: 1030;
         }
 
         .btn-premium {
-            background-color: var(--color-primary);
-            color: #fff;
-            font-size: 11px;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.15em;
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(5, 22, 19, 0.15);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
+            background-color: var(--color-primary); color: #fff;
+            font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.15em;
+            padding: 12px 26px; border-radius: 50px; border: none;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 4px 15px rgba(0, 12, 9, 0.15);
         }
-        .btn-premium:hover:not(:disabled) {
-            background-color: var(--color-secondary);
-            box-shadow: 0 8px 20px rgba(181, 67, 28, 0.3);
-            transform: translateY(-1px);
+        .btn-premium:hover { background-color: var(--color-secondary); color: #fff; transform: translateY(-2px); }
+
+        .admin-card {
+            background: #fff; border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(165, 60, 25, 0.05); overflow: hidden;
+            margin-bottom: 2rem;
         }
-        .btn-premium:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            background-color: var(--color-primary);
+        
+        .table-custom thead th {
+            background-color: #f7f1e8; color: var(--color-primary);
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+            border-bottom: 2px solid rgba(165, 60, 25, 0.08); padding: 1.2rem 1rem;
+        }
+        .table-custom tbody td {
+            font-size: 14px; vertical-align: middle; padding: 1.2rem 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
         }
 
-        .text-link-contrast {
-            color: var(--color-secondary);
-            font-weight: 700;
-            text-decoration: none;
-            transition: color 0.2s ease;
+        .form-control, .form-select {
+            background-color: #f5eee5; border: 1px solid transparent; border-radius: 10px;
+            font-size: 14px; color: var(--color-primary); padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
         }
-        .text-link-contrast:hover {
-            color: var(--color-primary);
-            text-decoration: underline;
+        .form-control:focus, .form-select:focus {
+            background-color: #fff; border-color: var(--color-secondary);
+            box-shadow: 0 0 0 0.25rem rgba(165, 60, 25, 0.12);
+        }
+        
+        .circuit-img-preview { width: 70px; height: 48px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        
+        .nav-tabs-custom { border-bottom: 2px solid rgba(0, 12, 9, 0.05); }
+        .nav-tabs-custom .nav-link {
+            color: var(--color-text-variant); border: none; font-weight: 600; font-size: 14px; padding: 1rem 1.5rem; position: relative;
+            background: transparent; transition: color 0.3s ease;
+        }
+        .nav-tabs-custom .nav-link.active {
+            color: var(--color-secondary); background: transparent; fw-bold;
+        }
+        .nav-tabs-custom .nav-link.active::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background-color: var(--color-secondary); border-radius: 3px;
         }
 
-        .watermark-subtle {
-            position: absolute;
-            bottom: 2rem;
-            right: 2rem;
-            font-family: var(--font-display);
-            font-size: 5rem;
-            font-weight: 900;
-            color: rgba(181, 67, 28, 0.03);
-            pointer-events: none;
-            user-select: none;
-        }
-
-        .firefly-container { position: absolute; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
-        .firefly {
-            position: absolute; width: 4px; height: 4px; background: #b0d4cc; border-radius: 50%;
-            box-shadow: 0 0 8px #b0d4cc; opacity: 0; animation: floatUp linear infinite;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(105%) translateX(0); opacity: 0; }
-            30% { opacity: 0.5; }
-            80% { opacity: 0.5; }
-            100% { transform: translateY(-5%) translateX(15px); opacity: 0; }
+        /* Responsive Mobile Layout For Tables */
+        @media(max-width: 767.98px) {
+            .table-responsive-stack thead { display: none; }
+            .table-responsive-stack tr { 
+                display: block; border-bottom: 2px solid rgba(165, 60, 25, 0.1); 
+                padding: 1.5rem 0.5rem; background: #fff;
+            }
+            .table-responsive-stack td { 
+                display: flex; justify-content: space-between; align-items: center;
+                text-align: right; padding: 0.6rem 1rem !important; border-bottom: none;
+                width: 100% !important;
+            }
+            .table-responsive-stack td::before {
+                content: attr(data-label); font-weight: 700; text-transform: uppercase;
+                font-size: 10px; letter-spacing: 0.08em; color: var(--color-text-variant);
+                text-align: left; margin-right: 1rem;
+            }
+            .table-responsive-stack td.text-end { justify-content: space-between; }
+            .circuit-img-preview { width: 90px; height: 60px; }
+            
+            .header-action-container {
+                flex-direction: column; align-items: flex-start !important; gap: 1rem;
+            }
+            .btn-premium { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body class="magical-bg">
 
-    <div class="split-container">
+    <!-- NAVIGATION -->
+    <header class="fixed-top glass-nav">
+        <nav class="navbar navbar-expand-md py-2 py-lg-3">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand font-display italic letter-magical fw-bold text-dark fs-5" href="index.html">
+                    MadaVoyages <span class="fs-6 text-secondary d-none d-sm-inline ms-2" style="font-family: var(--font-body); font-style: normal;">| Panel Admin</span>
+                </a>
+                <div class="d-flex gap-2 gap-md-3 align-items-center">
+                    <span class="label-caps text-muted d-none d-lg-inline" id="admin-name">Chargement...</span>
+                    <a href="index.html" class="btn btn-outline-dark rounded-pill px-3 py-2 label-caps" style="font-size: 9px;">Voir le site</a>
+                    <button id="logout-btn" class="btn btn-danger rounded-pill px-3 py-2 label-caps border-0" style="font-size: 9px; background-color: var(--color-secondary);">Déconnexion</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main style="margin-top: 100px;" class="container-fluid px-3 px-md-4 pb-5">
         
-        <!-- PANNEAU ILLUSTRATION GAUCHE -->
-        <div class="illustration-panel">
-            <div class="firefly-container" id="firefly-container"></div>
-            
-            <a href="index.html" class="position-absolute top-0 start-0 m-4 label-caps text-decoration-none d-flex align-items-center gap-1" style="z-index: 5;">
-                <span class="material-symbols-outlined" style="font-weight: 700; font-size: 14px;">arrow_back</span> Retour au site
-            </a>
+        <!-- Onglets de Navigation Principale -->
+        <ul class="nav nav-tabs nav-tabs-custom mb-4" id="adminTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="circuits-tab" data-bs-toggle="tab" data-bs-target="#circuits-pane" type="button" role="tab">Gestion des Circuits</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="reservations-tab" data-bs-toggle="tab" data-bs-target="#reservations-pane" type="button" role="tab">Réservations Clients</button>
+            </li>
+        </ul>
 
-            <div class="position-relative w-100" style="max-width: 320px;">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-100 h-auto">
-                    <circle cx="100" cy="110" r="50" fill="url(#sunGradient)" opacity="0.8"/>
-                    
-                    <path d="M -20 160 Q 50 130 130 155 T 220 145 L 220 210 L -20 210 Z" fill="#fcf6ed" opacity="0.9"/>
-                    <path d="M -20 175 Q 70 155 160 170 T 220 165 L 220 210 L -20 210 Z" fill="var(--color-surface-cream)"/>
-                    
-                    <path d="M 94 175 Q 94 135 90 120 Q 86 108 96 102 Q 104 102 110 108 Q 106 120 106 135 Q 106 175 106 175 Z" fill="var(--color-secondary)" opacity="0.85"/>
-                    <circle cx="86" cy="98" r="14" fill="var(--color-secondary)" opacity="0.75"/>
-                    <circle cx="100" cy="94" r="16" fill="var(--color-secondary)" opacity="0.6"/>
-                    <circle cx="114" cy="100" r="12" fill="var(--color-secondary)" opacity="0.75"/>
-
-                    <path d="M 40 60 Q 44 57 48 60 Q 52 57 56 60" fill="none" stroke="var(--color-secondary)" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
-                    <path d="M 145 75 Q 148 72 151 75 Q 154 72 157 75" fill="none" stroke="var(--color-secondary)" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
-
-                    <defs>
-                        <radialGradient id="sunGradient" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="#f59e6c" stop-opacity="0.6"/>
-                            <stop offset="100%" stop-color="#ffe5c9" stop-opacity="0"/>
-                        </radialGradient>
-                    </defs>
-                </svg>
-
-                <div class="text-center mt-3">
-                    <h3 class="font-display italic fw-bold mb-1" style="font-size: 24px;">MadaVoyages</h3>
-                    <p class="text-muted small mb-0" style="font-size: 13px; line-height: 1.5;">Panel d'administration et de gestion des réservations.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- PANNEAU FORMULAIRE DROITE -->
-        <div class="form-panel">
-            <a href="index.html" class="d-lg-none label-caps text-decoration-none d-flex align-items-center gap-1 mb-4">
-                <span class="material-symbols-outlined fs-6" style="font-weight: 700;">arrow_back</span> Retour au site
-            </a>
-
-            <div class="mb-4">
-                <span class="label-caps text-secondary d-block mb-1">Accès Sécurisé</span>
-                <h2 class="font-display fw-bold display-6 mb-2" style="font-size: 28px;">Espace Administrateur</h2>
-                <p class="text-muted small mb-0" style="font-size: 13px;">Identifiez-vous pour gérer les circuits et superviser les demandes de réservation.</p>
-            </div>
-
-            <!-- Messages d'Alerte -->
-            <div id="auth-error-message" class="alert alert-danger d-none py-2 px-3 mb-3 small" role="alert" style="border-radius: 10px;"></div>
-
-            <form id="admin-login-form" class="d-flex flex-column gap-3">
-                <div>
-                    <label for="auth-email" class="label-caps mb-1 d-block">Adresse e-mail</label>
-                    <input type="email" id="auth-email" name="email" class="form-control-soft w-100" placeholder="admin@madavoyages.com" required>
-                </div>
-
-                <div>
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label for="auth-password" class="label-caps mb-0">Mot de passe</label>
+        <div class="tab-content" id="adminTabsContent">
+            <!-- PANE 1: CIRCUITS -->
+            <div class="tab-pane fade show active" id="circuits-pane" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-end mb-4 header-action-container">
+                    <div>
+                        <span class="label-caps text-secondary mb-1 d-block">Catalogue</span>
+                        <h2 class="font-display fw-bold text-dark mb-0 fs-3">Circuits Touristiques</h2>
                     </div>
-                    <input type="password" id="auth-password" name="password" class="form-control-soft w-100" placeholder="••••••••" required>
+                    <button class="btn-premium d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#circuitModal" id="btn-add-circuit">
+                        <span class="material-symbols-outlined fs-6">add</span> Nouveau Circuit
+                    </button>
                 </div>
 
-                <button type="submit" id="submit-btn" class="btn-premium w-100 mt-2">
-                    <span id="btn-text">Se connecter au panel</span>
-                    <div id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status"></div>
-                </button>
-            </form>
-
-            <div class="text-center mt-4">
-                <a href="register.html" class="text-link-contrast small" style="font-size: 12.5px;">Accéder à l'espace voyageur régulier</a>
+                <div class="admin-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom table-responsive-stack">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Titre</th>
+                                    <th>Prix (€ / MGA)</th>
+                                    <th>Capacité</th>
+                                    <th>Dates</th>
+                                    <th>Statut</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="circuits-tbody">
+                                <tr><td colspan="7" class="text-center py-4">Chargement des circuits...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            <div class="watermark-subtle">ADMIN</div>
-        </div>
+            <!-- PANE 2: RESERVATIONS -->
+            <div class="tab-pane fade" id="reservations-pane" role="tabpanel">
+                <div class="mb-4">
+                    <span class="label-caps text-secondary mb-1 d-block">Suivi en direct</span>
+                    <h2 class="font-display fw-bold text-dark mb-0 fs-3">Réservations Reçues</h2>
+                </div>
 
+                <div class="admin-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom table-responsive-stack">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Client</th>
+                                    <th>Circuit</th>
+                                    <th>Places</th>
+                                    <th>Date Demande</th>
+                                    <th>Statut</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reservations-tbody">
+                                <tr><td colspan="7" class="text-center py-4">Aucune réservation pour le moment.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL CIRCUIT (AJOUT/EDITION) -->
+    <div class="modal fade" id="circuitModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="background-color: var(--color-surface-cream);">
+                <div class="modal-header border-bottom border-light">
+                    <h5 class="modal-title font-display fw-bold text-dark fs-4" id="modalTitle">Ajouter un circuit</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="circuitForm">
+                    <div class="modal-body p-3 p-md-4 row g-3">
+                        <input type="hidden" id="circuitId">
+                        
+                        <div class="col-12">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Titre du circuit *</label>
+                            <input type="text" id="title" name="title" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Description *</label>
+                            <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Prix (€) *</label>
+                            <input type="number" id="price" name="price" class="form-control" step="0.01" required>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Prix (Ariary) *</label>
+                            <input type="number" id="price_ariary" name="price_ariary" class="form-control" step="0.01" required>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Capacité (Places) *</label>
+                            <input type="number" id="capacity" name="capacity" class="form-control" required>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Début du voyage</label>
+                            <input type="date" id="date_debut_voyage" name="date_debut_voyage" class="form-control">
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Fin du voyage</label>
+                            <input type="date" id="date_fin_voyage" name="date_fin_voyage" class="form-control">
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Fin des réservations</label>
+                            <input type="date" id="date_fin_reservation" name="date_fin_reservation" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Type de transport</label>
+                            <select id="type_transport" name="type_transport" class="form-select">
+                                <option value="">Sélectionner...</option>
+                                <option value="Bus-Brousse Prestige">Bus-Brousse Prestige</option>
+                                <option value="4x4 Expédition">4x4 Expédition</option>
+                                <option value="Avion + Bateau">Avion + Bateau</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Image du circuit</label>
+                            <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="actif" checked>
+                                <label class="form-check-label label-caps text-dark" for="actif" style="font-size: 10px;">Circuit Actif (Visible sur le catalogue)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top border-light">
+                        <button type="button" class="btn btn-outline-dark rounded-pill px-4 label-caps" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn-premium border-0" id="btn-save-circuit">ENREGISTRER</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        (function() {
-            // Animation des lucioles (Copie exacte de register.html)
-            const fContainer = document.getElementById('firefly-container');
-            function addFirefly() {
-                if (!fContainer || fContainer.children.length > 12) return;
-                const f = document.createElement('div');
-                f.className = 'firefly';
-                f.style.left = Math.random() * 100 + '%';
-                f.style.animationDuration = (Math.random() * 6 + 7) + 's';
-                fContainer.appendChild(f);
-                setTimeout(() => f.remove(), 12000);
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const userRaw = localStorage.getItem('user');
+
+            if (!token || !userRaw) {
+                window.location.href = 'admin-login.html';
+                return;
             }
-            if (fContainer) setInterval(addFirefly, 1500);
 
-            // Soumission du formulaire d'authentification de l'admin
-            const authForm = document.getElementById('admin-login-form');
-            const submitBtn = document.getElementById('submit-btn');
-            const btnText = document.getElementById('btn-text');
-            const btnSpinner = document.getElementById('btn-spinner');
-            const errorDiv = document.getElementById('auth-error-message');
+            const user = JSON.parse(userRaw);
+            if (user.role !== 'admin') {
+                alert("Accès refusé.");
+                window.location.href = 'index.html';
+                return;
+            }
 
-            if (authForm) {
-                authForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
+            document.getElementById('admin-name').textContent = `Admin: ${user.prenom} ${user.nom}`;
+
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            });
+
+            // --- LOGIQUE CIRCUITS ---
+            const circuitsTbody = document.getElementById('circuits-tbody');
+            const circuitForm = document.getElementById('circuitForm');
+            const circuitModal = new bootstrap.Modal(document.getElementById('circuitModal'));
+            let isEditing = false;
+
+            const loadCircuits = async () => {
+                try {
+                    const response = await fetch('/api/circuits?all=true', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const result = await response.json();
+                    if (!result.success) throw new Error(result.error);
                     
-                    errorDiv.classList.add('d-none');
-                    const email = document.getElementById('auth-email').value.trim();
-                    const password = document.getElementById('auth-password').value;
+                    circuitsTbody.innerHTML = '';
+                    result.data.forEach(c => {
+                        const tr = document.createElement('tr');
+                        tr.className = "d-block d-md-table-row";
+                        tr.innerHTML = `
+                            <td data-label="Image"><img src="${c.image_url || '/assets/baobab3.webp'}" class="circuit-img-preview"></td>
+                            <td data-label="Titre" class="fw-bold">${c.title}</td>
+                            <td data-label="Prix">${parseFloat(c.price).toFixed(2)} €<br><span class="text-muted small">${parseFloat(c.price_ariary).toLocaleString()} Ar</span></td>
+                            <td data-label="Capacité">${c.capacity} places</td>
+                            <td data-label="Dates" class="small">${c.date_debut_voyage ? new Date(c.date_debut_voyage).toLocaleDateString() : 'Non définie'}</td>
+                            <td data-label="Statut"><span class="badge ${c.actif ? 'bg-success' : 'bg-secondary'} rounded-pill">${c.actif ? 'Actif' : 'Inactif'}</span></td>
+                            <td data-label="Actions" class="text-end">
+                                <button class="btn btn-sm btn-outline-primary btn-edit rounded-circle p-1 me-1" data-id="${c.id}"><span class="material-symbols-outlined" style="font-size:16px;">edit</span></button>
+                                <button class="btn btn-sm btn-outline-danger btn-delete rounded-circle p-1" data-id="${c.id}"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>
+                            </td>
+                        `;
+                        circuitsTbody.appendChild(tr);
+                    });
+                    attachCircuitEvents();
+                } catch (e) { circuitsTbody.innerHTML = `<tr><td colspan="7" class="text-danger text-center">Erreur de chargement des circuits.</td></tr>`; }
+            };
 
-                    submitBtn.disabled = true;
-                    btnSpinner.classList.remove('d-none');
-                    btnText.textContent = "Vérification des droits...";
+            const attachCircuitEvents = () => {
+                document.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', e => openEditModal(e.currentTarget.dataset.id)));
+                document.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', e => {
+                    if(confirm('Voulez-vous vraiment supprimer ce circuit ?')) deleteCircuit(e.currentTarget.dataset.id);
+                }));
+            };
 
-                    try {
-                        // Requête vers ton contrôleur d'authentification existant
-                        const response = await fetch('/api/auth/login', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email, password })
-                        });
+            document.getElementById('btn-add-circuit').addEventListener('click', () => {
+                isEditing = false; circuitForm.reset(); document.getElementById('circuitId').value = '';
+                document.getElementById('modalTitle').textContent = 'Ajouter un circuit';
+            });
 
-                        const data = await response.json();
-                        if (!response.ok) throw new Error(data.error || "Identifiants incorrects.");
+            const openEditModal = async (id) => {
+                const response = await fetch(`/api/circuits/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const r = await response.json();
+                if(r.success) {
+                    isEditing = true;
+                    document.getElementById('modalTitle').textContent = 'Modifier le circuit';
+                    document.getElementById('circuitId').value = r.data.id;
+                    document.getElementById('title').value = r.data.title;
+                    document.getElementById('description').value = r.data.description;
+                    document.getElementById('price').value = r.data.price;
+                    document.getElementById('price_ariary').value = r.data.price_ariary;
+                    document.getElementById('capacity').value = r.data.capacity;
+                    document.getElementById('type_transport').value = r.data.type_transport || '';
+                    document.getElementById('date_debut_voyage').value = r.data.date_debut_voyage ? r.data.date_debut_voyage.split('T')[0] : '';
+                    document.getElementById('date_fin_voyage').value = r.data.date_fin_voyage ? r.data.date_fin_voyage.split('T')[0] : '';
+                    document.getElementById('date_fin_reservation').value = r.data.date_fin_reservation ? r.data.date_fin_reservation.split('T')[0] : '';
+                    document.getElementById('actif').checked = r.data.actif;
+                    circuitModal.show();
+                }
+            };
 
-                        // Sécurité critique côté client : vérifier le rôle retourné par le token/user
-                        if (data.user.role !== 'admin') {
-                            throw new Error("Accès refusé. Vous ne possédez pas les droits administrateur.");
-                        }
+            circuitForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fd = new FormData();
+                const fields = ['title', 'description', 'price', 'price_ariary', 'capacity', 'type_transport', 'date_debut_voyage', 'date_fin_voyage', 'date_fin_reservation'];
+                fields.forEach(f => { if(document.getElementById(f).value) fd.append(f, document.getElementById(f).value); });
+                fd.append('actif', document.getElementById('actif').checked);
+                
+                const img = document.getElementById('image').files[0];
+                if(img) fd.append('image', img);
 
-                        // Stockage des sessions
-                        localStorage.setItem('token', data.token);
-                        localStorage.setItem('user', JSON.stringify(data.user));
+                const id = document.getElementById('circuitId').value;
+                const url = isEditing ? `/api/circuits/${id}` : '/api/circuits';
+                await fetch(url, { method: isEditing ? 'PUT' : 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
+                circuitModal.hide(); loadCircuits();
+            });
 
-                        // Redirection vers le tableau de bord d'administration
-                        window.location.href = 'admin.html';
-                        
-                    } catch (err) {
-                        errorDiv.textContent = err.message;
-                        errorDiv.classList.remove('d-none');
-                    } finally {
-                        submitBtn.disabled = false;
-                        btnSpinner.classList.add('d-none');
-                        btnText.textContent = "Se connecter au panel";
+            const deleteCircuit = async (id) => {
+                await fetch(`/api/circuits/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                loadCircuits();
+            };
+
+            // --- LOGIQUE RÉSERVATIONS ---
+            const resTbody = document.getElementById('reservations-tbody');
+            
+            const loadReservations = async () => {
+                try {
+                    // Route d'administration pour charger toutes les réservations
+                    const response = await fetch('/api/reservations/admin', { headers: { 'Authorization': `Bearer ${token}` } });
+                    const result = await response.json();
+                    if(!result.success) throw new Error();
+
+                    resTbody.innerHTML = '';
+                    if(result.data.length === 0) {
+                        resTbody.innerHTML = '<tr><td colspan="7" class="text-center">Aucune réservation pour le moment.</td></tr>';
+                        return;
                     }
-                });
-            }
-        })();
+
+                    result.data.forEach(r => {
+                        const tr = document.createElement('tr');
+                        tr.className = "d-block d-md-table-row";
+                        let badgeColor = 'bg-warning';
+                        if(r.status === 'confirme') badgeColor = 'bg-success';
+                        if(r.status === 'annule') badgeColor = 'bg-danger';
+
+                        tr.innerHTML = `
+                            <td data-label="ID">#${r.id}</td>
+                            <td data-label="Client">${r.user_name || 'Client'} <br><span class="text-muted small">${r.user_email || ''}</span></td>
+                            <td data-label="Circuit" class="fw-bold">${r.circuit_title}</td>
+                            <td data-label="Places">${r.places_reservees}</td>
+                            <td data-label="Date Demande">${new Date(r.created_at).toLocaleDateString()}</td>
+                            <td data-label="Statut"><span class="badge ${badgeColor} rounded-pill">${r.status}</span></td>
+                            <td data-label="Actions" class="text-end">
+                                ${r.status === 'en_attente' ? `
+                                    <button class="btn btn-sm btn-success btn-action-res me-1 py-1 px-3 rounded-pill" data-id="${r.id}" data-action="confirme" style="font-size:11px;">Valider</button>
+                                    <button class="btn btn-sm btn-outline-danger btn-action-res py-1 px-3 rounded-pill" data-id="${r.id}" data-action="annule" style="font-size:11px;">Refuser</button>
+                                ` : '<span class="text-muted small">Traité</span>'}
+                            </td>
+                        `;
+                        resTbody.appendChild(tr);
+                    });
+                    attachReservationEvents();
+                } catch(e) { resTbody.innerHTML = '<tr><td colspan="7" class="text-danger text-center">Erreur lors de la récupération des réservations.</td></tr>'; }
+            };
+
+            const attachReservationEvents = () => {
+                document.querySelectorAll('.btn-action-res').forEach(b => b.addEventListener('click', async (e) => {
+                    const id = e.target.dataset.id;
+                    const action = e.target.dataset.action;
+                    if(confirm(`Voulez-vous modifier le statut vers "${action}" ?`)) {
+                        await fetch(`/api/reservations/${id}/status`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify({ status: action })
+                        });
+                        loadReservations();
+                    }
+                }));
+            };
+
+            document.getElementById('reservations-tab').addEventListener('click', loadReservations);
+            loadCircuits();
+        });
     </script>
 </body>
 </html>

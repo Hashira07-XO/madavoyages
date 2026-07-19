@@ -15,9 +15,13 @@ console.log("DATABASE_URL chargée :", process.env.DATABASE_URL);
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false 
-  }
+    rejectUnauthorized: false // Indispensable pour se connecter à Supabase depuis l'extérieur sans importer le certificat
+  },
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000
 });
+
 
 // 4. Exports nommés (si vous les utilisez ailleurs)
 export const query = (text, params) => pool.query(text, params);
