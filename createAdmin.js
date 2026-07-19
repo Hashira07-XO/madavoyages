@@ -1,7 +1,7 @@
 // createAdmin.js
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
-import { pool } from './config/db.js'; // Ajuste le chemin vers ton db.js si nécessaire
+import { pool } from './api/config/db.js'; // Ajuste le chemin vers ton db.js si nécessaire
 
 dotenv.config();
 
