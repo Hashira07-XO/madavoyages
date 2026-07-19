@@ -2,15 +2,16 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/UserModel.js'; 
 
-// 1. INSCRIPTION AVEC ENVOI VIA RESEND
+// 1. INSCRIPTION AVEC ENVOI VIA BREVO
 export const register = async (req, res) => {
     const { nom, prenom, email, password } = req.body;
 
     // Détection automatique de l'environnement (Vercel ou Local)
     const isProduction = process.env.NODE_ENV === 'production' || (process.env.API_URL && !process.env.API_URL.includes('localhost'));
 
-    console.log("=== [INSCRIPTION RESEND - EXAMEN] ===");
-    console.log("Mode actif :", isProduction ? "PRODUCTION (Resend)" : "DEVELOPPEMENT (Terminal)");
+    console.log("=== [INSCRIPTION BREVO - EXAMEN] ===");
+    console.log("Mode actif :", isProduction ? "PRODUCTION (Brevo)" : "DEVELOPPEMENT (Terminal)");
+    console.log("Clé Brevo présente :", process.env.BREVO_API_KEY ? "OUI" : "NON");
     console.log("=====================================");
 
     if (!nom || !prenom || !email || !password) {
@@ -27,26 +28,27 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const verificationToken = globalThis.crypto.randomUUID().replace(/-/g, '');
 
-        // Enregistrement dans ta base PostgreSQL Supabase
+        // Enregistrement dans la base PostgreSQL Supabase
         const newUser = await UserModel.create(nom, prenom, email, hashedPassword, verificationToken); 
 
         const verificationLink = `${process.env.API_URL}/api/auth/verify/${verificationToken}`;
 
         if (isProduction) {
-            // --- ENVOI RÉEL VIA L'API RESEND EN PRODUCTION ---
+            // --- ENVOI RÉEL VIA L'API BREVO EN PRODUCTION ---
             try {
-                console.log(`📨 Appel API Resend pour l'adresse : ${email}`);
-                const response = await fetch('https://api.resend.com/emails', {
+                console.log(`📨 Appel API Brevo pour l'adresse : ${email}`);
+                const response = await fetch('https://api.brevo.com/v3/smtp/email', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-                        'Content-Type': 'application/json'
+                        'accept': 'application/json',
+                        'api-key': process.env.BREVO_API_KEY,
+                        'content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                        from: "MadaVoyages <onboarding@resend.dev>", // Domaine gratuit par défaut de Resend
-                        to: [email], 
+                        sender: { name: "MadaVoyages", email: "andrisoa067@gmail.com" }, // Ton adresse Gmail validée Brevo
+                        to: [{ email: email, name: `${prenom} ${nom}` }], 
                         subject: "Vérifiez votre compte MadaVoyages",
-                        html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                        htmlContent: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
                                    <h2 style="color: #b5431c;">Bienvenue ${prenom} !</h2>
                                    <p>Merci de rejoindre MadaVoyages. Pour finaliser votre inscription et activer votre compte, veuillez cliquer sur le bouton ci-dessous :</p>
                                    <p style="margin: 30px 0;">
@@ -59,12 +61,12 @@ export const register = async (req, res) => {
 
                 const result = await response.json();
                 if (!response.ok) {
-                    console.error("❌ Erreur retournée par Resend :", result);
+                    console.error("❌ Erreur retournée par Brevo :", result);
                 } else {
-                    console.log("✅ E-mail envoyé avec succès via Resend ! ID :", result.id);
+                    console.log("✅ E-mail envoyé avec succès via Brevo ! ID :", result.messageId);
                 }
             } catch (mailError) {
-                console.error("❌ Exception réseau lors de l'appel Resend :", mailError.message);
+                console.error("❌ Exception réseau lors de l'appel Brevo :", mailError.message);
             }
         } else {
             // --- MODE LOCAL : AFFICHAGE DU LIEN DANS TON TERMINAL ---
@@ -86,7 +88,7 @@ export const register = async (req, res) => {
     }
 };
 
-// 2. VÉRIFICATION DE L'E-MAIL (Lien cliqué par ton prof ou toi)
+// 2. VÉRIFICATION DE L'E-MAIL
 export const verifyEmail = async (req, res) => {
     const { token } = req.params;
     try {
@@ -100,7 +102,6 @@ export const verifyEmail = async (req, res) => {
                 </div>
             `);
         }
-        // Redirection réussie vers ton formulaire avec le flag verified
         return res.redirect('/register.html?verified=true');
     } catch (error) {
         console.error("Erreur de vérification :", error);
