@@ -445,7 +445,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         if (!localStorage.getItem('token')) {
-            window.location.href = '/admin-login'; // Ajuste le chemin vers ta page de login
+            window.location.href = '/admin-login.html'; // Ajuste le chemin vers ta page de login
         }
         // Extraction du Token JWT stocké lors du login (Adapte si tu le stockes dans les cookies)
         const token = localStorage.getItem('token') || '';
