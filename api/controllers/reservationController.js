@@ -146,6 +146,52 @@ const ReservationController = {
       console.error("Erreur (cancelReservation) :", error);
       res.status(500).json({ message: "Une erreur est survenue lors de l'annulation." });
     }
+  },
+/**
+   * 5. API ADMIN : Récupérer TOUTES les réservations du site (GET /api/reservations/admin-flux)
+   */
+  getAllReservationsForAdmin: async (req, res) => {
+    try {
+      // Optionnel : ajouter une vérification si (req.user.role !== 'admin')
+      
+      // /!\ Il te faudra créer cette méthode "getAllGlobal" ou équivalente dans ton reservationModel.js
+      const reservations = await Reservation.getAllGlobal(); 
+      
+      // Ton admin.html attend directement le tableau brut de réservations
+      return res.status(200).json(reservations);
+    } catch (error) {
+      console.error("Erreur (getAllReservationsForAdmin) :", error);
+      res.status(500).json({ message: "Erreur lors du chargement du flux global." });
+    }
+  },
+
+  /**
+   * 6. API ADMIN : Muter le statut d'une réservation (PUT /api/reservations/:id/statut-admin)
+   */
+  updateReservationStatusByAdmin: async (req, res) => {
+    try {
+      const reservationId = req.params.id;
+      const { statut } = req.body; // 'confirme' ou 'annule'
+
+      if (!statut) {
+        return res.status(400).json({ message: "Le statut cible est requis." });
+      }
+
+      // Utilise ta méthode existante du modèle pour mettre à jour le statut dans la base
+      const reservationModifiee = await Reservation.updateStatus(reservationId, statut);
+
+      if (!reservationModifiee) {
+        return res.status(404).json({ message: "Réservation introuvable." });
+      }
+
+      return res.status(200).json({ 
+        message: "Statut mis à jour par l'administrateur.", 
+        reservation: reservationModifiee 
+      });
+    } catch (error) {
+      console.error("Erreur (updateReservationStatusByAdmin) :", error);
+      res.status(500).json({ message: "Erreur serveur lors de la mise à jour du dossier." });
+    }
   }
 };
 

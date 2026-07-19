@@ -9,13 +9,15 @@ import authRoutes from './routes/authRoutes.js';
 import circuitRoutes from './routes/circuitRoutes.js'; 
 import circuitController from './controllers/circuitController.js'; 
 
-// Importation des nouvelles routes de réservation
+// Importation des nouvelles routes de réservation et utilisateurs
 import reservationRoutes from './routes/reservationRoutes.js'; 
+import userRoutes from './routes/userRoutes.js';
 
 // Recréer l'équivalent de __dirname pour l'ES Modules (index.js est dans /api)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Initialisation de l'application
 const app = express();
 
 // Autoriser les requêtes cross-origin et analyser les requêtes entrantes
@@ -45,10 +47,11 @@ app.get('/circuits', circuitController.renderCircuitsPage);
 
 
 /* ==========================================================================
-   ROUTES DE L'API REST & RÉSERVATIONS
+   ROUTES DE L'API REST, RÉSERVATIONS & UTILISATEURS
    ========================================================================== */
 app.use('/api/circuits', circuitRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes); // ✅ Déplacé ici ! 'app' est maintenant initialisé.
 
 // Utilisation des routes de réservation (gère à la fois le GET /reservations et les endpoints d'API)
 app.use('/', reservationRoutes); 

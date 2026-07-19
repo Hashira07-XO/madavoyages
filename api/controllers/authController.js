@@ -124,6 +124,11 @@ export const login = async (req, res) => {
             return res.status(401).json({ error: "Email ou mot de passe incorrect." });
         }
         
+        // 🔒 VÉRIFICATION DE L'UTILISATEUR BANNI
+        if (user.role === 'banni') {
+            return res.status(403).json({ error: "Votre compte a été suspendu par un administrateur." });
+        }
+        
         if (!user.is_verified) {
             return res.status(403).json({ error: "Veuillez vérifier votre email avant de vous connecter." });
         }

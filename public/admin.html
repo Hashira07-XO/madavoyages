@@ -1,437 +1,773 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Administration | MadaVoyages</title>
+    <title>MadaVoyages | Panel Administration</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@200;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
     <style>
         :root {
-            --color-primary: #000c09;
-            --color-secondary: #a53c19;
-            --color-surface-cream: #fbf9f5;
-            --color-text-variant: #414846;
+            --color-primary: #051613;       
+            --color-secondary: #b5431c;     
+            --color-soft-peach: #ffe5c9;    
+            --color-surface-cream: #faf7f2; 
+            --color-input-bg: #f5f0e6;      
+            --color-success: #198754;
+            --color-warning: #f59e0b;
+            --color-danger: #dc2626;
             
             --font-display: 'Playfair Display', serif;
             --font-body: 'Montserrat', sans-serif;
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        html, body {
+        body {
             background-color: var(--color-surface-cream);
             color: var(--color-primary);
             font-family: var(--font-body);
             min-height: 100vh;
-        }
-
-        .magical-bg::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0.08; pointer-events: none; z-index: -1;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            -webkit-font-smoothing: antialiased;
         }
 
         .font-display { font-family: var(--font-display); }
-        .letter-magical { letter-spacing: 0.12em; }
-        .label-caps { font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.15em; }
+        .label-caps { font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.14em; opacity: 0.7; }
 
-        .glass-nav {
-            background: rgba(251, 249, 245, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(165, 60, 25, 0.08);
-            z-index: 1030;
+        /* --- NAVBAR --- */
+        .admin-navbar {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(5, 22, 19, 0.05);
+            padding: 0.85rem 2rem;
+        }
+        .btn-outline-dark-custom {
+            border: 1.5px solid var(--color-primary);
+            color: var(--color-primary);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 30px;
+            padding: 8px 18px;
+            transition: var(--transition-smooth);
+        }
+        .btn-outline-dark-custom:hover {
+            background-color: var(--color-primary);
+            color: #fff;
+        }
+        .btn-danger-custom {
+            background-color: var(--color-secondary);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 30px;
+            padding: 8px 18px;
+            border: none;
+            transition: var(--transition-smooth);
+        }
+        .btn-danger-custom:hover {
+            background-color: #943312;
+            transform: translateY(-1px);
         }
 
-        .btn-premium {
-            background-color: var(--color-primary); color: #fff;
-            font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.15em;
-            padding: 10px 24px; border-radius: 50px; border: none;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: 0 4px 15px rgba(0, 12, 9, 0.15);
+        /* --- TABS --- */
+        .custom-tabs {
+            border-bottom: 1px solid rgba(5, 22, 19, 0.08);
+            gap: 2rem;
         }
-        .btn-premium:hover { background-color: var(--color-secondary); color: #fff; transform: translateY(-2px); }
+        .nav-link-custom {
+            color: var(--color-primary);
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 1rem 0;
+            position: relative;
+            opacity: 0.5;
+            transition: var(--transition-smooth);
+        }
+        .nav-link-custom:hover, .nav-link-custom.active {
+            opacity: 1;
+        }
+        .nav-link-custom.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--color-secondary);
+            border-radius: 3px 3px 0 0;
+        }
 
-        .admin-card {
-            background: #fff; border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(165, 60, 25, 0.05); overflow: hidden;
-            margin-bottom: 2rem;
+        /* --- ACTION BUTTONS --- */
+        .btn-add-circuit {
+            background-color: var(--color-primary);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 12px 24px;
+            border-radius: 40px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(5, 22, 19, 0.12);
+            transition: var(--transition-smooth);
         }
-        
-        .table-custom thead th {
-            background-color: #f5eee5; color: var(--color-primary);
-            font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
-            border-bottom: 2px solid rgba(165, 60, 25, 0.1); padding: 1rem;
-        }
-        .table-custom tbody td {
-            font-size: 13px; vertical-align: middle; padding: 1rem;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+        .btn-add-circuit:hover {
+            background-color: var(--color-secondary);
+            box-shadow: 0 6px 20px rgba(181, 67, 28, 0.25);
+            transform: translateY(-2px);
         }
 
-        .form-control, .form-select {
-            background-color: #f5eee5; border: 1px solid transparent; border-radius: 8px;
-            font-size: 13px; color: var(--color-primary); padding: 0.75rem 1rem;
+        /* --- VIEWS ARCHITECTURE --- */
+        .admin-panel-view {
+            display: none;
         }
-        .form-control:focus, .form-select:focus {
-            background-color: #fff; border-color: var(--color-secondary);
-            box-shadow: 0 0 0 0.2rem rgba(165, 60, 25, 0.15);
+        .admin-panel-view.active-view {
+            display: block;
+            animation: fadeIn 0.4s ease;
         }
-        
-        .circuit-img-preview { width: 60px; height: 40px; object-fit: cover; border-radius: 4px; }
-        
-        .nav-tabs-custom .nav-link {
-            color: var(--color-primary); border: none; font-weight: 600; font-size: 13px; padding: 1rem 1.5rem;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .nav-tabs-custom .nav-link.active {
-            color: var(--color-secondary); background: transparent; border-bottom: 3px solid var(--color-secondary);
+
+        /* --- TABLES --- */
+        .table-container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(5, 22, 19, 0.02);
+            border: 1px solid rgba(5, 22, 19, 0.04);
+            overflow: hidden;
+        }
+        .custom-table {
+            width: 100%;
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+        .custom-table th {
+            background-color: #fbf9f5;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(5, 22, 19, 0.06);
+            color: var(--color-primary);
+        }
+        .custom-table td {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(5, 22, 19, 0.04);
+            font-size: 14px;
+        }
+
+        /* --- IMAGE & BADGES --- */
+        .circuit-img-preview {
+            width: 68px;
+            height: 46px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            display: inline-block;
+        }
+        .badge-status.active { background: rgba(25, 135, 84, 0.08); color: var(--color-success); }
+        .badge-status.pending { background: rgba(245, 158, 11, 0.08); color: var(--color-warning); }
+        .badge-status.cancelled { background: rgba(220, 38, 36, 0.08); color: var(--color-danger); }
+        .badge-status.neutral { background: rgba(5, 22, 19, 0.06); color: var(--color-primary); }
+
+        /* --- SYSTEMIC ACTIONS --- */
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            color: #64748b;
+        }
+        .action-btn:hover { background-color: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+        .action-btn.btn-action-delete:hover { background-color: var(--color-danger); border-color: var(--color-danger); }
+        .action-btn.btn-action-ban:hover { background-color: var(--color-danger); border-color: var(--color-danger); }
+        .action-btn.btn-action-verify:hover { background-color: var(--color-success); border-color: var(--color-success); }
+
+        /* --- CARDS MOBILE --- */
+        .mobile-card-flow { display: none; }
+        .mobile-item-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 14px rgba(5, 22, 19, 0.02);
+            border: 1px solid rgba(5, 22, 19, 0.04);
+        }
+
+        .seat-badge-container { display: flex; flex-wrap: wrap; gap: 4px; }
+        .seat-tag { font-size: 11px; background: var(--color-input-bg); color: var(--color-primary); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+
+        @media (max-width: 991.98px) {
+            .table-responsive-desktop { display: none !important; }
+            .mobile-card-flow { display: block; }
+            .custom-tabs { gap: 0.5rem; justify-content: space-between; }
+            .nav-link-custom { font-size: 12px; padding: 0.75rem 4px; flex: 1; text-align: center; }
+            .title-section { flex-direction: column; align-items: flex-start !important; gap: 1.25rem; }
+            .btn-add-circuit { width: 100%; justify-content: center; }
         }
     </style>
 </head>
-<body class="magical-bg">
+<body>
 
-    <!-- NAVIGATION -->
-    <header class="fixed-top glass-nav">
-        <nav class="navbar navbar-expand-lg py-2 py-lg-3">
-            <div class="container-fluid px-4">
-                <a class="navbar-brand font-display italic letter-magical fw-bold text-dark fs-5" href="index.html">
-                    MadaVoyages <span class="fs-6 text-secondary ms-2" style="font-family: var(--font-body); font-style: normal;">| Panel Admin</span>
-                </a>
-                <div class="d-flex gap-3 align-items-center">
-                    <span class="label-caps text-muted d-none d-md-inline" id="admin-name">Chargement...</span>
-                    <a href="index.html" class="btn btn-outline-dark rounded-pill px-3 py-2 label-caps" style="font-size: 9px;">Retour au site</a>
-                    <button id="logout-btn" class="btn btn-danger rounded-pill px-3 py-2 label-caps border-0" style="font-size: 9px;">Déconnexion</button>
-                </div>
+    <!-- NAVBAR -->
+    <nav class="admin-navbar">
+        <div class="container-fluid d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <h1 class="font-display fw-bold mb-0 fs-4" style="letter-spacing: -0.02em;">MadaVoyages</h1>
+                <span class="badge bg-light text-dark border px-2 py-1 font-monospace" style="font-size: 10px;">v2.1.0</span>
             </div>
-        </nav>
-    </header>
-
-    <main style="margin-top: 100px;" class="container-fluid px-4 pb-5">
-        
-        <!-- Onglets de Navigation Principale -->
-        <ul class="nav nav-tabs nav-tabs-custom mb-4 border-bottom" id="adminTabs" role="tablist">
-            <li class="nav-item">
-                <button class="nav-link active" id="circuits-tab" data-bs-toggle="tab" data-bs-target="#circuits-pane" type="button" role="tab">Gestion des Circuits</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" id="reservations-tab" data-bs-toggle="tab" data-bs-target="#reservations-pane" type="button" role="tab" id="btn-load-reservations">Réservations Clients</button>
-            </li>
-        </ul>
-
-        <div class="tab-content" id="adminTabsContent">
-            <!-- PANE 1: CIRCUITS -->
-            <div class="tab-pane fade show active" id="circuits-pane" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-end mb-4">
-                    <div>
-                        <span class="label-caps text-secondary mb-1 d-block">Catalogue</span>
-                        <h2 class="font-display fw-bold text-dark mb-0">Circuits Touristiques</h2>
-                    </div>
-                    <button class="btn-premium d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#circuitModal" id="btn-add-circuit">
-                        <span class="material-symbols-outlined fs-6">add</span> Nouveau Circuit
+            
+            <div class="d-flex align-items-center gap-3 ms-auto ms-sm-0">
+                <div class="text-end d-none d-md-block">
+                    <div class="small fw-bold">AA's CoDing Admin</div>
+                    <div class="label-caps" style="font-size: 8.5px; color: var(--color-secondary);">Administrateur Principal</div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="/circuits" class="btn btn-outline-dark-custom d-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-6">visibility</span>
+                        <span class="d-none d-sm-inline">Voir le site</span>
+                    </a>
+                    <button onclick="handleLogout()" class="btn btn-danger-custom d-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-6">logout</span>
+                        <span class="d-none d-sm-inline">Déconnexion</span>
                     </button>
-                </div>
-
-                <div class="admin-card">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-custom">
-                            <thead>
-                                <tr>
-                                    <th>Image</th>
-                                    <th>Titre</th>
-                                    <th>Prix (€ / MGA)</th>
-                                    <th>Capacité</th>
-                                    <th>Dates</th>
-                                    <th>Statut</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="circuits-tbody">
-                                <tr><td colspan="7" class="text-center py-4">Chargement...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PANE 2: RESERVATIONS -->
-            <div class="tab-pane fade" id="reservations-pane" role="tabpanel">
-                <div class="mb-4">
-                    <span class="label-caps text-secondary mb-1 d-block">Suivi en direct</span>
-                    <h2 class="font-display fw-bold text-dark mb-0">Réservations Reçues</h2>
-                </div>
-
-                <div class="admin-card">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-custom">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Client</th>
-                                    <th>Circuit</th>
-                                    <th>Places</th>
-                                    <th>Date Demande</th>
-                                    <th>Statut</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reservations-tbody">
-                                <tr><td colspan="7" class="text-center py-4">Aucune réservation chargée.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
             </div>
         </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="container-fluid py-4 px-3 px-md-5" style="max-width: 1600px;">
+        
+        <!-- ONGLETS -->
+        <div class="d-flex custom-tabs mb-4">
+            <a href="#" class="nav-link-custom active" onclick="switchTab(event, 'view-circuits')">Gestion des Circuits</a>
+            <a href="#" class="nav-link-custom" onclick="switchTab(event, 'view-reservations')">Réservations Clients</a>
+            <a href="#" class="nav-link-custom" onclick="switchTab(event, 'view-users')">Contrôle des Utilisateurs</a>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 1: GESTION DES CIRCUITS               -->
+        <!-- ========================================== -->
+        <div id="view-circuits" class="admin-panel-view active-view">
+            <div class="title-section d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <span class="label-caps text-secondary">Offres en Ligne</span>
+                    <h2 class="font-display fw-bold mb-0 mt-1" style="font-size: 26px;">Catalogue des Circuits</h2>
+                </div>
+                <button class="btn-add-circuit" data-bs-toggle="modal" data-bs-target="#circuitModal" onclick="openCreateModal()">
+                    <span class="material-symbols-outlined fs-5">add</span> Nouveau Circuit
+                </button>
+            </div>
+
+            <!-- Table Desktop -->
+            <div class="table-container table-responsive-desktop">
+                <table class="table custom-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 90px;">Image</th>
+                            <th>Titre du Circuit</th>
+                            <th>Prix (€ / MGA)</th>
+                            <th>Capacité</th>
+                            <th>Période</th>
+                            <th>Visibilité</th>
+                            <th class="text-end" style="width: 120px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="circuits-tbody">
+                        <!-- Rempli par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Flux Mobile -->
+            <div class="mobile-card-flow" id="circuits-mobile-flow"></div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: RÉSERVATIONS CLIENTS               -->
+        <!-- ========================================== -->
+        <div id="view-reservations" class="admin-panel-view">
+            <div class="title-section d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <span class="label-caps text-secondary">Flux d'Inscriptions</span>
+                    <h2 class="font-display fw-bold mb-0 mt-1" style="font-size: 26px;">Flux des Réservations</h2>
+                </div>
+            </div>
+
+            <div class="table-container table-responsive-desktop">
+                <table class="table custom-table">
+                    <thead>
+                        <tr>
+                            <th>ID & Client</th>
+                            <th>Circuit Sélectionné</th>
+                            <th>Sièges Réservés</th>
+                            <th>Notes Particulières</th>
+                            <th>Statut Dossier</th>
+                            <th class="text-end" style="width: 120px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservations-tbody">
+                        <!-- Rempli par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="mobile-card-flow" id="reservations-mobile-flow"></div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: CONTRÔLE DES UTILISATEURS          -->
+        <!-- ========================================== -->
+        <div id="view-users" class="admin-panel-view">
+            <div class="title-section d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <span class="label-caps text-secondary">Sécurité & Permissions</span>
+                    <h2 class="font-display fw-bold mb-0 mt-1" style="font-size: 26px;">Comptes & Droits d'Accès</h2>
+                </div>
+            </div>
+
+            <div class="table-container table-responsive-desktop">
+                <table class="table custom-table">
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Adresse E-mail</th>
+                            <th>Rôle Système</th>
+                            <th class="text-end" style="width: 150px;">Modération</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody">
+                        <!-- Rempli par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="mobile-card-flow" id="users-mobile-flow"></div>
+        </div>
+
     </main>
 
-    <!-- MODAL CIRCUIT (AJOUT/EDITION) -->
+    <!-- MODAL UNIQUE AJOUT / MODIFICATION CIRCUIT -->
     <div class="modal fade" id="circuitModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0" style="background-color: var(--color-surface-cream);">
-                <div class="modal-header border-bottom border-warning">
-                    <h5 class="modal-title font-display fw-bold text-dark fs-4" id="modalTitle">Ajouter un circuit</h5>
-                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius: 16px;">
+                <div class="modal-header border-0 px-4 pt-4">
+                    <h5 class="font-display fw-bold fs-4 mb-0" id="circuitModalLabel">Ajouter un Circuit</h5>
+                    <button type="button" class="btn-close" data-bs-sound="dismiss" data-bs-target="#circuitModal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="circuitForm">
-                    <div class="modal-body p-4 row g-3">
-                        <input type="hidden" id="circuitId">
-                        
-                        <div class="col-md-12">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Titre du circuit *</label>
-                            <input type="text" id="title" name="title" class="form-control" required>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Description *</label>
-                            <textarea id="description" name="description" class="form-control" rows="3" required></textarea>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Prix (€) *</label>
-                            <input type="number" id="price" name="price" class="form-control" step="0.01" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Prix (Ariary) *</label>
-                            <input type="number" id="price_ariary" name="price_ariary" class="form-control" step="0.01" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Capacité (Places) *</label>
-                            <input type="number" id="capacity" name="capacity" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Début du voyage</label>
-                            <input type="date" id="date_debut_voyage" name="date_debut_voyage" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Fin du voyage</label>
-                            <input type="date" id="date_fin_voyage" name="date_fin_voyage" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Fin des réservations</label>
-                            <input type="date" id="date_fin_reservation" name="date_fin_reservation" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Type de transport</label>
-                            <select id="type_transport" name="type_transport" class="form-select">
-                                <option value="">Sélectionner...</option>
-                                <option value="Bus-Brousse Prestige">Bus-Brousse Prestige</option>
-                                <option value="4x4 Expédition">4x4 Expédition</option>
-                                <option value="Avion + Bateau">Avion + Bateau</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="label-caps text-dark mb-1 d-block" style="font-size: 9px;">Image (Optionnel)</label>
-                            <input type="file" id="image" name="image" class="form-control" accept="image/*">
-                        </div>
-                        <div class="col-md-12 mt-3">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" id="actif" checked>
-                                <label class="form-check-label label-caps text-dark" for="actif" style="font-size: 10px;">Circuit Actif (Visible)</label>
+                <form id="circuitForm" onsubmit="saveCircuit(event)">
+                    <input type="hidden" id="form-circuit-id">
+                    <div class="modal-body px-4">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold">Nom du voyage *</label>
+                                <input type="text" id="form-title" class="form-control" required style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold">Description *</label>
+                                <textarea id="form-description" class="form-control" rows="3" required style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Prix (€) *</label>
+                                <input type="number" step="0.01" id="form-price" class="form-control" required style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Prix (MGA / Ariary) *</label>
+                                <input type="number" id="form-price-ariary" class="form-control" required style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Capacité passagers *</label>
+                                <input type="number" id="form-capacity" class="form-control" required style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Type de Transport</label>
+                                <input type="text" id="form-transport" class="form-control" placeholder="ex: 4x4, Avion" style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Début du Voyage</label>
+                                <input type="date" id="form-date-debut" class="form-control" style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Fin du Voyage</label>
+                                <input type="date" id="form-date-fin" class="form-control" style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Clôture Réservations</label>
+                                <input type="date" id="form-date-cloture" class="form-control" style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold">Image du Circuit (Laisse vide pour garder l'ancienne ou celle par défaut)</label>
+                                <input type="file" id="form-image" class="form-control" accept="image/*" style="background: var(--color-input-bg); border:none; padding:10px; border-radius:8px;">
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-check form-switch mt-2">
+                                    <input class="form-check-input" type="checkbox" id="form-actif" checked>
+                                    <label class="form-check-label small fw-bold" for="form-actif">Circuit Actif (Visible sur le site public)</label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer border-top border-warning">
-                        <button type="button" class="btn btn-outline-dark rounded-pill px-4 label-caps" data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" class="btn-premium border-0" id="btn-save-circuit">ENREGISTRER</button>
+                    <div class="modal-footer border-0 p-4">
+                        <button type="button" class="btn btn-light px-4 py-2" data-bs-dismiss="modal" style="border-radius:20px; font-size:12px; font-weight:700;">Annuler</button>
+                        <button type="submit" class="btn btn-dark px-4 py-2" style="border-radius:20px; font-size:12px; font-weight:700; background: var(--color-primary);">Enregistrer</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- SCRIPTS DE SYNCRONISATION DYNAMIQUE -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('token');
-            const userRaw = localStorage.getItem('user');
+        // Extraction du Token JWT stocké lors du login (Adapte si tu le stockes dans les cookies)
+        const token = localStorage.getItem('token') || '';
 
-            if (!token || !userRaw) {
-                window.location.href = 'admin-login.html';
-                return;
-            }
-
-            const user = JSON.parse(userRaw);
-            if (user.role !== 'admin') {
-                alert("Accès refusé.");
-                window.location.href = 'index.html';
-                return;
-            }
-
-            document.getElementById('admin-name').textContent = `Admin: ${user.prenom} ${user.nom}`;
-
-            document.getElementById('logout-btn').addEventListener('click', () => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = 'index.html';
-            });
-
-            // --- LOGIQUE CIRCUITS ---
-            const circuitsTbody = document.getElementById('circuits-tbody');
-            const circuitForm = document.getElementById('circuitForm');
-            const circuitModal = new bootstrap.Modal(document.getElementById('circuitModal'));
-            let isEditing = false;
-
-            const loadCircuits = async () => {
-                try {
-                    const response = await fetch('/api/circuits?all=true', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    const result = await response.json();
-                    if (!result.success) throw new Error(result.error);
-                    
-                    circuitsTbody.innerHTML = '';
-                    result.data.forEach(c => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td><img src="${c.image_url || '/assets/baobab3.webp'}" class="circuit-img-preview"></td>
-                            <td class="fw-bold">${c.title}</td>
-                            <td>${parseFloat(c.price).toFixed(2)} €<br><span class="text-muted small">${parseFloat(c.price_ariary).toLocaleString()} Ar</span></td>
-                            <td>${c.capacity} places</td>
-                            <td class="small">D: ${c.date_debut_voyage ? new Date(c.date_debut_voyage).toLocaleDateString() : 'N/A'}</td>
-                            <td><span class="badge ${c.actif ? 'bg-success' : 'bg-secondary'} rounded-pill">${c.actif ? 'Actif' : 'Inactif'}</span></td>
-                            <td class="text-end">
-                                <button class="btn btn-sm btn-outline-primary btn-edit rounded-circle p-1 me-1" data-id="${c.id}"><span class="material-symbols-outlined" style="font-size:16px;">edit</span></button>
-                                <button class="btn btn-sm btn-outline-danger btn-delete rounded-circle p-1" data-id="${c.id}"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>
-                            </td>
-                        `;
-                        circuitsTbody.appendChild(tr);
-                    });
-                    attachCircuitEvents();
-                } catch (e) { circuitsTbody.innerHTML = `<tr><td colspan="7" class="text-danger text-center">Erreur.</td></tr>`; }
-            };
-
-            const attachCircuitEvents = () => {
-                document.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', e => openEditModal(e.currentTarget.dataset.id)));
-                document.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', e => {
-                    if(confirm('Supprimer ce circuit ?')) deleteCircuit(e.currentTarget.dataset.id);
-                }));
-            };
-
-            document.getElementById('btn-add-circuit').addEventListener('click', () => {
-                isEditing = false; circuitForm.reset(); document.getElementById('circuitId').value = '';
-                document.getElementById('modalTitle').textContent = 'Ajouter un circuit';
-            });
-
-            const openEditModal = async (id) => {
-                const response = await fetch(`/api/circuits/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
-                const r = await response.json();
-                if(r.success) {
-                    isEditing = true;
-                    document.getElementById('modalTitle').textContent = 'Modifier le circuit';
-                    document.getElementById('circuitId').value = r.data.id;
-                    document.getElementById('title').value = r.data.title;
-                    document.getElementById('description').value = r.data.description;
-                    document.getElementById('price').value = r.data.price;
-                    document.getElementById('price_ariary').value = r.data.price_ariary;
-                    document.getElementById('capacity').value = r.data.capacity;
-                    document.getElementById('type_transport').value = r.data.type_transport || '';
-                    document.getElementById('actif').checked = r.data.actif;
-                    circuitModal.show();
-                }
-            };
-
-            circuitForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const fd = new FormData();
-                const fields = ['title', 'description', 'price', 'price_ariary', 'capacity', 'type_transport', 'date_debut_voyage', 'date_fin_voyage', 'date_fin_reservation'];
-                fields.forEach(f => { if(document.getElementById(f).value) fd.append(f, document.getElementById(f).value); });
-                fd.append('actif', document.getElementById('actif').checked);
-                
-                const img = document.getElementById('image').files[0];
-                if(img) fd.append('image', img);
-
-                const id = document.getElementById('circuitId').value;
-                const url = isEditing ? `/api/circuits/${id}` : '/api/circuits';
-                await fetch(url, { method: isEditing ? 'PUT' : 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd });
-                circuitModal.hide(); loadCircuits();
-            });
-
-            const deleteCircuit = async (id) => {
-                await fetch(`/api/circuits/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
-                loadCircuits();
-            };
-
-            // --- LOGIQUE RÉSERVATIONS ---
-            const resTbody = document.getElementById('reservations-tbody');
-            
-            const loadReservations = async () => {
-                try {
-                    const response = await fetch('/api/reservations', { headers: { 'Authorization': `Bearer ${token}` } });
-                    const result = await response.json();
-                    if(!result.success) throw new Error();
-
-                    resTbody.innerHTML = '';
-                    if(result.data.length === 0) {
-                        resTbody.innerHTML = '<tr><td colspan="7" class="text-center">Aucune réservation pour le moment.</td></tr>';
-                        return;
-                    }
-
-                    result.data.forEach(r => {
-                        const tr = document.createElement('tr');
-                        let badgeColor = 'bg-warning';
-                        if(r.status === 'confirme') badgeColor = 'bg-success';
-                        if(r.status === 'annule') badgeColor = 'bg-danger';
-
-                        tr.innerHTML = `
-                            <td>#${r.id}</td>
-                            <td>${r.user_name || 'Client'} <br><span class="text-muted small">${r.user_email || ''}</span></td>
-                            <td class="fw-bold">${r.circuit_title}</td>
-                            <td>${r.places_reservees}</td>
-                            <td>${new Date(r.created_at).toLocaleDateString()}</td>
-                            <td><span class="badge ${badgeColor} rounded-pill">${r.status}</span></td>
-                            <td class="text-end">
-                                ${r.status === 'en_attente' ? `
-                                    <button class="btn btn-sm btn-success btn-action-res me-1" data-id="${r.id}" data-action="confirme">Valider</button>
-                                    <button class="btn btn-sm btn-outline-danger btn-action-res" data-id="${r.id}" data-action="annule">Refuser</button>
-                                ` : '<span class="text-muted small">Traité</span>'}
-                            </td>
-                        `;
-                        resTbody.appendChild(tr);
-                    });
-                    attachReservationEvents();
-                } catch(e) { resTbody.innerHTML = '<tr><td colspan="7" class="text-danger text-center">Erreur de chargement.</td></tr>'; }
-            };
-
-            const attachReservationEvents = () => {
-                document.querySelectorAll('.btn-action-res').forEach(b => b.addEventListener('click', async (e) => {
-                    const id = e.target.dataset.id;
-                    const action = e.target.dataset.action;
-                    if(confirm(`Changer le statut de la réservation en "${action}" ?`)) {
-                        await fetch(`/api/reservations/${id}/status`, {
-                            method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                            body: JSON.stringify({ status: action })
-                        });
-                        loadReservations();
-                    }
-                }));
-            };
-
-            // Écouter le clic sur l'onglet réservations
-            document.getElementById('reservations-tab').addEventListener('click', loadReservations);
-
-            // Init au lancement
-            loadCircuits();
+        // Headers globaux réutilisables pour les requêtes sécurisées
+        const getHeaders = () => ({
+            'Authorization': `Bearer ${token}`
         });
+
+        // Au chargement initial de la page
+        document.addEventListener("DOMContentLoaded", () => {
+            loadCircuits();
+            loadReservations();
+            loadUsers();
+        });
+
+        function switchTab(event, targetViewId) {
+            event.preventDefault();
+            document.querySelectorAll('.nav-link-custom').forEach(tab => tab.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.admin-panel-view').forEach(view => view.classList.remove('active-view'));
+            document.getElementById(targetViewId).classList.add('active-view');
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login'; 
+        }
+
+        /* ==========================================================================
+           1. CHARGEMENT & OPÉRATIONS DES CIRCUITS (circuitController)
+           ========================================================================== */
+        async function loadCircuits() {
+            try {
+                // Route GET /api/circuits?all=true pour voir tous les circuits, même inactifs
+                const response = await fetch('/api/circuits?all=true');
+                const resData = await response.json();
+                if (!resData.success) return;
+
+                const circuits = resData.data;
+                const tbody = document.getElementById('circuits-tbody');
+                const mobileFlow = document.getElementById('circuits-mobile-flow');
+                tbody.innerHTML = '';
+                mobileFlow.innerHTML = '';
+
+                circuits.forEach(c => {
+                    const fallbackImg = c.image_url || '/assets/baobab3.webp';
+                    const statusBadge = c.actif ? '<span class="badge-status active">Actif</span>' : '<span class="badge-status cancelled">Masqué</span>';
+                    const dateDepart = c.date_debut_voyage ? new Date(c.date_debut_voyage).toLocaleDateString('fr-FR') : 'Non définie';
+
+                    // Template Desktop
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><img src="${fallbackImg}" alt="Circuit" class="circuit-img-preview"/></td>
+                            <td><div class="fw-bold text-dark">${c.title}</div></td>
+                            <td>
+                                <div class="fw-bold text-dark">${parseFloat(c.price).toLocaleString()} €</div>
+                                <div class="text-muted small" style="font-size: 11px;">${parseInt(c.price_ariary).toLocaleString()} Ar</div>
+                            </td>
+                            <td><span class="fw-medium">${c.capacity} places max</span></td>
+                            <td><div class="text-muted small fw-medium">${dateDepart}</div></td>
+                            <td>${statusBadge}</td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button class="action-btn" onclick="openEditModal(${c.id})" title="Modifier"><span class="material-symbols-outlined fs-5">edit</span></button>
+                                    <button class="action-btn btn-action-delete" onclick="deleteCircuit(${c.id})" title="Supprimer"><span class="material-symbols-outlined fs-5">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+
+                    // Template Mobile
+                    mobileFlow.innerHTML += `
+                        <div class="mobile-item-card">
+                            <div class="d-flex gap-3 align-items-start mb-3">
+                                <img src="${fallbackImg}" alt="Circuit" style="width: 75px; height: 55px; object-fit: cover; border-radius: 8px;"/>
+                                <div class="flex-grow-1">
+                                    ${statusBadge}
+                                    <h4 class="fw-bold mb-0 mt-1" style="font-size: 14px; color: var(--color-primary);">${c.title}</h4>
+                                </div>
+                            </div>
+                            <div class="row g-2 py-2 my-2 bg-light px-2 rounded border-0" style="font-size: 12px;">
+                                <div class="col-6">
+                                    <span class="text-muted d-block small" style="font-size: 9px; font-weight:700;">TARIF</span>
+                                    <strong class="text-dark">${parseFloat(c.price).toLocaleString()} €</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-muted d-block small" style="font-size: 9px; font-weight:700;">LOGISTIQUE</span>
+                                    <span class="fw-semibold text-dark">${c.capacity} pl.</span> • ${dateDepart}
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 mt-3">
+                                <button onclick="openEditModal(${c.id})" class="btn btn-sm btn-light border px-3 py-2" style="font-size: 11px; font-weight: 700; border-radius: 20px;">Modifier</button>
+                                <button onclick="deleteCircuit(${c.id})" class="btn btn-sm btn-outline-danger px-3 py-2" style="font-size: 11px; font-weight: 700; border-radius: 20px;">Supprimer</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error("Erreur chargement circuits admin:", err);
+            }
+        }
+
+        function openCreateModal() {
+            document.getElementById('circuitModalLabel').innerText = "Ajouter un Circuit";
+            document.getElementById('circuitForm').reset();
+            document.getElementById('form-circuit-id').value = '';
+        }
+
+        async function openEditModal(id) {
+            try {
+                const response = await fetch(`/api/circuits/${id}`);
+                const resData = await response.json();
+                if(!resData.success) return;
+
+                const c = resData.data;
+                document.getElementById('circuitModalLabel').innerText = "Modifier le Circuit";
+                document.getElementById('form-circuit-id').value = c.id;
+                document.getElementById('form-title').value = c.title;
+                document.getElementById('form-description').value = c.description;
+                document.getElementById('form-price').value = c.price;
+                document.getElementById('form-price-ariary').value = c.price_ariary;
+                document.getElementById('form-capacity').value = c.capacity;
+                document.getElementById('form-transport').value = c.type_transport || '';
+                document.getElementById('form-date-debut').value = c.date_debut_voyage ? c.date_debut_voyage.split('T')[0] : '';
+                document.getElementById('form-date-fin').value = c.date_fin_voyage ? c.date_fin_voyage.split('T')[0] : '';
+                document.getElementById('form-date-cloture').value = c.date_fin_reservation ? c.date_fin_reservation.split('T')[0] : '';
+                document.getElementById('form-actif').checked = c.actif;
+
+                const modal = new bootstrap.Modal(document.getElementById('circuitModal'));
+                modal.show();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function saveCircuit(event) {
+            event.preventDefault();
+            const id = document.getElementById('form-circuit-id').value;
+            
+            // On passe par un FormData car le contrôleur utilise Multer pour gérer l'image (Vercel Blob)
+            const formData = new FormData();
+            formData.append('title', document.getElementById('form-title').value);
+            formData.append('description', document.getElementById('form-description').value);
+            formData.append('price', document.getElementById('form-price').value);
+            formData.append('price_ariary', document.getElementById('form-price-ariary').value);
+            formData.append('capacity', document.getElementById('form-capacity').value);
+            formData.append('type_transport', document.getElementById('form-transport').value);
+            formData.append('date_debut_voyage', document.getElementById('form-date-debut').value);
+            formData.append('date_fin_voyage', document.getElementById('form-date-fin').value);
+            formData.append('date_fin_reservation', document.getElementById('form-date-cloture').value);
+            formData.append('actif', document.getElementById('form-actif').checked);
+            
+            const imageFile = document.getElementById('form-image').files[0];
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
+
+            const url = id ? `/api/circuits/${id}` : '/api/circuits';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    body: formData // Pas de Content-Type header, le navigateur s'en charge avec le boundary de multipart
+                });
+                const data = await response.json();
+                if(data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('circuitModal')).hide();
+                    loadCircuits();
+                } else {
+                    alert("Erreur: " + data.message);
+                }
+            } catch(err) {
+                console.error(err);
+            }
+        }
+
+        async function deleteCircuit(id) {
+            if(!confirm("Voulez-vous vraiment supprimer définitivement ce circuit ?")) return;
+            try {
+                const response = await fetch(`/api/circuits/${id}`, { method: 'DELETE' });
+                const data = await response.json();
+                if(data.success) loadCircuits();
+            } catch(err) {
+                console.error(err);
+            }
+        }
+
+
+        /* ==========================================================================
+           2. CHARGEMENT DES RÉSERVATIONS (ReservationController)
+           ========================================================================== */
+        async function loadReservations() {
+            try {
+                // Remplacement par ton endpoint d'administration des réservations globales si existant.
+                // Ici configuré pour consommer l'historique ou le flux global des réservations.
+                const response = await fetch('/api/reservations/admin-flux', { headers: getHeaders() });
+                if (response.status === 404) {
+                    // Fallback informatif si l'endpoint admin global n'est pas encore finalisé
+                    document.getElementById('reservations-tbody').innerHTML = `<tr><td colspan="6" class="text-center text-muted">Créez un endpoint global GET /api/reservations/admin-flux pour lister l'ensemble des requêtes.</td></tr>`;
+                    return;
+                }
+                const reservations = await response.json();
+
+                const tbody = document.getElementById('reservations-tbody');
+                const mobileFlow = document.getElementById('reservations-mobile-flow');
+                tbody.innerHTML = '';
+                mobileFlow.innerHTML = '';
+
+                reservations.forEach(r => {
+                    const tags = r.places_choisies.map(p => `<span class="seat-tag">${p < 10 ? '0'+p : p}</span>`).join('');
+                    let badgeClass = 'pending';
+                    let statusLabel = 'En attente';
+                    if(r.statut === 'confirme') { badgeClass = 'active'; statusLabel = 'Validé'; }
+                    if(r.statut === 'annule') { badgeClass = 'cancelled'; statusLabel = 'Annulé'; }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">Utilisateur #${r.user_id}</div>
+                                <div class="text-muted small" style="font-size: 11px;">Ref: RES-${r.id}</div>
+                            </td>
+                            <td><div class="fw-medium text-dark">ID Circuit: #${r.circuit_id}</div></td>
+                            <td>
+                                <div class="seat-badge-container">${tags}</div>
+                                <span class="text-muted small" style="font-size: 11px;">(${r.nombre_personnes} Personnes)</span>
+                            </td>
+                            <td><div class="text-muted small text-truncate" style="max-width: 200px;">${r.remarques || 'Aucune note'}</div></td>
+                            <td><span class="badge-status ${badgeClass}">${statusLabel}</span></td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    ${r.statut === 'en_attente' ? `
+                                        <button onclick="updateReservationStatus(${r.id}, 'confirme')" class="action-btn btn-action-verify" title="Valider"><span class="material-symbols-outlined fs-5">check</span></button>
+                                        <button onclick="updateReservationStatus(${r.id}, 'annule')" class="action-btn btn-action-delete" title="Annuler"><span class="material-symbols-outlined fs-5">close</span></button>
+                                    ` : `<span class="text-muted small">-</span>`}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function updateReservationStatus(id, newStatus) {
+            try {
+                // Route adaptée à la volée sur ton architecture REST
+                const response = await fetch(`/api/reservations/${id}/statut-admin`, {
+                    method: 'PUT',
+                    headers: { ...getHeaders(), 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ statut: newStatus })
+                });
+                if(response.ok) loadReservations();
+            } catch (err) { console.error(err); }
+        }
+
+
+        /* ==========================================================================
+           3. GESTION DES UTILISATEURS (userController)
+           ========================================================================== */
+        async function loadUsers() {
+            try {
+                // GET /api/users (Géré par userController.apiGetAllUsers)
+                const response = await fetch('/api/users', { headers: getHeaders() });
+                const resData = await response.json();
+                if (!resData.success) return;
+
+                const users = resData.data;
+                const tbody = document.getElementById('users-tbody');
+                const mobileFlow = document.getElementById('users-mobile-flow');
+                tbody.innerHTML = '';
+                mobileFlow.innerHTML = '';
+
+                users.forEach(u => {
+                    let roleClass = 'neutral';
+                    if(u.role === 'admin') roleClass = 'active';
+                    if(u.role === 'banni') roleClass = 'cancelled';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><div class="fw-bold text-dark">${u.nom || 'Utilisateur'} ${u.prenom || ''}</div></td>
+                            <td><span class="font-monospace text-muted" style="font-size: 13px;">${u.email}</span></td>
+                            <td><span class="badge-status ${roleClass}">${u.role}</span></td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    ${u.role !== 'admin' && u.role !== 'banni' ? `
+                                        <button onclick="changeUserRole(${u.id}, 'admin')" class="action-btn btn-action-verify" title="Promouvoir Admin"><span class="material-symbols-outlined fs-5">shield</span></button>
+                                        <button onclick="changeUserRole(${u.id}, 'banni')" class="action-btn btn-action-ban" title="Bannir"><span class="material-symbols-outlined fs-5">gavel</span></button>
+                                    ` : ''}
+                                    ${u.role === 'banni' ? `
+                                        <button onclick="changeUserRole(${u.id}, 'client')" class="action-btn" title="Réhabiliter"><span class="material-symbols-outlined fs-5">settings_backup_restore</span></button>
+                                    ` : ''}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function changeUserRole(id, targetRole) {
+            try {
+                // PUT /api/users/:id/role (Géré par userController.apiUpdateUserRole)
+                const response = await fetch(`/api/users/${id}/role`, {
+                    method: 'PUT',
+                    headers: {
+                        ...getHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ role: targetRole })
+                });
+                const data = await response.json();
+                if(data.success) {
+                    loadUsers();
+                } else {
+                    alert(data.message);
+                }
+            } catch(err) {
+                console.error(err);
+            }
+        }
     </script>
 </body>
 </html>

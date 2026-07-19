@@ -31,5 +31,35 @@ export const UserModel = {
       [token]
     );
     return updateResult.rows[0];
+  }, 
+  async getAllUsers() {
+    try {
+      // On trie par ID pour garder un ordre stable dans le tableau
+      const queryText = 'SELECT id, nom, prenom, email, role, is_verified FROM users ORDER BY id ASC';
+      const result = await pool.query(queryText);
+      return result.rows; // Renvoie un tableau d'utilisateurs
+    } catch (error) {
+      console.error("Erreur dans UserModel.getAllUsers :", error);
+      throw error;
+    }
+  },
+
+  // 2. Modifier le rôle d'un utilisateur (ex: passer à 'admin', 'client', ou 'banni')
+  async updateRole(id, newRole) {
+    try {
+      const queryText = `
+        UPDATE users 
+        SET role = $1 
+        WHERE id = $2 
+        RETURNING id, nom, prenom, email, role
+      `;
+      const values = [newRole, id];
+      const result = await pool.query(queryText, values);
+      
+      return result.rows[0]; // Renvoie l'utilisateur mis à jour ou undefined si l'ID n'existe pas
+    } catch (error) {
+      console.error("Erreur dans UserModel.updateRole :", error);
+      throw error;
+    }
   }
 };

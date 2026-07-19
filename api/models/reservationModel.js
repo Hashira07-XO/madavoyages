@@ -116,6 +116,34 @@ const Reservation = {
       console.error(`Erreur de base de données (updateStatus ID ${id}) :`, error);
       throw error;
     }
+  },
+/**
+   * Récupère TOUTES les réservations de la base de données (Pour le panel Admin)
+   * Jointure incluse pour afficher l'identité du client et les détails du circuit
+   */
+  getAllGlobal: async () => {
+    try {
+      const sql = `
+        SELECT r.*, 
+               u.nom AS user_nom, 
+               u.prenom AS user_prenom, 
+               u.email AS user_email,
+               c.title AS circuit_title, 
+               c.price AS circuit_price,
+               c.price_ariary AS circuit_price_ariary,
+               c.date_debut_voyage
+        FROM reservations r
+        JOIN users u ON r.user_id = u.id
+        JOIN circuits c ON r.circuit_id = c.id
+        ORDER BY r.created_at DESC;
+      `;
+
+      const { rows } = await db.query(sql);
+      return rows;
+    } catch (error) {
+      console.error("Erreur de base de données (getAllGlobal) :", error);
+      throw error;
+    }
   }
 };
 
