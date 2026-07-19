@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MADAVOYAGES | L'Ame de l'Ile</title>
+    
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <style>
+        /* Variables Thématiques issues de la configuration originale */
+        :root {
+            --color-primary: #000c09;
+            --color-forest-deep: #01261f;
+            --color-secondary: #a53c19;
+            --color-ochre-earth: #a53c19;
+            --color-glow-gold: #ffd700;
+            --color-surface: #fbf9f5;
+            --color-surface-bright: #fbf9f5;
+            --color-surface-cream: #fbf9f5;
+            --color-on-surface: #1b1c1a;
+            --color-on-surface-variant: #414846;
+            
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+            
+            --scroll-y: 0;
+        }
+
+        body {
+            background-color: var(--color-surface);
+            color: var(--color-on-surface);
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 24px;
+            overflow-x: hidden;
+        }
+
+        /* --- Typographies & Utilitaires Utiles --- */
+        .font-display { font-family: var(--font-display); }
+        .font-body { font-family: var(--font-body); }
+        
+        .font-label-caps {
+            font-family: var(--font-body);
+            font-size: 12px;
+            line-height: 16px;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+        }
+
+        .text-glow-gold { color: var(--color-glow-gold); }
+        .text-forest-deep { color: var(--color-forest-deep); }
+        .text-ochre-earth { color: var(--color-ochre-earth); }
+        .text-surface-cream { color: var(--color-surface-cream); }
+        .text-on-surface-variant { color: var(--color-on-surface-variant); }
+        
+        .bg-forest-deep { background-color: var(--color-forest-deep); }
+        .bg-surface-bright { background-color: var(--color-surface-bright); }
+        .bg-surface { background-color: var(--color-surface); }
+
+        .py-section-gap {
+            padding-top: 120px;
+            padding-bottom: 120px;
+        }
+
+        /* --- Effets de Design Premium (MadaVoyages) --- */
+        .offset-border {
+            position: relative;
+        }
+        .offset-border::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: -12px;
+            bottom: -12px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            z-index: -1;
+            transition: all 0.5s ease;
+        }
+
+        .hover-reveal .overlay {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .hover-reveal:hover .overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .hover-reveal img {
+            transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .hover-reveal:hover img {
+            transform: scale(1.05);
+        }
+
+        .firefly {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: #ffd700;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0;
+            filter: blur(1px);
+        }
+        
+        /* Refined Parallax & Reveal Utilities */
+        .parallax-layer {
+            will-change: transform;
+            transform: translateY(calc(var(--scroll-y) * var(--parallax-speed, 0.1) * 1px));
+        }
+        
+        /* Smooth entrance animations using IntersectionObserver */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1), transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .reveal-on-scroll.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        section {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-title-container {
+            overflow: visible;
+        }
+
+        /* Aspect ratio helpers non-natifs dans Bootstrap brut */
+        .aspect-2-3 { aspect-ratio: 2 / 3; }
+        .aspect-3-4 { aspect-ratio: 3 / 4; }
+        .aspect-4-5 { aspect-ratio: 4 / 5; }
+        .aspect-4-3 { aspect-ratio: 4 / 3; }
+        .aspect-21-9 { aspect-ratio: 21 / 9; }
+
+        /* Prevent background jitter on mobile */
+        @media (hover: none) {
+            .parallax-layer {
+                transform: none !important;
+            }
+        }
+
+        /* --- BOUTON DE RETOUR INDEX STYLÉ --- */
+        .btn-back-index {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: rgba(1, 38, 31, 0.85); /* Forest deep transparent */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--color-surface-cream);
+            border: 1px solid rgba(255, 215, 0, 0.2); /* Glow gold léger */
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .btn-back-index:hover {
+            background-color: var(--color-forest-deep);
+            color: var(--color-glow-gold);
+            border-color: var(--color-glow-gold);
+            transform: translateX(4px);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Bouton Absolute/Fixed pour retourner à l'index conforme au design -->
+    <a href="index.html" class="btn-back-index">
+        <span class="material-symbols-outlined fs-6">arrow_back</span>
+        Accueil
+    </a>
+
+    <!-- Firefly Container -->
+    <div id="firefly-container"></div>
+
+    <!-- Hero Section -->
+    <section class="position-relative vh-100 w-100 d-flex align-items-center overflow-hidden">
+        <div class="position-absolute inset-0 top-0 start-0 w-100 h-100 z-0">
+            <div class="position-absolute inset-0 w-100 h-100 bg-dark opacity-25 z-10" style="background-color: var(--color-forest-deep) !important;"></div>
+            <img alt="Sunset Avenue of the Baobabs" class="w-100 h-100 object-cover scale-110 parallax-layer" id="hero-bg" src="./assets/baobab2.webp" style="--parallax-speed: 0.15"/>
+        </div>
+        <div class="position-relative z-3 w-100 mx-auto px-4 px-md-5" style="max-width: 1280px;">
+            <div class="hero-title-container" style="max-width: 900px; margin-top: 5rem;">
+                <p class="font-label-caps text-glow-gold mb-3 tracking-[0.3em] opacity-75 parallax-layer" style="--parallax-speed: -0.05">ÉDITORIAL N° 01</p>
+                <h1 class="font-display text-white text-uppercase mb-4 parallax-layer" style="--parallax-speed: -0.12; font-size: calc(2.8rem + 4vw); line-height: 0.95;">
+                    L'Ame de <br/>
+                    <span class="italic font-normal ps-5 ps-md-5 d-inline-block text-lowercase" style="font-style: italic; font-weight: 400;">l'Ile</span>
+                </h1>
+                <div class="d-flex align-items-center gap-4 mt-5 reveal-on-scroll">
+                    <div class="d-none d-md-block bg-warning opacity-25" style="height: 1px; width: 128px; background-color: var(--color-glow-gold) !important;"></div>
+                    <p class="d-none d-md-block font-label-caps text-surface-cream text-opacity-75 tracking-widest mb-0">CURATÉ PAR MADAVOYAGES</p>
+                </div>
+            </div>
+        </div>
+        <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4 d-flex flex-column align-items-center gap-3 text-white text-opacity-50 z-3">
+            <span class="font-label-caps" style="font-size: 10px; letter-spacing: 0.4em;">DÉFILER</span>
+            <div style="width: 1px; height: 48px; background: linear-gradient(to bottom, var(--color-glow-gold), transparent);"></div>
+        </div>
+    </section>
+
+    <!-- Curator's Note -->
+    <section class="py-section-gap mx-auto px-4 px-md-5" style="max-width: 1280px;">
+        <div class="row g-4 g-md-5 align-items-center">
+            <div class="col-12 col-md-5 position-relative reveal-on-scroll">
+                <div class="offset-border overflow-hidden">
+                    <img alt="Portrait of a Malagasy person" class="w-100 aspect-2-3 object-cover img-fluid img-grayscale hover-grayscale-0 transition-all" style="filter: grayscale(1); transition: all 1s ease;" src="./assets/homme_beche.png" onmouseenter="this.style.filter='grayscale(0)'" onmouseleave="this.style.filter='grayscale(1)'"/>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 offset-md-1 reveal-on-scroll" style="transition-delay: 150ms">
+                <span class="font-label-caps text-ochre-earth mb-3 d-block tracking-[0.2em] parallax-layer" style="--parallax-speed: -0.04">PRÉFACE DU CONSERVATEUR</span>
+                <h2 class="font-display text-forest-deep mb-4 parallax-layer" style="--parallax-speed: -0.06; font-size: calc(1.8rem + 1.2vw); font-weight: 600;">La résonance humaine de l'île rouge.</h2>
+                <p class="font-body text-on-surface-variant mb-5" style="font-size: 18px; line-height: 28px;">
+                    Madagascar n'est pas seulement une destination ; c'est une archive vivante de la biodiversité et de la résilience humaine. Cette collection explore l'équilibre délicat entre la flore majestueuse qui définit l'horizon et les âmes vibrantes qui protègent ce paysage.
+                </p>
+                <div class="d-flex gap-5">
+                    <div>
+                        <p class="font-display text-forest-deep mb-0" style="font-size: 30px;">90%</p>
+                        <p class="font-label-caps text-uppercase text-muted mt-1" style="font-size: 10px;">Espèces Endémiques</p>
+                    </div>
+                    <div>
+                        <p class="font-display text-forest-deep mb-0" style="font-size: 30px;">18</p>
+                        <p class="font-label-caps text-uppercase text-muted mt-1" style="font-size: 10px;">Ethnies Distinctes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exhibition Gallery -->
+    <section class="bg-surface-bright py-section-gap overflow-hidden">
+        <div class="mx-auto px-4 px-md-5 mb-5 reveal-on-scroll" style="max-width: 1280px;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-4">
+                <div style="max-width: 650px;">
+                    <span class="font-label-caps text-ochre-earth mb-2 d-block tracking-[0.2em]">SALLE I : LES ÉLÉMENTS</span>
+                    <h2 class="font-display text-forest-deep mb-0" style="font-size: calc(1.8rem + 1.2vw); font-weight: 600;">Une Odyssée Curatée à travers le Sauvage.</h2>
+                </div>
+            </div>
+        </div>
+        <div class="mx-auto px-4 px-md-5" style="max-width: 1400px;">
+            <div class="row g-5">
+                <!-- Large Vertical Card -->
+                <div class="col-12 col-md-5 pt-0 pt-md-5 reveal-on-scroll">
+                    <div class="hover-reveal position-relative overflow-hidden group">
+                        <div class="overflow-hidden aspect-3-4">
+                            <img alt="Baobab Starry Night" class="w-100 h-100 object-cover" src="./assets/baobab3.webp"/>
+                        </div>
+                        <div class="overlay position-absolute inset-0 start-0 top-0 w-100 h-100 bg-gradient d-flex flex-column justify-end p-4 p-md-5 text-white" style="background: linear-gradient(to top, var(--color-forest-deep), transparent);">
+                            <span class="font-label-caps tracking-widest opacity-75 mb-2" style="font-size: 10px;">DÉSERT OCCIDENTAL</span>
+                            <h3 class="font-display mb-3" style="font-size: 2rem;">Ancêtres Cosmiques</h3>
+                            <p class="small text-white-50 mb-4" style="max-width: 280px;">Une capture temporelle de l'allée des baobabs sous la couronne céleste de la Voie Lactée.</p>
+                            <button class="btn btn-outline-light rounded-0 border-white-50 px-4 py-2 text-uppercase tracking-widest font-label-caps bg-transparent" style="font-size: 10px; width: fit-content;">CATALOGUE N° 102</button>
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex justify-between align-items-start">
+                        <div>
+                            <p class="font-label-caps text-forest-deep mb-1">MORONDAVA ÉTOILÉ</p>
+                            <p class="text-uppercase text-muted mb-0" style="font-size: 11px; letter-spacing: -0.02em;">Technique Mixte / Photographie de Nuit</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column -->
+                <div class="col-12 col-md-7 d-flex flex-column gap-5">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <div class="hover-reveal position-relative overflow-hidden group mt-0 mt-md-5 reveal-on-scroll" style="transition-delay: 100ms">
+                                <div class="overflow-hidden aspect-4-5">
+                                    <img alt="Isalo Eco Lodge" class="w-100 h-100 object-cover" src="./assets/sanctuaire_isalo.png" loading="lazy"/>
+                                </div>
+                                <div class="overlay position-absolute inset-0 start-0 top-0 w-100 h-100 d-flex align-items-center justify-content-center text-white text-center p-4 transition-all" style="background-color: rgba(1, 38, 31, 0.6); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);">
+                                    <div>
+                                        <h4 class="font-display mb-2" style="font-size: 1.5rem;">Sanctuaire de l'Isalo</h4>
+                                        <p class="font-label-caps tracking-widest mb-0" style="font-size: 9px;">LA COLLECTION DES LODGES</p>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="font-label-caps text-forest-deep mb-1">REFUGE DU CANYON</p>
+                                    <p class="text-uppercase text-muted mb-0" style="font-size: 11px;">Architecture Intégrée</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="hover-reveal position-relative overflow-hidden group reveal-on-scroll" style="transition-delay: 200ms">
+                                <div class="overflow-hidden aspect-4-5">
+                                    <img alt="Nosy Be Archipelago" class="w-100 h-100 object-cover" src="./assets/archipel_nosyBe.png" loading="lazy"/>
+                                </div>
+                                <div class="overlay position-absolute inset-0 start-0 top-0 w-100 h-100 d-flex flex-column justify-end p-4 text-white" style="background: linear-gradient(to top, rgba(1, 38, 31, 0.8), transparent);">
+                                    <h4 class="font-display mb-0" style="font-size: 1.25rem;">Le Voile Turquoise</h4>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="font-label-caps text-forest-deep mb-1">ARCHIPEL DE NOSY BE</p>
+                                    <p class="text-uppercase text-muted mb-0" style="font-size: 11px;">Étude Marine N° 05</p>
+                                end-0 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100 position-relative reveal-on-scroll" style="height: 1px; background-color: rgba(255, 215, 0, 0.2);">
+                        <div class="position-absolute top-50 start-50 translate-middle w-3 h-3 border border-warning opacity-50 rotate-45" style="width: 12px; height: 12px; transform: translate(-50%, -50%) rotate(45deg); background-color: var(--color-surface-bright); border-color: rgba(255,215,0,0.4) !important;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Expansion -->
+    <section class="bg-surface py-section-gap overflow-hidden position-relative" style="z-index: 10;">
+        <div class="mx-auto px-4 px-md-5" style="max-width: 1280px;">
+            <div class="mb-5 reveal-on-scroll" style="max-width: 850px;">
+                <span class="font-label-caps text-ochre-earth mb-3 d-block tracking-[0.3em]">EXPANSION DE LA GALERIE</span>
+                <h2 class="font-display text-forest-deep mb-4 parallax-layer" style="--parallax-speed: -0.05; font-size: calc(2rem + 1.5vw); font-weight: 600;">L'Âme de l'Île en Lumière</h2>
+                <p class="font-body text-on-surface-variant" style="font-size: 18px; line-height: 28px; max-width: 650px;">
+                    Chaque cliché est un souffle, une rencontre suspendue entre la terre rouge et l'horizon infini. Explorez les récits silencieux de Madagascar.
+                </p>
+            </div>
+            
+            <div class="mb-5 overflow-hidden group reveal-on-scroll">
+                <div class="overflow-hidden aspect-21-9 position-relative">
+                    <img alt="Route Nationale 7 Panorama" class="w-100 h-100 object-cover transition-all parallax-layer" style="transition: transform 1s ease;" loading="lazy" src="./assets/rn7.webp" style="--parallax-speed: 0.1" onmouseenter="this.style.transform='scale(1.05)'" onmouseleave="this.style.transform='scale(1)'"/>
+                    <div class="position-absolute bottom-0 start-0 p-4 p-md-5 text-white">
+                        <p class="font-label-caps tracking-widest opacity-75 mb-1" style="font-size: 10px;">LA ROUTE OUVERTE</p>
+                        <h3 class="font-display" style="font-size: 1.75rem;">Route Nationale 7</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-12 col-md-6 space-y-4 reveal-on-scroll">
+                    <div class="aspect-4-5 overflow-hidden border-0 mb-3" style="filter: grayscale(1); transition: all 1s ease;" onmouseenter="this.style.filter='grayscale(0)'" onmouseleave="this.style.filter='grayscale(1)'">
+                        <img loading="lazy" alt="Endemic Wildlife" class="w-100 h-100 object-cover" src="./assets/beautiful-chameleon-branch.webp"/>
+                    </div>
+                    <div>
+                        <p class="font-label-caps text-forest-deep mb-1">CHRONIQUES DE LA FAUNE</p>
+                        <p class="text-uppercase text-muted mb-0" style="font-size: 11px;">Étude des Espèces Endémiques</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 space-y-4 mt-0 mt-md-5 reveal-on-scroll" style="transition-delay: 200ms">
+                    <div class="aspect-4-5 overflow-hidden border-0 mb-3" style="filter: grayscale(1); transition: all 1s ease;" onmouseenter="this.style.filter='grayscale(0)'" onmouseleave="this.style.filter='grayscale(1)'">
+                        <img loading="lazy" alt="Endemic Flora" class="w-100 h-100 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApMjkz1FM46J9NPsMPqp1Q5b9b2C3NmEL1Bl5kQ1I-qCfrLDJbUy6mbdAl3l4FM2Dw7rW27SNZcySCLDMrpK9B7Z-UqkkvkXWXF9-EINYkKGSgH2odyLXp6RXMOwwexhLl_3D_JrH1rsEwrPO0b68hZ7TEsdNH3v0XdADtAyl6iKndxznPICIu-tNe_EM3nP2M00hjcnXSwbL7Rxf8iCyqhwnbAloP4ZW4AkuTZsJAhyXSMjVOhfKfKMT_MMsV8vohKJTHqbBVTtA"/>
+                    </div>
+                    <div>
+                        <p class="font-label-caps text-forest-deep mb-1">PATRIMOINE BOTANIQUE</p>
+                        <p class="text-uppercase text-muted mb-0" style="font-size: 11px;">Flore Rare de la Forêt Tropicale</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mx-auto reveal-on-scroll" style="max-width: 1000px; margin-top: 5rem;">
+                <div class="row g-4 g-md-5 align-items-center">
+                    <div class="col-12 col-md-7">
+                        <div class="offset-border overflow-hidden">
+                            <img loading="lazy" alt="Malagasy People and Travelers" class="w-100 aspect-4-3 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaIY13VCQHPAzVbck0zw5dAFaXWcFgpOcur6Y3AAqUt0JWXV4zp5FtHIDVGCREoNnX4ivVuRD4LzNp_qDUSA7thGak_1qOxSWjq281n84KNQjJoWt3ByU3UijaXyXGYe8cMYICDgcv2BYxxdfCGUP5cieaei36sX7G6nehd2xpleeGglpvquwBg7Lq_mYQBWqtUzMjN_ejq6q8WvkJZE6g3IDo6ZmFHur7gsoEJ3DwyiY5hA8xSOJcyZBk13UIzFgoUs3n3QV3rzc"/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 offset-md-1 reveal-on-scroll" style="transition-delay: 200ms">
+                        <h3 class="font-display text-forest-deep mb-4" style="font-size: 1.75rem; font-weight: 600;">Connexions Humaines</h3>
+                        <p class="font-body text-on-surface-variant mb-4">
+                            Des interactions authentiques au cœur des marchés locaux, où le véritable esprit de l'hospitalité malgache brille à travers chaque sourire.
+                        </p>
+                        <div class="bg-warning opacity-50" style="height: 1px; width: 80px; background-color: var(--color-glow-gold) !important;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-surface-bright dark-footer w-full" style="border-top: 1px solid rgba(255, 215, 0, 0.1);">
+        <!-- Styles d'arrière-plan adaptatifs pour reproduire le dark:bg-forest-deep de Tailwind -->
+        <style>
+            @media (prefers-color-scheme: dark) {
+                .dark-footer { background-color: var(--color-forest-deep) !important; color: var(--color-surface-cream) !important; }
+                .dark-footer a, .dark-footer p { color: rgba(251, 249, 245, 0.6) !important; }
+            }
+        </style>
+        <div class="mx-auto px-4 px-md-5 py-4" style="max-width: 1280px;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                <div class="font-display text-forest-deep mb-3 mb-md-0" style="font-size: 1.5rem; font-weight: 600;">
+                    MADAVOYAGES
+                </div>
+                <div class="d-flex gap-4 font-label-caps mb-3 mb-md-0" style="font-size: 10px; letter-spacing: 0.2em;">
+                    <a class="text-on-surface-variant opacity-75 text-decoration-none hover-text-ochre transition-all" href="#" style="transition: color 0.3s ease;">CONFIDENTIALITÉ</a>
+                    <a class="text-on-surface-variant opacity-75 text-decoration-none hover-text-ochre transition-all" href="#" style="transition: color 0.3s ease;">CURATION</a>
+                    <a class="text-on-surface-variant opacity-75 text-decoration-none hover-text-ochre transition-all" href="#" style="transition: color 0.3s ease;">CONTACT</a>
+                </div>
+                <p class="font-label-caps text-on-surface-variant opacity-50 text-center text-md-end mb-0" style="font-size: 10px;">
+                    © 2024 MADAVOYAGES. UN VOYAGE ÉDITORIAL.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3.3 Bundle JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // 1. Optimized Scroll Tracking
+        let lastKnownScrollPosition = 0;
+        let ticking = false;
+
+        function handleScroll() {
+            lastKnownScrollPosition = window.scrollY;
+
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    document.documentElement.style.setProperty('--scroll-y', lastKnownScrollPosition);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        // 2. Intersection Observer for Smooth Entrance
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const entranceObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+            entranceObserver.observe(el);
+        });
+
+        // 3. Natural Flow Fireflies
+        const fireflyCount = 24;
+        const container = document.getElementById('firefly-container');
+
+        for (let i = 0; i < fireflyCount; i++) {
+            createFirefly();
+        }
+
+        function createFirefly() {
+            const firefly = document.createElement('div');
+            firefly.className = 'firefly';
+            firefly.style.backgroundColor = '#43655c'; 
+            container.appendChild(firefly);
+            resetFirefly(firefly, true);
+        }
+
+        function resetFirefly(el, initial = false) {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            const size = Math.random() * 1.5 + 0.5;
+            const duration = Math.random() * 10 + 10;
+            const delay = initial ? Math.random() * 10 : 0;
+
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            el.style.width = `${size}px`;
+            el.style.height = `${size}px`;
+            
+            const xMove = (Math.random() - 0.5) * 400;
+            const yMove = (Math.random() - 0.5) * 400;
+
+            el.animate([
+                { opacity: 0, transform: 'translate(0, 0) scale(1)' },
+                { opacity: 0.5, transform: `translate(${xMove / 2}px, ${yMove / 2}px) scale(1.4)`, offset: 0.5 },
+                { opacity: 0, transform: `translate(${xMove}px, ${yMove}px) scale(1)` }
+            ], {
+                duration: duration * 1000,
+                delay: delay * 1000,
+                easing: 'ease-in-out'
+            }).onfinish = () => resetFirefly(el);
+        }
+
+        // Initialize position and initial reveals
+        document.addEventListener('DOMContentLoaded', () => {
+            handleScroll();
+            // Trigger immediate visibility check for top-of-page elements
+            setTimeout(() => {
+                document.querySelectorAll('section:first-of-type .reveal-on-scroll').forEach(el => el.classList.add('active'));
+            }, 100);
+        });
+    </script>
+</body>
+</html>

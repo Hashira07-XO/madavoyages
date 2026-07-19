@@ -1,0 +1,370 @@
+<!-- views/reservations.ejs -->
+<!DOCTYPE html>
+<html lang="fr" class="h-100">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MadaVoyages | Réservation - <%= circuit.title || 'Circuit' %></title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <style>
+        :root {
+            --color-primary: #000c09;       
+            --color-secondary: #a53c19;     
+            --color-accent-green: #1b4d3e;  
+            --color-surface-cream: #fbf9f5; 
+            --color-card-bg: #fdfcfb;
+            --color-input-bg: #f5eee5;      
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+        html, body {
+            width: 100%; min-height: 100vh;
+            background-color: var(--color-surface-cream);
+            color: var(--color-primary); font-family: var(--font-body);
+        }
+        .magical-bg::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.07; pointer-events: none; z-index: -1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .font-display { font-family: var(--font-display); }
+        .label-caps { font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.15em; color: var(--color-primary); opacity: 0.8; }
+        
+        .reservation-panel { 
+            background-color: var(--color-card-bg); 
+            border: 1px solid rgba(165, 60, 25, 0.15); 
+            border-radius: 0px; 
+            box-shadow: 0 20px 50px rgba(165, 60, 25, 0.05); 
+            padding: 1.5rem; 
+            position: relative; 
+        }
+        @media (min-width: 768px) { .reservation-panel { padding: 3.5rem; } }
+
+        .ui-card-panel { 
+            background-color: #fbf9f5; 
+            border-radius: 0px; 
+            padding: 1.25rem; 
+            border: 1px solid rgba(165, 60, 25, 0.08); 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        @media (min-width: 768px) { .ui-card-panel { padding: 2.25rem; } }
+
+        .form-control-soft { background-color: var(--color-input-bg); border: 1.5px solid transparent; border-radius: 0px; padding: 14px 18px; color: var(--color-primary); font-size: 13px; font-weight: 500; transition: all 0.3s ease; }
+        .form-control-soft:focus { background-color: #fff; border-color: var(--color-secondary); box-shadow: 0 0 0 4px rgba(165, 60, 25, 0.15); outline: none; }
+        
+        .btn-premium { background-color: var(--color-secondary); color: #fff; font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.15em; padding: 16px; border-radius: 0px; border: none; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 4px 15px rgba(165, 60, 25, 0.25); display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-premium:hover:not(:disabled) { background-color: var(--color-primary); box-shadow: 0 8px 25px rgba(0, 12, 9, 0.3); transform: translateY(-1px); }
+        .btn-premium:disabled { background-color: #d1c5b4; color: #fff; opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        
+        .seat-grid-wrapper { width: 100%; display: flex; justify-content: center; padding: 15px 0; flex-grow: 1; align-items: center; overflow-x: auto; }
+        .seat-grid { display: grid; gap: 14px; margin: 0 auto; }
+        @media (min-width: 576px) { .seat-grid { gap: 18px; } }
+
+        .layout-bus { grid-template-columns: repeat(2, 46px) 24px repeat(2, 46px); min-width: 254px; }
+        .layout-4x4 { grid-template-columns: repeat(3, 50px); max-width: 190px; min-width: 186px; }
+        
+        .seat { position: relative; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); background: transparent; border: none; }
+        .seat svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .seat-number { position: relative; z-index: 2; font-size: 11px; font-weight: 700; top: -2px; }
+        
+        .seat.available { color: #f2e7d5; }
+        .seat.available .seat-number { color: var(--color-accent-green); }
+        .seat.available:hover { color: #e5d3b3; transform: scale(1.08); }
+        
+        .seat.selected { color: var(--color-secondary); transform: scale(1.1); }
+        .seat.selected .seat-number { color: #fff; }
+        .seat.occupied { color: #cbd5e1; opacity: 0.5; cursor: not-allowed; }
+        .seat.occupied .seat-number { color: #475569; text-decoration: line-through; opacity: 0.7; }
+        .seat.driver-block { color: #e2d8c5; opacity: 0.6; cursor: not-allowed; }
+        .seat.driver-block .seat-number { color: var(--color-accent-green); font-size: 8px; top: -1px; }
+        
+        .seat-spacer { visibility: hidden; }
+        .price-summary-inline { background-color: rgba(27, 77, 62, 0.04); border-radius: 0px; padding: 1.25rem; border-left: 3px solid var(--color-accent-green); }
+        .price-row { display: flex; flex-direction: column; gap: 4px; }
+        @media (min-width: 400px) { .price-row { flex-direction: row; justify-content: space-between; align-items: center; } }
+
+        .text-link-contrast { color: var(--color-secondary); font-weight: 700; text-decoration: none; }
+        .watermark-subtle { position: absolute; bottom: 1rem; right: 1rem; font-family: var(--font-display); font-size: 3rem; font-weight: 900; color: rgba(165, 60, 25, 0.03); pointer-events: none; }
+    </style>
+</head>
+<body class="magical-bg py-3 py-md-5">
+
+    <div class="container px-2 px-sm-3">
+        <a href="/circuits" class="label-caps text-link-contrast d-inline-flex align-items-center gap-2 mb-3 mb-md-4" style="font-size: 9px;">
+            <span class="material-symbols-outlined" style="font-weight: 700; font-size: 14px;">arrow_back</span> Retour aux circuits
+        </a>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-11">
+                <div class="reservation-panel">
+                    
+                    <div class="text-center mb-4">
+                        <span class="label-caps text-secondary d-block mb-1" style="font-size: 9px;">Finaliser l'évasion</span>
+                        <h1 class="font-display fw-bold h3 mb-2 text-dark">Réservation : <%= circuit.title %></h1>
+                        <p class="text-muted small mb-0" id="reservation-subtitle" style="font-size: 13px;">Sélectionnez vos places sur le plan pour configurer votre voyage.</p>
+                    </div>
+
+                    <div id="reservation-error" class="alert alert-danger d-none py-3 px-3 mb-4 small text-centerfw-semibold"></div>
+                    <div id="reservation-success" class="alert alert-success d-none py-3 px-3 mb-4 small" style="background-color: rgba(27, 77, 62, 0.1); color: var(--color-accent-green); border: 1px solid rgba(27, 77, 62, 0.2);"></div>
+
+                    <form id="reservation-form" class="row g-4">
+                        <input type="hidden" id="circuit-id" value="<%= circuit.id || circuit._id %>">
+
+                        <div class="col-12 col-lg-6">
+                            <div class="ui-card-panel">
+                                <h5 class="font-display fw-bold mb-3 h6" style="font-size: 14px; color: var(--color-accent-green);">Configuration des sièges</h5>
+                                
+                                <div class="d-flex flex-wrap gap-2 mb-3 small label-caps" id="seat-legend" style="font-size: 8px; border-bottom: 1px solid rgba(165,60,25,0.1); padding-bottom: 12px; justify-content: space-between;">
+                                    <span class="d-flex align-items-center gap-2"><div class="seat available" style="width:16px; height:16px; pointer-events:none;"></div> Disponible</span>
+                                    <span class="d-flex align-items-center gap-2"><div class="seat selected" style="width:16px; height:16px; pointer-events:none;"></div> Votre Choix</span>
+                                    <span class="d-flex align-items-center gap-2"><div class="seat occupied" style="width:16px; height:16px; pointer-events:none;"></div> Réservé</span>
+                                </div>
+                                
+                                <div class="seat-grid-wrapper">
+                                    <div id="seat-grid" class="seat-grid"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="ui-card-panel justify-content-between gap-4">
+                                <div class="d-flex flex-column gap-3">
+                                    <h5 class="font-display fw-bold h6 mb-1" style="font-size: 14px; color: var(--color-accent-green);">Détails de l'inscription</h5>
+                                    <div>
+                                        <label for="nombre-personnes" class="label-caps mb-2 d-block" style="font-size: 9px;">Nombre de places sélectionnées</label>
+                                        <input type="number" id="nombre-personnes" name="nombre_personnes" class="form-control-soft w-100" placeholder="0" readonly required>
+                                    </div>
+                                    <div>
+                                        <label for="remarques" class="label-caps mb-2 d-block" style="font-size: 9px;">Remarques ou préférences</label>
+                                        <textarea id="remarques" name="remarques" class="form-control-soft w-100" rows="3" placeholder="Exigences de placement, bagages..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-column gap-3 mt-auto">
+                                    <div class="price-summary-inline">
+                                        <div class="price-row mb-2">
+                                            <span class="small text-muted" style="font-size: 11px;">Tarif par place :</span>
+                                            <span class="fw-semibold small" style="font-size: 12px; color: var(--color-accent-green);">
+                                                <%= Number(circuit.price_ariary || 0).toLocaleString('fr-FR') %> MGA / <%= Number(circuit.price || 0).toLocaleString('fr-FR') %> €
+                                            </span>
+                                        </div>
+                                        <div class="price-row pt-2" style="border-top: 1px solid rgba(27,77,62,0.1);">
+                                            <span class="label-caps mb-0" style="font-size: 10px;">Total estimé :</span>
+                                            <div class="text-start text-sm-end">
+                                                <span class="font-display fw-bold h4 mb-0 d-block" id="total-price-display" style="color: var(--color-secondary);">0 MGA</span>
+                                                <span class="text-muted small fw-medium" id="total-euro-display" style="font-size: 11px;">(0 €)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" id="submit-btn" class="btn-premium w-100" disabled>
+                                        <span id="btn-text">Confirmer la réservation</span>
+                                        <div id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="watermark-subtle">MADA</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const siegesOccupes = <%- JSON.stringify(siegesOccupes || []) %>.map(Number);
+        const totalPlaces = parseInt("<%= circuit.capacity || 0 %>", 10); 
+        const typeTransport = "<%= circuit.type_transport || 'bus' %>".toLowerCase();
+        const unitPriceAriary = parseFloat("<%= circuit.price_ariary || 0 %>");
+        const unitPriceEuro = parseFloat("<%= circuit.price || 0 %>");
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('reservation-form');
+            const errorDiv = document.getElementById('reservation-error');
+            const successDiv = document.getElementById('reservation-success');
+            const subtitle = document.getElementById('reservation-subtitle');
+
+            // 1. BLOCAGE SI NON CONNECTÉ (Avec affichage de l'alerte Bootstrap intégrée)
+            if (!localStorage.getItem('token')) {
+                // On cache le formulaire pour éviter toute action
+                form.classList.add('d-none');
+                if(subtitle) subtitle.classList.add('d-none');
+
+                // On affiche le message d'alerte dans le conteneur existant
+                errorDiv.innerHTML = `
+                    <div class="py-2">
+                        <span class="material-symbols-outlined align-middle me-2" style="font-size: 28px;">lock</span>
+                        <strong>Accès Restreint :</strong> Vous devez être connecté pour accéder aux réservations.<br>
+                        <small class="text-muted d-block mt-2">Redirection vers la page d'inscription/connexion dans quelques instants...</small>
+                    </div>
+                `;
+                errorDiv.classList.remove('d-none');
+
+                // Redirection après 3.5 secondes
+                setTimeout(() => {
+                    window.location.href = '/register.html?redirect=' + encodeURIComponent(window.location.pathname);
+                }, 3500);
+
+                return; // On arrête complètement l'exécution du reste du script
+            }
+
+            // --- LE RESTE DU CODE S'EXÉCUTE UNIQUEMENT SI L'UTILISATEUR EST CONNECTÉ ---
+            const seatGrid = document.getElementById('seat-grid');
+            const placesChoisies = new Set();
+            const inputNombrePersonnes = document.getElementById('nombre-personnes');
+            const totalPriceDisplay = document.getElementById('total-price-display');
+            const totalEuroDisplay = document.getElementById('total-euro-display');
+            const submitBtn = document.getElementById('submit-btn');
+
+            const seatSvg = `
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M25,15 h50 a10,10 0 0,1 10,10 v10 h-70 v-10 a10,10 0 0,1 10,-10 z" fill="currentColor" opacity="0.8"/>
+                    <path d="M15,30 h70 a15,15 0 0,1 15,15 v35 a15,15 0 0,1 -15,15 h-70 a15,15 0 0,1 -15,-15 v-35 a15,15 0 0,1 15,-15 z" fill="currentColor"/>
+                    <rect x="5" y="40" width="12" height="35" rx="6" fill="currentColor" opacity="0.6"/>
+                    <rect x="83" y="40" width="12" height="35" rx="6" fill="currentColor" opacity="0.6"/>
+                </svg>`;
+
+            document.querySelectorAll('#seat-legend .seat').forEach(el => el.innerHTML = seatSvg);
+            const is4x4 = typeTransport.includes('4x4') || typeTransport.includes('prado');
+
+            if (is4x4) {
+                seatGrid.classList.add('layout-4x4');
+                const driver = document.createElement('div');
+                driver.className = 'seat driver-block';
+                driver.innerHTML = `${seatSvg}<span class="seat-number">Pilot</span>`;
+                seatGrid.appendChild(driver);
+
+                const centerSpacer = document.createElement('div');
+                centerSpacer.className = 'seat-spacer';
+                seatGrid.appendChild(centerSpacer);
+
+                creerSiegePhysique(1);
+                for (let n = 2; n <= totalPlaces; n++) { creerSiegePhysique(n); }
+            } else {
+                seatGrid.classList.add('layout-bus');
+
+                const driverSeat = document.createElement('div');
+                driverSeat.className = 'seat driver-block';
+                driverSeat.innerHTML = `${seatSvg}<span class="seat-number" style="font-size:7px;">Volant</span>`;
+                seatGrid.appendChild(driverSeat);
+
+                for (let i=0; i<3; i++) {
+                    const spacer = document.createElement('div');
+                    spacer.className = 'seat-spacer';
+                    seatGrid.appendChild(spacer);
+                }
+
+                const assistantSeat = document.createElement('div');
+                assistantSeat.className = 'seat driver-block';
+                assistantSeat.innerHTML = `${seatSvg}<span class="seat-number" style="font-size:7px;">Aide</span>`;
+                seatGrid.appendChild(assistantSeat);
+
+                const totalRows = Math.ceil(totalPlaces / 4); 
+                let seatCounter = 1;
+
+                for (let r = 0; r < totalRows; r++) {
+                    for (let col = 1; col <= 5; col++) {
+                        if (col === 3) {
+                            const spacer = document.createElement('div');
+                            spacer.className = 'seat-spacer';
+                            seatGrid.appendChild(spacer);
+                        } else {
+                            if (seatCounter <= totalPlaces) {
+                                creerSiegePhysique(seatCounter);
+                                seatCounter++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function creerSiegePhysique(idUnique) {
+                const isOccupied = siegesOccupes.includes(idUnique);
+                const seatElement = document.createElement('div');
+                seatElement.className = `seat ${isOccupied ? 'occupied' : 'available'}`;
+                seatElement.dataset.seatNumber = idUnique;
+                seatElement.innerHTML = `${seatSvg}<span class="seat-number">${idUnique}</span>`;
+
+                if (!isOccupied) {
+                    seatElement.addEventListener('click', function() {
+                        if (this.classList.contains('selected')) {
+                            this.classList.remove('selected');
+                            placesChoisies.delete(idUnique);
+                        } else {
+                            this.classList.add('selected');
+                            placesChoisies.add(idUnique);
+                        }
+                        mettreAJourFormulaire();
+                    });
+                }
+                seatGrid.appendChild(seatElement);
+            }
+
+            function mettreAJourFormulaire() {
+                const totalCount = placesChoisies.size;
+                inputNombrePersonnes.value = totalCount > 0 ? totalCount : '';
+                submitBtn.disabled = totalCount === 0;
+
+                totalPriceDisplay.textContent = `${(totalCount * unitPriceAriary).toLocaleString('fr-FR')} MGA`;
+                totalEuroDisplay.textContent = `(${(totalCount * unitPriceEuro).toLocaleString('fr-FR')} €)`;
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorDiv.classList.add('d-none');
+                successDiv.classList.add('d-none');
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    errorDiv.textContent = "Veuillez vous connecter avant de valider votre réservation.";
+                    errorDiv.classList.remove('d-none');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                document.getElementById('btn-text').textContent = "Validation...";
+                document.getElementById('btn-spinner').classList.remove('d-none');
+
+                try {
+                    const response = await fetch('/api/reservations', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            circuit_id: document.getElementById('circuit-id').value,
+                            nombre_personnes: inputNombrePersonnes.value,
+                            places_choisies: Array.from(placesChoisies),
+                            remarques: document.getElementById('remarques').value
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || "Erreur de traitement.");
+
+                    successDiv.classList.remove('d-none');
+                    successDiv.textContent = data.message;
+                    
+                    setTimeout(() => { window.location.href = '/circuits'; }, 2000);
+                } catch (err) {
+                    errorDiv.textContent = err.message;
+                    errorDiv.classList.remove('d-none');
+                    submitBtn.disabled = false;
+                } finally {
+                    document.getElementById('btn-text').textContent = "Confirmer la réservation";
+                    document.getElementById('btn-spinner').classList.add('d-none');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MadaVoyages | Réservez Votre Évasion Magique</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@200;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <style>
+        /* Variables Thématiques & Couleurs Premium */
+        :root {
+            --color-primary: #000c09;
+            --color-secondary: #a53c19;
+            --color-glow-gold: #ffd700;
+            --color-surface-cream: #fbf9f5;
+            --color-text-variant: #414846;
+            
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        /* Correctif Maître contre le bris de layout responsive */
+        html, body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            background-color: var(--color-surface-cream);
+            color: var(--color-primary);
+            font-family: var(--font-body);
+        }
+
+        body {
+            position: relative;
+        }
+
+        .text-muted {
+            color: rgba(0, 12, 9, 0.65) !important;
+        }
+
+        /* Arrière-plan Texturé & Effet de Grain */
+        .magical-bg::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: -1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Gradients de transition de sections et confinement anti-débordement */
+        section {
+            position: relative;
+            overflow: hidden !important;
+            width: 100%;
+        }
+        
+        .bg-sunset-amber { background: linear-gradient(180deg, #fbf9f5 0%, #fff4e5 100%); }
+        .bg-sunset-glow { background: linear-gradient(180deg, #fff4e5 0%, #ffe9d1 100%); }
+        .bg-sunset-warm { background: linear-gradient(180deg, #ffe9d1 0%, #fbf9f5 100%); }
+
+        /* Typographies & Utilitaires de Style */
+        .font-display { font-family: var(--font-display); }
+        .letter-magical { letter-spacing: 0.12em; }
+        .label-caps { font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.15em; }
+        .section-gap { padding-top: 100px; padding-bottom: 100px; }
+        
+        .golden-separator {
+            width: 70px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--color-glow-gold), transparent);
+            margin: 1.5rem auto;
+        }
+
+        /* --- LOGIQUE DE NAVIGATION --- */
+        .glass-nav {
+            background: rgba(251, 249, 245, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            border-bottom: 1px solid rgba(165, 60, 25, 0.08);
+            z-index: 1030;
+        }
+        
+        .custom-navbar .nav-link {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--color-primary) !important;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+        .custom-navbar .nav-link:hover {
+            color: var(--color-secondary) !important;
+        }
+        .custom-navbar .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 2px;
+            background-color: var(--color-secondary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .custom-navbar .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                position: fixed;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(251, 249, 245, 0.98) !important;
+                backdrop-filter: blur(25px);
+                -webkit-backdrop-filter: blur(25px);
+                display: none;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 1020;
+                opacity: 0;
+                transform: scale(1.02);
+                transition: opacity 0.35s ease, transform 0.35s ease;
+            }
+            .navbar-collapse.show {
+                display: flex !important;
+                opacity: 1;
+                transform: scale(1);
+            }
+            .custom-navbar .navbar-nav {
+                gap: 2rem !important;
+                text-align: center;
+                margin-bottom: 2rem !important;
+            }
+            .custom-navbar .nav-link {
+                font-family: var(--font-display);
+                font-size: 26px;
+                text-transform: none;
+                font-style: italic;
+                font-weight: 500;
+            }
+            .navbar-toggler { z-index: 1040; position: relative; }
+        }
+
+        /* Boutons */
+        .btn-premium {
+            background-color: var(--color-primary);
+            color: #fff;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            padding: 13px 32px;
+            border-radius: 50px;
+            border: none;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 4px 15px rgba(0, 12, 9, 0.15);
+            display: inline-block;
+        }
+        .btn-premium:hover {
+            background-color: var(--color-secondary);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(165, 60, 25, 0.45);
+            transform: translateY(-2px);
+        }
+
+        /* --- CIRCUITS --- */
+        .circuit-card {
+            position: relative;
+            height: 490px;
+            overflow: hidden;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+        }
+        .circuit-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .circuit-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(0, 12, 9, 0.9) 0%, rgba(0, 12, 9, 0.4) 50%, transparent 100%);
+            z-index: 1;
+            transition: background 0.4s ease;
+        }
+        .circuit-content {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            padding: 2.2rem 2rem;
+            color: #fff;
+            z-index: 2;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .circuit-description {
+            font-size: 13px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0;
+            margin-bottom: 0;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease, margin 0.5s ease;
+        }
+
+        .discover-link {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .circuit-card:hover img {
+                transform: scale(1.06);
+            }
+            .circuit-card:hover .circuit-description {
+                max-height: 80px;
+                opacity: 1;
+                margin-top: 8px;
+                margin-bottom: 12px;
+            }
+            .circuit-card:hover .discover-link {
+                color: var(--color-glow-gold) !important;
+            }
+            .circuit-card:hover .circuit-overlay {
+                background: linear-gradient(0deg, rgba(0, 12, 9, 0.95) 0%, rgba(0, 12, 9, 0.5) 60%, transparent 100%);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .circuit-card {
+                height: 440px;
+            }
+            .circuit-description {
+                max-height: none;
+                opacity: 1;
+                margin-top: 8px;
+                margin-bottom: 12px;
+                overflow: visible;
+            }
+            .discover-link {
+                color: var(--color-glow-gold) !important;
+            }
+        }
+
+        /* Container image about */
+        @media (max-width: 991.98px) {
+            .about-image-container {
+                height: 390px !important;
+                margin-top: 2rem;
+            }
+        }
+
+        /* --- FLOTTE --- */
+        .fleet-interactive-item {
+            cursor: pointer;
+            position: relative;
+            padding-left: 20px;
+            border-left: 2px solid rgba(165, 60, 25, 0.1);
+            transition: all 0.4s ease;
+        }
+        .fleet-interactive-item.active, .fleet-interactive-item:hover {
+            border-left-color: var(--color-secondary);
+            background-color: rgba(255, 244, 229, 0.4);
+            padding-left: 25px;
+        }
+        .fleet-interactive-item h5 { transition: color 0.3s ease; }
+        .fleet-interactive-item.active h5, .fleet-interactive-item:hover h5 {
+            color: var(--color-secondary) !important;
+        }
+        
+        .fleet-image-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .fleet-image-wrapper img {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease-in-out, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .fleet-image-wrapper img.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .fleet-image-wrapper:hover img.active {
+            transform: scale(1.03);
+        }
+
+        /* --- SECTION EVASION --- */
+        .evasion-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .evasion-grid {
+                grid-template-columns: repeat(4, 1fr);
+                grid-auto-rows: 280px;
+            }
+            .g-col-2 { grid-column: span 2; }
+            .g-row-2 { grid-row: span 2; }
+        }
+        .evasion-box {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+            cursor: pointer;
+        }
+        .evasion-box img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .evasion-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(0,12,9,0.85) 0%, rgba(0,12,9,0.1) 100%);
+            opacity: 0.4;
+            transition: opacity 0.4s ease;
+        }
+        .evasion-box::before {
+            content: ''; position: absolute; inset: 16px;
+            border: 1px solid var(--color-glow-gold); opacity: 0;
+            transition: opacity 0.4s ease; z-index: 3; pointer-events: none;
+        }
+        .evasion-box:hover img { transform: scale(1.04); }
+        .evasion-box:hover .evasion-overlay { opacity: 0.7; }
+        .evasion-box:hover::before { opacity: 0.6; }
+
+        /* Décors & Parallaxe */
+        .watermark-text {
+            font-family: var(--font-display);
+            font-size: 12vw; font-weight: 900;
+            color: rgba(165, 60, 25, 0.03); pointer-events: none;
+            white-space: nowrap; line-height: 1; user-select: none;
+        }
+        
+        .reveal {
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .custom-testimonial {
+            background: rgba(255, 244, 229, 0.5);
+            border-top: 4px solid rgba(165, 60, 25, 0.2) !important;
+            border: 1px solid rgba(165, 60, 25, 0.06);
+            transition: transform 0.4s ease, background-color 0.4s ease;
+        }
+        .custom-testimonial:hover {
+            transform: translateY(-4px); background: rgba(255, 244, 229, 0.85);
+            border-top-color: var(--color-secondary) !important;
+        }
+        .custom-border-warm {
+            border: 1px solid rgba(165, 60, 25, 0.1) !important;
+            background-color: rgba(255, 244, 229, 0.3) !important;
+        }
+
+        /* Lucioles */
+        .firefly-container { position: fixed; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
+        .firefly {
+            position: absolute; width: 4px; height: 4px; background: #aacec3; border-radius: 50%;
+            box-shadow: 0 0 10px #aacec3; opacity: 0; animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) translateX(0); opacity: 0; }
+            30% { opacity: 0.6; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-5vh) translateX(25px); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="magical-bg">
+
+    <!-- ARRIÈRE-PLAN CANVAS SÉCURISÉ -->
+    <div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: -2; pointer-events: none;">
+        <canvas id="shader-canvas" class="w-100 h-100 d-block"></canvas>
+    </div>
+    <div class="firefly-container" id="firefly-container"></div>
+
+    <!-- NAVIGATION -->
+    <header class="fixed-top glass-nav">
+        <nav class="navbar navbar-expand-lg custom-navbar py-2 py-lg-3">
+            <div class="container">
+                <a class="navbar-brand font-display italic letter-magical fw-bold text-dark fs-4" href="#">MadaVoyages</a>
+                <button class="navbar-toggler border-0 p-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                    <span class="material-symbols-outlined text-dark fs-2">menu</span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-4">
+                        <li class="nav-item"><a class="nav-link" href="#evasions">Nos Évasions</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#circuits">Circuits</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#a-propos">À Propos</a></li>
+                        <li class="nav-item" id="nav-auth-item"><a class="nav-link" href="#connexion">Connexion</a></li>
+                    </ul>
+                    <div class="d-grid d-lg-block mt-3 mt-lg-0">
+                        <a href="./circuits" class="btn-premium text-decoration-none text-center">Planifier mon voyage</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main style="margin-top: 70px;">
+        <!-- HERO -->
+        <section class="position-relative vh-100 d-flex align-items-center justify-content-center overflow-hidden">
+            <div class="position-absolute inset-0 w-100 h-100" style="z-index: 0;">
+                <img id="hero-bg" alt="Avenue des Baobabs" class="w-100 h-100 object-fit-cover" style="filter: brightness(0.75) contrast(1.05);" src="./assets/baobab2.webp"/>
+            </div>
+            <div class="position-relative z-1 text-center text-white px-3" style="max-width: 840px;">
+                <h1 class="font-display display-3 mb-4 letter-magical reveal active fw-bold">
+                    Découvrez Madagascar dans ce qu'elle a de plus grand
+                </h1>
+                <div class="golden-separator reveal active"></div>
+                <p class="fs-5 mb-5 reveal active font-light italic text-white-50">
+                    Des Tsingy de Bemaraha aux plages de Nosy Be, vivez une aventure exclusive au cœur de la Grande Île.
+                </p>
+                <div class="reveal active d-flex flex-column flex-sm-row justify-content-center gap-3">
+                    <a href="./circuits" class="btn btn-warning rounded-pill px-4 py-3 label-caps text-dark fw-bold bg-warning border-0 text-decoration-none">Réservez un séjour</a>
+                    <a href="#circuits" class="btn btn-outline-white border border-white text-white rounded-pill px-4 py-3 label-caps text-decoration-none">Nos Circuits</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- À PROPOS -->
+        <section id="a-propos" class="bg-sunset-amber section-gap">
+            <div class="position-absolute top-0 start-0 watermark-text text-parallax" data-speed-x="-0.2">HERITAGE</div>
+            <div class="container position-relative z-1">
+                <div class="row align-items-center g-5">
+                    <div class="col-12 col-lg-6 reveal">
+                        <span class="label-caps text-secondary mb-2 d-block">Notre Héritage</span>
+                        <h2 class="font-display display-5 text-dark fw-bold mb-4">
+                            L'âme de la Grande Île, <br/>
+                            <span class="italic text-secondary">racontée par ceux qui l'aiment.</span>
+                        </h2>
+                        <div class="border-start border-warning border-2 ps-4 my-4">
+                            <p class="fs-5 text-muted font-light mb-3">
+                                Depuis trois décennes, MadaVoyages tisse des liens indéfectibles entre les terres sauvages de Madagascar et les voyageurs en quête de sens.
+                            </p>
+                            <p class="text-muted italic small">"Chaque rencontre devient un pont entre les cultures."</p>
+                        </div>
+                        <div class="d-flex gap-5 pt-3">
+                            <div>
+                                <h3 class="font-display display-6 fw-bold mb-0">30+</h3>
+                                <span class="label-caps text-muted" style="font-size: 9px;">Années d'Excellence</span>
+                            </div>
+                            <div class="border-end border-light"></div>
+                            <div>
+                                <h3 class="font-display display-6 fw-bold mb-0">100%</h3>
+                                <span class="label-caps text-muted" style="font-size: 9px;">Ancrage Local</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 position-relative reveal about-image-container" style="height: 550px;">
+                        <div class="position-absolute top-0 end-0 w-75 shadow-lg overflow-hidden border border-white border-4 parallax-target" data-speed="0.03" style="height: 400px;">
+                            <img alt="Portrait Malagasy" class="w-100 h-100 object-fit-cover" src="./assets/dame.png" loading="lazy"/>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 w-50 shadow-lg overflow-hidden border border-white border-5 parallax-target" data-speed="-0.04" style="height: 280px; z-index: 2;">
+                            <img alt="Faune de Madagascar" class="w-100 h-100 object-fit-cover" src="./assets/maki.webp" loading="lazy"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CIRCUITS -->
+        <section id="circuits" class="bg-sunset-glow section-gap">
+            <div class="container">
+                <div class="text-center mb-5 reveal">
+                    <span class="label-caps text-secondary d-block mb-2">Expériences Uniques</span>
+                    <h2 class="font-display display-6 fw-bold text-dark">Circuits Émblematiques</h2>
+                    <div class="golden-separator"></div>
+                </div>
+                <div class="row g-4">
+                    <!-- Carte 1 -->
+                    <div class="col-12 col-md-4 reveal">
+                        <div class="circuit-card">
+                            <img alt="L'Ouest" src="./assets/baobab3.webp" loading="lazy"/>
+                            <div class="circuit-overlay"></div>
+                            <div class="circuit-content">
+                                <span class="label-caps text-warning mb-1 d-block" style="font-size: 10px;">L'Ouest</span>
+                                <h4 class="font-display mb-0 text-white">L'Allée des Géants</h4>
+                                <p class="circuit-description">Randonnée crépusculaire inoubliable au milieu des arbres sacrés séculaires.</p>
+                                <div class="d-flex align-items-center gap-2 text-white-50 discover-link">
+                                    <span>Découvrir le circuit</span>
+                                    <span class="material-symbols-outlined fs-6">add_circle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carte 2 -->
+                    <div class="col-12 col-md-4 reveal" style="transition-delay: 0.1s;">
+                        <div class="circuit-card">
+                            <img alt="Le Sud" src="./assets/fenetre_isalo.png" loading="lazy"/>
+                            <div class="circuit-overlay"></div>
+                            <div class="circuit-content">
+                                <span class="label-caps text-warning mb-1 d-block" style="font-size: 10px;">Le Sud</span>
+                                <h4 class="font-display mb-0 text-white">Sanctuaires d'Ocre</h4>
+                                <p class="circuit-description">Randonnées d'exception dans les canyons et piscines naturelles.</p>
+                                <div class="d-flex align-items-center gap-2 text-white-50 discover-link">
+                                    <span>Découvrir le circuit</span>
+                                    <span class="material-symbols-outlined fs-6">add_circle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carte 3 -->
+                    <div class="col-12 col-md-4 reveal" style="transition-delay: 0.2s;">
+                        <div class="circuit-card">
+                            <img alt="Le Nord" src="./assets/piscine_nosyBe.png" loading="lazy"/>
+                            <div class="circuit-overlay"></div>
+                            <div class="circuit-content">
+                                <span class="label-caps text-warning mb-1 d-block" style="font-size: 10px;">Le Nord</span>
+                                <h4 class="font-display mb-0 text-white">L'Archipel de Jade</h4>
+                                <p class="circuit-description">Parenthèse luxueuse entre lagons et parfums d'ylang-ylang.</p>
+                                <div class="d-flex align-items-center gap-2 text-white-50 discover-link">
+                                    <span>Découvrir le circuit</span>
+                                    <span class="material-symbols-outlined fs-6">add_circle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION FLOTTE -->
+        <section class="bg-sunset-warm section-gap">
+            <div class="position-absolute bottom-0 end-0 watermark-text text-parallax" data-speed-x="0.2">FLEET</div>
+            <div class="container position-relative z-1">
+                <div class="row align-items-center g-5">
+                    
+                    <div class="col-12 col-lg-5 order-2 order-lg-1 reveal">
+                        <div class="fleet-interactive-item active mb-4 py-3" data-target="img-bus">
+                            <h5 class="font-display text-dark mb-2">01 Bus-Brousse Prestige</h5>
+                            <p class="text-muted small mb-0">Le voyage collectif réinventé. Climatisation intégrale et confort absolu pour relier les horizons lointains de l'île.</p>
+                        </div>
+                        <div class="fleet-interactive-item py-3" data-target="img-4x4">
+                            <h5 class="font-display text-dark mb-2">02 4x4 Expédition</h5>
+                            <p class="text-muted small mb-0">Franchissez l'impossible avec nos véhicules tout-terrain préparés pour affronter sereinement les pistes les plus reculées.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-lg-7 order-1 order-lg-2 reveal">
+                        <div class="p-3 custom-border-warm shadow-lg rounded-4">
+                            <div class="fleet-image-wrapper">
+                                <img id="img-bus" alt="Bus-Brousse Prestige" class="active" src="./assets/navette.png" loading="lazy"/>
+                                <img id="img-4x4" alt="4x4 Expédition Piste" src="./assets/v8.png" loading="lazy"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ÉVASIONS -->
+        <section id="evasions" class="bg-sunset-glow section-gap">
+            <div class="container">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5 reveal">
+                    <div>
+                        <span class="label-caps text-secondary mb-2 d-block">L'instant Magique</span>
+                        <h2 class="font-display display-6 fw-bold text-dark mb-0">Capturer l'Inexprimable</h2>
+                    </div>
+                    <a href="evasion.html" class="label-caps text-dark text-decoration-none border-bottom border-warning pb-1 mt-3 mt-md-0 d-inline-flex align-items-center gap-1">
+                        Voir les évasions <span class="material-symbols-outlined fs-6">arrow_forward</span>
+                    </a>
+                </div>
+
+                <div class="evasion-grid reveal">
+                    <div class="evasion-box g-col-2 g-row-2">
+                        <img alt="Sourire Malagasy" src="./assets/dame.png" loading="lazy"/>
+                        <div class="evasion-overlay"></div>
+                    </div>
+                    <div class="evasion-box">
+                        <img alt="Lémurien sauvage" src="./assets/maki.webp" loading="lazy"/>
+                        <div class="evasion-overlay"></div>
+                    </div>
+                    <div class="evasion-box g-row-2">
+                        <img alt="Plage de Nosy Be" src="./assets/maison_nosyBe.png" loading="lazy"/>
+                        <div class="evasion-overlay"></div>
+                    </div>
+                    <div class="evasion-box">
+                        <img alt="Coucher de soleil baobabs" src="./assets/baobab1.webp" loading="lazy"/>
+                        <div class="evasion-overlay"></div>
+                    </div>
+                    
+                    <div class="g-col-2 d-flex flex-column align-items-center justify-content-center p-4 bg-dark text-center text-white text-balance">
+                        <span class="material-symbols-outlined text-warning mb-3 fs-3">auto_awesome</span>
+                        <p class="font-display fs-5 italic">"Le vrai voyage ne consiste pas à chercher de nouveaux paysages, mais à avoir de nouveaux yeux."</p>
+                    </div>
+
+                    <div class="evasion-box">
+                        <img alt="Plages" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" loading="lazy"/>
+                        <div class="evasion-overlay"></div>
+                    </div>
+                    <div class="evasion-box">
+                        <img alt="Nature locale" src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=800&q=80" loading="lazy"/>
+                        <div class="evasion-overlay"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TÉMOIGNAGES -->
+        <section class="bg-sunset-amber section-gap">
+            <div class="container">
+                <div class="text-center mb-5 reveal">
+                    <span class="label-caps text-secondary d-block mb-2">Récits de Vie</span>
+                    <h2 class="font-display display-6 fw-bold text-dark">Témoignages de Voyageurs</h2>
+                    <div class="golden-separator"></div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-12 col-md-4 reveal">
+                        <div class="p-4 h-100 rounded shadow-sm custom-testimonial">
+                            <div class="text-warning mb-3">
+                                <span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span>
+                            </div>
+                            <p class="small text-muted italic mb-4">"Une organisation sans faille pour une destination complexe. L'équipe a su nous faire découvrir des coins secrets splendides."</p>
+                            <h6 class="mb-0 small fw-bold">Hélène & Jean-Pierre</h6>
+                            <span class="label-caps text-muted" style="font-size: 8px;">Circuit Ouest & Sud</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 reveal" style="transition-delay: 0.1s;">
+                        <div class="p-4 h-100 rounded shadow-sm custom-testimonial">
+                            <div class="text-warning mb-3">
+                                <span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span>
+                            </div>
+                            <p class="small text-muted italic mb-4">"L'approche humaine fait toute la différence. On ne se sent pas comme un simple touriste, mais comme un invité privilégié."</p>
+                            <h6 class="mb-0 small fw-bold">Marc-Antoine D.</h6>
+                            <span class="label-caps text-muted" style="font-size: 8px;">Expédition Tsingy</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 reveal" style="transition-delay: 0.2s;">
+                        <div class="p-4 h-100 rounded shadow-sm custom-testimonial">
+                            <div class="text-warning mb-3">
+                                <span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span><span class="material-symbols-outlined fs-6">star</span>
+                            </div>
+                            <p class="small text-muted italic mb-4">"Un voyage magique qui change une vie. La beauté des paysages n'a d'égale que la gentillesse des malgaches."</p>
+                            <h6 class="mb-0 small fw-bold">Sophie L.</h6>
+                            <span class="label-caps text-muted" style="font-size: 8px;">Croisière Nosy Be</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION CONNEXION SCINDÉE (DYNAMIQUE) -->
+        <section id="connexion" class="bg-sunset-glow section-gap">
+            <div class="container">
+                <div class="row g-0 rounded-4 overflow-hidden shadow-lg mx-auto reveal" style="max-width: 1000px; min-height: 550px; border: 1px solid rgba(165, 60, 25, 0.08);">
+                    
+                    <!-- Colonne Gauche : Illustration stylisée -->
+                    <div class="col-12 col-md-6 d-flex flex-column justify-content-between p-4 p-lg-5 text-center position-relative" style="background-color: #f5dfcd;">
+                        <!-- Lien Retour au site -->
+                        <div class="text-start mb-4">
+                            <a href="#" class="text-decoration-none label-caps text-dark d-inline-flex align-items-center gap-2" style="font-size: 9px; letter-spacing: 0.12em;">
+                                <span class="material-symbols-outlined fs-6">arrow_back</span> RETOUR AU SITE
+                            </a>
+                        </div>
+                        
+                        <!-- Contenu SVG Baobab & Textes -->
+                        <div class="my-auto">
+                            <div class="mb-4">
+                                <svg viewBox="0 0 400 240" class="w-100 h-auto mx-auto" style="max-width: 300px;">
+                                    <path d="M 110 70 Q 116 65 122 70 Q 128 65 134 70" fill="none" stroke="#a34f2d" stroke-width="1.5" stroke-linecap="round"/>
+                                    <path d="M 260 90 Q 265 86 270 90 Q 275 86 280 90" fill="none" stroke="#a34f2d" stroke-width="1.2" stroke-linecap="round"/>
+                                    <path d="M -10 180 Q 100 150 200 175 T 410 180 L 410 240 L -10 240 Z" fill="#fdfcfb" />
+                                    <path d="M 192 180 L 192 125 Q 192 115 183 110 L 217 110 Q 208 115 208 125 L 208 180 Z" fill="#a34f2d" />
+                                    <circle cx="184" cy="105" r="20" fill="#c66746" />
+                                    <circle cx="216" cy="105" r="20" fill="#c66746" />
+                                    <circle cx="200" cy="92" r="22" fill="#c66746" />
+                                </svg>
+                            </div>
+                            
+                            <h3 class="font-display italic letter-magical fw-bold text-dark fs-3 mb-2">MadaVoyages</h3>
+                            <p class="text-muted small px-3 mx-auto" style="max-width: 290px; font-size: 11px; line-height: 1.6;">
+                                Laissez-vous guider au cœur de paysages d'exception.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Colonne Droite : Formulaire de Connexion -->
+                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center p-4 p-lg-5 bg-white" style="background-color: #fdfcfb !important;">
+                        <div style="max-width: 380px;" class="w-100 mx-auto py-3">
+                            <span class="label-caps text-secondary mb-2 d-block" style="font-size: 9px; letter-spacing: 0.15em;">ESPACE CLIENT</span>
+                            
+                            <!-- Messages d'état de connexion -->
+                            <div id="connexion-info-block" class="d-none text-center py-4">
+                                <h2 class="font-display fs-3 text-dark fw-bold mb-3">Bonjour <span id="connected-user-name"></span></h2>
+                                <p class="text-muted small mb-4">Vous êtes actuellement connecté à votre espace MadaVoyages.</p>
+                                <div class="d-grid gap-2">
+                                    <a href="./circuits" class="btn btn-outline-dark rounded-pill py-3 label-caps">Accéder à Mon Espace Voyage</a>
+                                    <a href="./admin.html" id="admin-panel-btn" class="btn btn-outline-dark rounded-pill py-2 label-caps d-none">Accéder au Panel Administrateur</a>
+                                    <button id="logout-btn" class="btn btn-danger rounded-pill py-3 label-caps fw-bold">Se déconnecter</button>
+                                </div>
+                            </div>
+
+                            <div id="connexion-form-block">
+                                <h2 class="font-display fs-3 text-dark fw-bold mb-3">Bon retour parmi nous</h2>
+                                <p class="text-muted small mb-4" style="font-size: 13px; line-height: 1.5;">Connectez-vous à votre compte pour continuer à concevoir vos voyages d'exception.</p>
+                                
+                                <div id="login-error-message" class="alert alert-danger d-none py-2 px-3 mb-3 small" role="alert" style="border-radius: 10px;"></div>
+
+                                <form id="home-login-form">
+                                    <div class="mb-3 text-start">
+                                        <label class="label-caps text-dark mb-2 d-block" style="font-size: 9px; letter-spacing: 0.12em;">ADRESSE E-MAIL</label>
+                                        <input type="email" id="login-email" name="email" class="form-control border-0 py-3 px-4 shadow-none" placeholder="nom@exemple.com" required style="background-color: #f5eee5; border-radius: 10px; font-size: 13px; color: var(--color-primary);">
+                                    </div>
+                                    <div class="mb-4 text-start">
+                                        <label class="label-caps text-dark mb-2 d-block" style="font-size: 9px; letter-spacing: 0.12em;">MOT DE PASSE</label>
+                                        <input type="password" id="login-password" name="password" class="form-control border-0 py-3 px-4 shadow-none" placeholder="••••••••" required style="background-color: #f5eee5; border-radius: 10px; font-size: 13px; color: var(--color-primary);">
+                                    </div>
+                                    
+                                    <div class="d-grid mb-4">
+                                        <button type="submit" id="login-submit-btn" class="btn-premium border-0 py-3 d-flex justify-content-center align-items-center gap-2" style="background-color: #0a1a15; border-radius: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.15em;">
+                                            <span id="login-btn-text">SE CONNECTER</span>
+                                            <div id="login-btn-spinner" class="spinner-border spinner-border-sm d-none" role="status"></div>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="text-center" style="font-size: 13px;">
+                                        <span class="text-muted">Pas encore membre ? <a href="./register.html" class="text-decoration-none fw-bold" style="color: #a53c19;">S'inscrire</a></span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white py-5 mt-auto">
+        <div class="container">
+            <div class="row g-5 mb-5">
+                <div class="col-12 col-md-6">
+                    <h3 class="font-display italic letter-magical mb-3 text-white">MadaVoyages</h3>
+                    <p class="text-white-50 small" style="max-width: 360px;">Architectes de voyages oniriques et expéditions éthiques à travers la Grande Île de Madagascar depuis 1994.</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="label-caps text-warning mb-3">Exploration</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small">
+                        <li><a href="#evasions" class="text-white-50 text-decoration-none hover-white">Destinations</a></li>
+                        <li><a href="#circuits" class="text-white-50 text-decoration-none hover-white">Expéditions</a></li>
+                        <li><a href="#a-propos" class="text-white-50 text-decoration-none hover-white">À Propos</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="label-caps text-warning mb-3">Contact</h6>
+                    <p class="text-white-50 small mb-1">Antananarivo, Madagascar</p>
+                    <p class="text-white-50 small">contact@madavoyages.mg</p>
+                </div>
+            </div>
+            <div class="pt-4 border-top border-secondary d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                <span class="text-white-50" style="font-size: 10px;">© 2026 MADAVOYAGES. TOUS DROITS RÉSERVÉS.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (function() {
+            // Setup WebGL Background Canvas
+            const canvas = document.getElementById('shader-canvas');
+            function syncSize() { if(canvas) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; } }
+            syncSize(); window.addEventListener('resize', syncSize);
+            
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (gl) {
+                const vs = `attribute vec2 pos;varying vec2 uv;void main() { uv = pos * 0.5 + 0.5; gl_Position = vec4(pos, 0.0, 1.0); }`;
+                const fs = `precision highp float;varying vec2 uv;uniform float t;void main() { float n = sin(uv.x * 5.0 + t * 0.2) * cos(uv.y * 4.0 - t * 0.1); vec3 c1 = vec3(0.01, 0.12, 0.1); vec3 c2 = vec3(0.07, 0.04, 0.12); vec3 f = mix(c1, c2, uv.y + n * 0.1); gl_FragColor = vec4(f, 0.12); }`;
+                function cs(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+                const prog = gl.createProgram(); gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs)); gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(prog); gl.useProgram(prog);
+                const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+                const posLoc = gl.getAttribLocation(prog, 'pos'); gl.enableVertexAttribArray(posLoc); gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+                const tLoc = gl.getUniformLocation(prog, 't');
+                function render(timestamp) { gl.viewport(0, 0, canvas.width, canvas.height); if (tLoc) gl.uniform1f(tLoc, timestamp * 0.001); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); requestAnimationFrame(render); }
+                render(0);
+            }
+
+            // Fireflies Effect
+            const fContainer = document.getElementById('firefly-container');
+            function addFirefly() {
+                if (fContainer.children.length > 20) return;
+                const f = document.createElement('div');
+                f.className = 'firefly'; f.style.left = Math.random() * 100 + 'vw';
+                f.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                fContainer.appendChild(f); setTimeout(() => f.remove(), 13000);
+            }
+            setInterval(addFirefly, 1000);
+
+            // Scroll Reveal
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+            // FONDU ENCHAÎNÉ DE LA FLOTTE
+            const fleetItems = document.querySelectorAll('.fleet-interactive-item');
+            fleetItems.forEach(item => {
+                const triggerAction = () => {
+                    fleetItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    const targetId = item.getAttribute('data-target');
+                    const images = document.querySelectorAll('.fleet-image-wrapper img');
+                    images.forEach(img => {
+                        if(img.id === targetId) {
+                            img.classList.add('active');
+                        } else {
+                            img.classList.remove('active');
+                        }
+                    });
+                };
+                item.addEventListener('mouseenter', triggerAction);
+                item.addEventListener('click', triggerAction);
+            });
+
+            // Parallax Scroll
+            window.addEventListener('scroll', () => {
+                const scrolled = window.scrollY;
+                const heroBg = document.getElementById('hero-bg');
+                if (heroBg) heroBg.style.transform = `scale(1.05) translateY(${scrolled * 0.2}px) translateZ(0)`;
+
+                document.querySelectorAll('.parallax-target').forEach((el) => {
+                    const speed = parseFloat(el.getAttribute('data-speed')) || 0.04;
+                    el.style.transform = `translate3d(0, ${scrolled * speed}px, 0)`;
+                });
+                document.querySelectorAll('.text-parallax').forEach((el) => {
+                    const speedX = parseFloat(el.getAttribute('data-speed-x')) || 0.08;
+                    el.style.transform = `translate3d(${scrolled * speedX}px, 0, 0)`;
+                });
+
+                const header = document.querySelector('header');
+                if (scrolled > 50) {
+                    header.style.padding = "0px"; header.style.backgroundColor = 'rgba(251, 249, 245, 0.96)';
+                } else {
+                    header.style.padding = "6px 0px"; header.style.backgroundColor = 'rgba(251, 249, 245, 0.92)';
+                }
+            });
+
+            // Fermeture auto du menu mobile
+            const navbarCollapse = document.getElementById('mainNavbar');
+            const mobileLinks = document.querySelectorAll('.custom-navbar .nav-link, .custom-navbar .btn-premium');
+            
+            if (typeof bootstrap !== 'undefined' && navbarCollapse) {
+                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navbarCollapse, { toggle: false });
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
+                            bsCollapse.hide();
+                        }
+                    });
+                });
+            }
+
+            /* ==========================================
+               GESTION ET INTÉGRATION DE L'AUTHENTIFICATION
+               ========================================== */
+            const navAuthItem = document.getElementById('nav-auth-item');
+            const connexionFormBlock = document.getElementById('connexion-form-block');
+            const connexionInfoBlock = document.getElementById('connexion-info-block');
+            const connectedUserName = document.getElementById('connected-user-name');
+            const adminPanelBtn = document.getElementById('admin-panel-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+
+            function updateAuthUI() {
+                const token = localStorage.getItem('token');
+                const userRaw = localStorage.getItem('user');
+
+                if (token && userRaw) {
+                    const user = JSON.parse(userRaw);
+                    
+                    if (navAuthItem) {
+                        navAuthItem.innerHTML = `<a class="nav-link" href="./circuits" style="color: var(--color-secondary) !important;">Mon Espace</a>`;
+                    }
+
+                    if (connexionFormBlock && connexionInfoBlock) {
+                        connexionFormBlock.classList.add('d-none');
+                        connexionInfoBlock.classList.remove('d-none');
+                        if (connectedUserName) connectedUserName.textContent = `${user.prenom} ${user.nom}`;
+                        
+                        if (user.role === 'admin' && adminPanelBtn) {
+                            adminPanelBtn.classList.remove('d-none');
+                        } else if (adminPanelBtn) {
+                            adminPanelBtn.classList.add('d-none');
+                        }
+                    }
+                } else {
+                    if (navAuthItem) {
+                        navAuthItem.innerHTML = `<a class="nav-link" href="#connexion">Connexion</a>`;
+                    }
+                    if (connexionFormBlock && connexionInfoBlock) {
+                        connexionFormBlock.classList.remove('d-none');
+                        connexionInfoBlock.classList.add('d-none');
+                    }
+                }
+            }
+
+            updateAuthUI();
+
+            const homeLoginForm = document.getElementById('home-login-form');
+            const loginSubmitBtn = document.getElementById('login-submit-btn');
+            const loginBtnText = document.getElementById('login-btn-text');
+            const loginBtnSpinner = document.getElementById('login-btn-spinner');
+
+            if (homeLoginForm) {
+                homeLoginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const errorDiv = document.getElementById('login-error-message');
+                    errorDiv.classList.add('d-none');
+
+                    const email = document.getElementById('login-email').value.trim();
+                    const password = document.getElementById('login-password').value;
+
+                    if (loginSubmitBtn && loginBtnSpinner && loginBtnText) {
+                        loginSubmitBtn.disabled = true;
+                        loginBtnSpinner.classList.remove('d-none');
+                        loginBtnText.textContent = "CONNEXION EN COURS...";
+                    }
+
+                    try {
+                        const response = await fetch('/api/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password })
+                        });
+
+                        const data = await response.json();
+                        if (!response.ok) throw new Error(data.error || "Une erreur est survenue.");
+
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+
+                        updateAuthUI();
+                        
+                        if (data.user.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'circuits';
+                        }
+                    } catch (err) {
+                        errorDiv.textContent = err.message;
+                        errorDiv.classList.remove('d-none');
+                    } finally {
+                        if (loginSubmitBtn && loginBtnSpinner && loginBtnText) {
+                            loginSubmitBtn.disabled = false;
+                            loginBtnSpinner.classList.add('d-none');
+                            loginBtnText.textContent = "SE CONNECTER";
+                        }
+                    }
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    updateAuthUI();
+                    window.location.reload();
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
