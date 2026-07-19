@@ -45,7 +45,7 @@ export const register = async (req, res) => {
                         'content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                        sender: { name: "MadaVoyages", email: " " }, // Ton adresse Gmail validée Brevo
+                        sender: { name: "MadaVoyage", email: "sedrandrianarison@gmail.com" }, // Ton adresse Gmail validée Brevo
                         to: [{ email: email, name: `${prenom} ${nom}` }], 
                         subject: "Vérifiez votre compte MadaVoyages",
                         htmlContent: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
