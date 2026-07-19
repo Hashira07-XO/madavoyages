@@ -217,8 +217,8 @@
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 16px;
-            box-shadow: 0 2px 14px rgba(5, 22, 19, 0.02);
-            border: 1px solid rgba(5, 22, 19, 0.04);
+            box-shadow: 0 4px 16px rgba(5, 22, 19, 0.04);
+            border: 1px solid rgba(5, 22, 19, 0.06);
         }
 
         .seat-badge-container { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -227,14 +227,21 @@
         @media (max-width: 991.98px) {
             .table-responsive-desktop { display: none !important; }
             .mobile-card-flow { display: block; }
-            .custom-tabs { gap: 0.5rem; justify-content: space-between; }
-            .nav-link-custom { font-size: 12px; padding: 0.75rem 4px; flex: 1; text-align: center; }
+            .custom-tabs { gap: 0.5rem; justify-content: space-between; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+            .nav-link-custom { font-size: 13px; padding: 0.75rem 8px; flex: none; text-align: center; }
             .title-section { flex-direction: column; align-items: flex-start !important; gap: 1.25rem; }
             .btn-add-circuit { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
+
+    <!-- SCRIPT DE PING AUTH IMMÉDIAT -->
+    <script>
+        if (!localStorage.getItem('token')) {
+            window.location.href = '/admin-login.html';
+        }
+    </script>
 
     <!-- NAVBAR -->
     <nav class="admin-navbar">
@@ -302,7 +309,7 @@
                         </tr>
                     </thead>
                     <tbody id="circuits-tbody">
-                        <!-- Rempli par JavaScript -->
+                        <!-- Dynamique -->
                     </tbody>
                 </table>
             </div>
@@ -334,7 +341,7 @@
                         </tr>
                     </thead>
                     <tbody id="reservations-tbody">
-                        <!-- Rempli par JavaScript -->
+                        <!-- Dynamique -->
                     </tbody>
                 </table>
             </div>
@@ -363,7 +370,7 @@
                         </tr>
                     </thead>
                     <tbody id="users-tbody">
-                        <!-- Rempli par JavaScript -->
+                        <!-- Dynamique -->
                     </tbody>
                 </table>
             </div>
@@ -378,7 +385,7 @@
             <div class="modal-content" style="border-radius: 16px;">
                 <div class="modal-header border-0 px-4 pt-4">
                     <h5 class="font-display fw-bold fs-4 mb-0" id="circuitModalLabel">Ajouter un Circuit</h5>
-                    <button type="button" class="btn-close" data-bs-sound="dismiss" data-bs-target="#circuitModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="circuitForm" onsubmit="saveCircuit(event)">
                     <input type="hidden" id="form-circuit-id">
@@ -444,18 +451,12 @@
     <!-- SCRIPTS DE SYNCRONISATION DYNAMIQUE -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        if (!localStorage.getItem('token')) {
-            window.location.href = '/admin-login.html'; // Ajuste le chemin vers ta page de login
-        }
-        // Extraction du Token JWT stocké lors du login (Adapte si tu le stockes dans les cookies)
         const token = localStorage.getItem('token') || '';
 
-        // Headers globaux réutilisables pour les requêtes sécurisées
         const getHeaders = () => ({
             'Authorization': `Bearer ${token}`
         });
 
-        // Au chargement initial de la page
         document.addEventListener("DOMContentLoaded", () => {
             loadCircuits();
             loadReservations();
@@ -476,12 +477,11 @@
         }
 
         /* ==========================================================================
-           1. CHARGEMENT & OPÉRATIONS DES CIRCUITS (circuitController)
+           1. CHARGEMENT & OPÉRATIONS DES CIRCUITS (POST, PUT, DELETE sécurisés)
            ========================================================================== */
         async function loadCircuits() {
             try {
-                // Route GET /api/circuits?all=true pour voir tous les circuits, même inactifs
-                const response = await fetch('/api/circuits?all=true');
+                const response = await fetch('/api/circuits?all=true', { headers: getHeaders() });
                 const resData = await response.json();
                 if (!resData.success) return;
 
@@ -517,29 +517,33 @@
                         </tr>
                     `;
 
-                    // Template Mobile
+                    // Template Mobile Premium
                     mobileFlow.innerHTML += `
                         <div class="mobile-item-card">
-                            <div class="d-flex gap-3 align-items-start mb-3">
-                                <img src="${fallbackImg}" alt="Circuit" style="width: 75px; height: 55px; object-fit: cover; border-radius: 8px;"/>
+                            <div class="d-flex gap-3 align-items-center mb-3">
+                                <img src="${fallbackImg}" alt="Circuit" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;"/>
                                 <div class="flex-grow-1">
-                                    ${statusBadge}
-                                    <h4 class="fw-bold mb-0 mt-1" style="font-size: 14px; color: var(--color-primary);">${c.title}</h4>
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h4 class="fw-bold mb-0 text-dark" style="font-size: 15px; max-width: 70%;">${c.title}</h4>
+                                        ${statusBadge}
+                                    </div>
+                                    <div class="text-muted small mt-1"><span class="material-symbols-outlined align-middle fs-6" style="font-size:14px;">calendar_month</span> ${dateDepart}</div>
                                 </div>
                             </div>
-                            <div class="row g-2 py-2 my-2 bg-light px-2 rounded border-0" style="font-size: 12px;">
+                            <div class="row g-2 py-2 my-2 bg-light px-2 rounded-3 border-0" style="font-size: 13px;">
                                 <div class="col-6">
-                                    <span class="text-muted d-block small" style="font-size: 9px; font-weight:700;">TARIF</span>
+                                    <span class="text-muted d-block small mb-1" style="font-size: 9px; font-weight:700; letter-spacing:0.05em;">TARIF</span>
                                     <strong class="text-dark">${parseFloat(c.price).toLocaleString()} €</strong>
+                                    <div class="text-muted small" style="font-size:10px;">${parseInt(c.price_ariary).toLocaleString()} Ar</div>
                                 </div>
                                 <div class="col-6">
-                                    <span class="text-muted d-block small" style="font-size: 9px; font-weight:700;">LOGISTIQUE</span>
-                                    <span class="fw-semibold text-dark">${c.capacity} pl.</span> • ${dateDepart}
+                                    <span class="text-muted d-block small mb-1" style="font-size: 9px; font-weight:700; letter-spacing:0.05em;">LOGISTIQUE</span>
+                                    <span class="fw-semibold text-dark">${c.capacity} places max</span>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-end gap-2 mt-3">
-                                <button onclick="openEditModal(${c.id})" class="btn btn-sm btn-light border px-3 py-2" style="font-size: 11px; font-weight: 700; border-radius: 20px;">Modifier</button>
-                                <button onclick="deleteCircuit(${c.id})" class="btn btn-sm btn-outline-danger px-3 py-2" style="font-size: 11px; font-weight: 700; border-radius: 20px;">Supprimer</button>
+                            <div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
+                                <button onclick="openEditModal(${c.id})" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1.5" style="font-size: 11px; font-weight: 600;">Modifier</button>
+                                <button onclick="deleteCircuit(${c.id})" class="btn btn-sm btn-danger rounded-pill px-3 py-1.5" style="font-size: 11px; font-weight: 600; background-color: var(--color-secondary);">Supprimer</button>
                             </div>
                         </div>
                     `;
@@ -557,7 +561,7 @@
 
         async function openEditModal(id) {
             try {
-                const response = await fetch(`/api/circuits/${id}`);
+                const response = await fetch(`/api/circuits/${id}`, { headers: getHeaders() });
                 const resData = await response.json();
                 if(!resData.success) return;
 
@@ -586,7 +590,6 @@
             event.preventDefault();
             const id = document.getElementById('form-circuit-id').value;
             
-            // On passe par un FormData car le contrôleur utilise Multer pour gérer l'image (Vercel Blob)
             const formData = new FormData();
             formData.append('title', document.getElementById('form-title').value);
             formData.append('description', document.getElementById('form-description').value);
@@ -608,9 +611,11 @@
             const method = id ? 'PUT' : 'POST';
 
             try {
+                // AJUSTEMENT : Envoi impératif du jeton d'authentification pour POST et PUT
                 const response = await fetch(url, {
                     method: method,
-                    body: formData // Pas de Content-Type header, le navigateur s'en charge avec le boundary de multipart
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData 
                 });
                 const data = await response.json();
                 if(data.success) {
@@ -627,7 +632,11 @@
         async function deleteCircuit(id) {
             if(!confirm("Voulez-vous vraiment supprimer définitivement ce circuit ?")) return;
             try {
-                const response = await fetch(`/api/circuits/${id}`, { method: 'DELETE' });
+                // AJUSTEMENT : Injection du header Authorization manquant pour le DELETE
+                const response = await fetch(`/api/circuits/${id}`, { 
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
                 const data = await response.json();
                 if(data.success) loadCircuits();
             } catch(err) {
@@ -637,16 +646,13 @@
 
 
         /* ==========================================================================
-           2. CHARGEMENT DES RÉSERVATIONS (ReservationController)
+           2. CHARGEMENT & OPÉRATIONS DES RÉSERVATIONS
            ========================================================================== */
         async function loadReservations() {
             try {
-                // Remplacement par ton endpoint d'administration des réservations globales si existant.
-                // Ici configuré pour consommer l'historique ou le flux global des réservations.
                 const response = await fetch('/api/reservations/admin-flux', { headers: getHeaders() });
-                if (response.status === 404) {
-                    // Fallback informatif si l'endpoint admin global n'est pas encore finalisé
-                    document.getElementById('reservations-tbody').innerHTML = `<tr><td colspan="6" class="text-center text-muted">Créez un endpoint global GET /api/reservations/admin-flux pour lister l'ensemble des requêtes.</td></tr>`;
+                if (!response.ok) {
+                    document.getElementById('reservations-tbody').innerHTML = `<tr><td colspan="6" class="text-center text-muted">Erreur ou flux indisponible.</td></tr>`;
                     return;
                 }
                 const reservations = await response.json();
@@ -663,6 +669,7 @@
                     if(r.statut === 'confirme') { badgeClass = 'active'; statusLabel = 'Validé'; }
                     if(r.statut === 'annule') { badgeClass = 'cancelled'; statusLabel = 'Annulé'; }
 
+                    // Desktop Table
                     tbody.innerHTML += `
                         <tr>
                             <td>
@@ -686,6 +693,32 @@
                             </td>
                         </tr>
                     `;
+
+                    // Mobile Cards Premium (Fix rendu vide ou médiocre)
+                    mobileFlow.innerHTML += `
+                        <div class="mobile-item-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <strong class="text-dark" style="font-size:15px;">Réservation RES-${r.id}</strong>
+                                    <span class="text-muted small d-block">ID Compte : #${r.user_id}</span>
+                                </div>
+                                <span class="badge-status ${badgeClass}">${statusLabel}</span>
+                            </div>
+                            <div class="text-secondary small mb-2"><strong>Circuit ciblé :</strong> Voyage #${r.circuit_id}</div>
+                            <div class="mb-3">
+                                <span class="text-muted small d-block mb-1">Sièges assignés (${r.nombre_personnes} pers.) :</span>
+                                <div class="seat-badge-container">${tags}</div>
+                            </div>
+                            ${r.remarques ? `<div class="p-2 bg-light rounded text-muted small mb-3 italic">"${r.remarques}"</div>` : ''}
+                            
+                            ${r.statut === 'en_attente' ? `
+                                <div class="d-flex gap-2 justify-content-end border-top pt-3">
+                                    <button onclick="updateReservationStatus(${r.id}, 'confirme')" class="btn btn-sm btn-success rounded-pill px-4 py-1.5" style="font-size:12px; font-weight:600;">Accepter</button>
+                                    <button onclick="updateReservationStatus(${r.id}, 'annule')" class="btn btn-sm btn-outline-danger rounded-pill px-4 py-1.5" style="font-size:12px; font-weight:600;">Rejeter</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
                 });
             } catch (err) {
                 console.error(err);
@@ -694,7 +727,6 @@
 
         async function updateReservationStatus(id, newStatus) {
             try {
-                // Route adaptée à la volée sur ton architecture REST
                 const response = await fetch(`/api/reservations/${id}/statut-admin`, {
                     method: 'PUT',
                     headers: { ...getHeaders(), 'Content-Type': 'application/json' },
@@ -706,11 +738,10 @@
 
 
         /* ==========================================================================
-           3. GESTION DES UTILISATEURS (userController)
+           3. CHARGEMENT & OPÉRATIONS DES UTILISATEURS
            ========================================================================== */
         async function loadUsers() {
             try {
-                // GET /api/users (Géré par userController.apiGetAllUsers)
                 const response = await fetch('/api/users', { headers: getHeaders() });
                 const resData = await response.json();
                 if (!resData.success) return;
@@ -726,6 +757,7 @@
                     if(u.role === 'admin') roleClass = 'active';
                     if(u.role === 'banni') roleClass = 'cancelled';
 
+                    // Desktop Table
                     tbody.innerHTML += `
                         <tr>
                             <td><div class="fw-bold text-dark">${u.nom || 'Utilisateur'} ${u.prenom || ''}</div></td>
@@ -744,6 +776,27 @@
                             </td>
                         </tr>
                     `;
+
+                    // Mobile Cards Premium (Fix rendu vide ou médiocre)
+                    mobileFlow.innerHTML += `
+                        <div class="mobile-item-card">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-dark" style="font-size:15px;">${u.nom || 'Compte'} ${u.prenom || ''}</strong>
+                                <span class="badge-status ${roleClass}">${u.role}</span>
+                            </div>
+                            <div class="text-muted small font-monospace mb-3">${u.email}</div>
+                            
+                            <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                                ${u.role !== 'admin' && u.role !== 'banni' ? `
+                                    <button onclick="changeUserRole(${u.id}, 'admin')" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1.5" style="font-size:11px; font-weight:600;">Rendre Admin</button>
+                                    <button onclick="changeUserRole(${u.id}, 'banni')" class="btn btn-sm btn-danger rounded-pill px-3 py-1.5" style="font-size:11px; font-weight:600;">Bannir</button>
+                                ` : ''}
+                                ${u.role === 'banni' ? `
+                                    <button onclick="changeUserRole(${u.id}, 'client')" class="btn btn-sm btn-light border rounded-pill px-3 py-1.5" style="font-size:11px; font-weight:600;">Réhabiliter</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
                 });
             } catch (err) {
                 console.error(err);
@@ -752,13 +805,9 @@
 
         async function changeUserRole(id, targetRole) {
             try {
-                // PUT /api/users/:id/role (Géré par userController.apiUpdateUserRole)
                 const response = await fetch(`/api/users/${id}/role`, {
                     method: 'PUT',
-                    headers: {
-                        ...getHeaders(),
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { ...getHeaders(), 'Content-Type': 'application/json' },
                     body: JSON.stringify({ role: targetRole })
                 });
                 const data = await response.json();
