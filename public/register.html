@@ -319,6 +319,31 @@
 
             let isLogin = false;
 
+            // Si l'utilisateur arrive ici via le lien de vérification e-mail
+            // (redirection faite par authController.verifyEmail), on bascule
+            // automatiquement sur le formulaire de connexion avec un message clair.
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('verified') === 'true') {
+                isLogin = true;
+                formTitle.textContent = "Ravi de vous revoir !";
+                formSubtitle.textContent = "Saisissez vos identifiants pour planifier ou suivre vos évasions.";
+                toggleText.textContent = "Nouveau voyageur ?";
+                toggleBtn.textContent = "Créer un compte";
+                btnText.textContent = "Se connecter";
+                actionType.value = "login";
+                signupFields.classList.add('d-none');
+                forgotPasswordLink.classList.remove('d-none');
+                nomInput.removeAttribute('required');
+                prenomInput.removeAttribute('required');
+
+                const successDiv = document.getElementById('auth-success-message');
+                successDiv.textContent = "Votre e-mail a été vérifié avec succès ! Vous pouvez maintenant vous connecter.";
+                successDiv.classList.remove('d-none');
+
+                // Nettoie l'URL pour éviter que le message ne réapparaisse au refresh
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', (e) => {
                     e.preventDefault();

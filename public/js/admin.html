@@ -4,22 +4,22 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>MadaVoyages | Panel Administration</title>
-
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
     <style>
         :root {
-            --color-primary: #051613;
-            --color-secondary: #b5431c;
-            --color-soft-peach: #ffe5c9;
-            --color-surface-cream: #faf7f2;
-            --color-input-bg: #f5f0e6;
+            --color-primary: #051613;       
+            --color-secondary: #b5431c;     
+            --color-soft-peach: #ffe5c9;    
+            --color-surface-cream: #faf7f2; 
+            --color-input-bg: #f5f0e6;      
             --color-success: #198754;
             --color-warning: #f59e0b;
             --color-danger: #dc2626;
-
+            
             --font-display: 'Playfair Display', serif;
             --font-body: 'Montserrat', sans-serif;
             --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -36,34 +36,12 @@
         .font-display { font-family: var(--font-display); }
         .label-caps { font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.14em; opacity: 0.7; }
 
-        /* --- ACCESSIBILITÉ : focus visible cohérent avec la charte --- */
-        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
-            outline: 2px solid var(--color-secondary);
-            outline-offset: 2px;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-        }
-
         /* --- NAVBAR --- */
         .admin-navbar {
             background-color: #fff;
             border-bottom: 1px solid rgba(5, 22, 19, 0.05);
             padding: 0.85rem 1.5rem;
         }
-        .brand-mark {
-            width: 34px;
-            height: 34px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--color-primary);
-            border-radius: 10px;
-            flex-shrink: 0;
-        }
-        .brand-mark svg { width: 20px; height: 20px; }
-
         .btn-outline-dark-custom {
             border: 1.5px solid var(--color-primary);
             color: var(--color-primary);
@@ -184,7 +162,6 @@
             color: var(--color-primary);
         }
         .custom-table td { padding: 18px 24px; border-bottom: 1px solid rgba(5, 22, 19, 0.04); font-size: 14px; }
-        .custom-table tbody tr:last-child td { border-bottom: none; }
 
         .circuit-img-preview { width: 68px; height: 46px; object-fit: cover; border-radius: 8px; }
 
@@ -214,7 +191,6 @@
             background: transparent;
             border: 1px solid rgba(0, 0, 0, 0.08);
             color: #64748b;
-            cursor: pointer;
         }
         .action-btn:hover { background-color: var(--color-primary); color: #fff; border-color: var(--color-primary); }
         .action-btn.btn-action-delete:hover, .action-btn.btn-action-ban:hover { background-color: var(--color-danger); border-color: var(--color-danger); }
@@ -233,68 +209,6 @@
         .seat-badge-container { display: flex; flex-wrap: wrap; gap: 4px; }
         .seat-tag { font-size: 11px; background: var(--color-input-bg); color: var(--color-primary); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
 
-        /* --- ÉTATS DE CHARGEMENT (SKELETON) --- */
-        .skeleton-bar {
-            display: inline-block;
-            height: 12px;
-            border-radius: 6px;
-            background: linear-gradient(90deg, rgba(5,22,19,0.06) 25%, rgba(5,22,19,0.12) 37%, rgba(5,22,19,0.06) 63%);
-            background-size: 400% 100%;
-            animation: skeletonPulse 1.4s ease infinite;
-        }
-        @keyframes skeletonPulse {
-            0% { background-position: 100% 50%; }
-            100% { background-position: 0 50%; }
-        }
-
-        /* --- ÉTAT VIDE : silhouette de baobab en filigrane --- */
-        .empty-state {
-            padding: 64px 24px;
-            text-align: center;
-            color: var(--color-primary);
-        }
-        .empty-state svg { width: 56px; height: 56px; opacity: 0.15; margin-bottom: 12px; }
-        .empty-state .empty-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-        .empty-state .empty-subtitle { font-size: 13px; opacity: 0.6; }
-
-        /* --- TOASTS --- */
-        #toast-stack {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: min(340px, calc(100vw - 40px));
-        }
-        .toast-item {
-            background: #fff;
-            border-radius: 12px;
-            padding: 14px 16px;
-            box-shadow: 0 8px 30px rgba(5, 22, 19, 0.16);
-            border-left: 4px solid var(--color-primary);
-            font-size: 13px;
-            font-weight: 500;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            animation: toastIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .toast-item.success { border-left-color: var(--color-success); }
-        .toast-item.error { border-left-color: var(--color-danger); }
-        .toast-item .material-symbols-outlined { font-size: 20px; }
-        .toast-item.success .material-symbols-outlined { color: var(--color-success); }
-        .toast-item.error .material-symbols-outlined { color: var(--color-danger); }
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateX(16px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        .toast-item.leaving { animation: toastOut 0.2s ease forwards; }
-        @keyframes toastOut {
-            to { opacity: 0; transform: translateX(16px); }
-        }
-
         @media (max-width: 991.98px) {
             .table-responsive-desktop { display: none !important; }
             .mobile-card-flow { display: block; }
@@ -304,31 +218,19 @@
             .title-section h2 { font-size: 22px !important; }
             .btn-add-circuit { width: 100%; justify-content: center; }
             .admin-navbar { padding: 0.75rem 1rem; }
-            #toast-stack { top: 12px; right: 12px; left: 12px; width: auto; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ZONE DE NOTIFICATIONS -->
-    <div id="toast-stack" aria-live="polite"></div>
-
     <!-- NAVBAR -->
     <nav class="admin-navbar">
         <div class="container-fluid d-flex align-items-center justify-content-between gap-2 px-0">
             <div class="d-flex align-items-center gap-2">
-                <span class="brand-mark" aria-hidden="true">
-                    <!-- Signature : silhouette de baobab, symbole du catalogue MadaVoyages -->
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 3c-3.2 0-5.6 1.9-5.6 4.3 0 1.3.9 2.1 1.9 2.1.6 0 1-.3 1.3-.7-.6.4-1.7.3-1.7-.9 0-1.4 1.7-2.4 3.4-2.4 2.1 0 3.9 1.2 3.9 2.9 0 1.1-.7 1.7-1.5 1.7-.5 0-.9-.2-1.1-.5.3.6-.1 1.1-.8 1.1-1 0-1.6-.8-1.6-1.8" stroke="#ffe5c9" stroke-width="1.3" stroke-linecap="round"/>
-                        <path d="M12 10.5V21" stroke="#ffe5c9" stroke-width="1.6" stroke-linecap="round"/>
-                        <path d="M12 14.5c-1.4 0-2.6.9-2.6 2.4M12 17c1.2 0 2.2.8 2.2 2.1" stroke="#ffe5c9" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                </span>
                 <h1 class="font-display fw-bold mb-0 fs-5">MadaVoyages</h1>
-                <span class="badge bg-light text-dark border px-2 py-1 font-monospace d-none d-sm-inline" style="font-size: 9px;">v2.2.0</span>
+                <span class="badge bg-light text-dark border px-2 py-1 font-monospace d-none d-sm-inline" style="font-size: 9px;">v2.1.0</span>
             </div>
-
+            
             <div class="d-flex align-items-center gap-2">
                 <a href="/circuits" class="btn btn-outline-dark-custom d-flex align-items-center justify-content-center p-2 rounded-circle d-inline-flex d-md-none" title="Voir le site">
                     <span class="material-symbols-outlined fs-5">visibility</span>
@@ -336,7 +238,7 @@
                 <a href="/circuits" class="btn btn-outline-dark-custom d-none d-md-flex align-items-center gap-1">
                     <span class="material-symbols-outlined fs-6">visibility</span> Voir le site
                 </a>
-
+                
                 <button onclick="handleLogout()" class="btn btn-danger-custom d-flex align-items-center justify-content-center p-2 rounded-circle d-inline-flex d-md-none" title="Déconnexion">
                     <span class="material-symbols-outlined fs-5">logout</span>
                 </button>
@@ -349,7 +251,7 @@
 
     <!-- CONTENU PRINCIPAL -->
     <main class="container-fluid py-4 px-2 px-md-5" style="max-width: 1600px;">
-
+        
         <!-- ENVELOPPE DE DEFILEMENT DES ONGLETS -->
         <div class="tabs-wrapper">
             <div class="custom-tabs">
@@ -450,7 +352,7 @@
             <div class="modal-content" style="border-radius: 16px;">
                 <div class="modal-header border-0 px-4 pt-4">
                     <h5 class="font-display fw-bold fs-4 mb-0" id="circuitModalLabel">Ajouter un Circuit</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="circuitForm" onsubmit="saveCircuit(event)">
                     <input type="hidden" id="form-circuit-id">
@@ -506,25 +408,9 @@
                     </div>
                     <div class="modal-footer border-0 p-4">
                         <button type="button" class="btn btn-light px-4 py-2" data-bs-dismiss="modal" style="border-radius:20px; font-size:12px; font-weight:700;">Annuler</button>
-                        <button type="submit" class="btn btn-dark px-4 py-2" id="circuit-submit-btn" style="border-radius:20px; font-size:12px; font-weight:700; background: var(--color-primary);">Enregistrer</button>
+                        <button type="submit" class="btn btn-dark px-4 py-2" style="border-radius:20px; font-size:12px; font-weight:700; background: var(--color-primary);">Enregistrer</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE CONFIRMATION GÉNÉRIQUE (remplace window.confirm) -->
-    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px;">
-                <div class="modal-body p-4 text-center">
-                    <span class="material-symbols-outlined mb-2" style="font-size: 40px; color: var(--color-secondary);">help</span>
-                    <p class="mb-0 fw-medium" id="confirmModalMessage">Confirmer cette action ?</p>
-                </div>
-                <div class="modal-footer border-0 p-4 pt-0 justify-content-center">
-                    <button type="button" class="btn btn-light px-4 py-2" data-bs-dismiss="modal" style="border-radius:20px; font-size:12px; font-weight:700;">Annuler</button>
-                    <button type="button" class="btn px-4 py-2" id="confirmModalAction" style="border-radius:20px; font-size:12px; font-weight:700; background: var(--color-secondary); color:#fff;">Confirmer</button>
-                </div>
             </div>
         </div>
     </div>
@@ -534,130 +420,7 @@
         const token = localStorage.getItem('token') || '';
         if (!token) window.location.href = '/admin-login.html';
 
-        /* ==========================================================================
-           AUTHENTIFICATION & RÔLE
-           ========================================================================== */
-
-        // Décodage non sécurisé du payload JWT, uniquement pour l'affichage (UX).
-        // La sécurité réelle est appliquée côté serveur via requireAdmin.
-        function getPayloadFromToken(t) {
-            try {
-                return JSON.parse(atob(t.split('.')[1]));
-            } catch (e) {
-                return null;
-            }
-        }
-
-        const payload = getPayloadFromToken(token);
-        if (!payload || payload.role !== 'admin') {
-            localStorage.removeItem('token');
-            window.location.href = '/admin-login.html';
-        }
-
         const getHeaders = () => ({ 'Authorization': `Bearer ${token}` });
-
-        // Wrapper centralisé : gère les cas token expiré (401) et accès refusé (403)
-        async function apiFetch(url, options = {}) {
-            const response = await fetch(url, {
-                ...options,
-                headers: { ...getHeaders(), ...(options.headers || {}) }
-            });
-
-            if (response.status === 401) {
-                localStorage.removeItem('token');
-                showToast("Votre session a expiré, merci de vous reconnecter.", 'error');
-                setTimeout(() => window.location.href = '/admin-login.html', 1200);
-                return null;
-            }
-
-            if (response.status === 403) {
-                showToast("Accès refusé : action réservée aux administrateurs.", 'error');
-                return null;
-            }
-
-            return response;
-        }
-
-        /* ==========================================================================
-           TOASTS & CONFIRMATION
-           ========================================================================== */
-
-        function showToast(message, type = 'success') {
-            const stack = document.getElementById('toast-stack');
-            const icon = type === 'error' ? 'error' : 'check_circle';
-
-            const el = document.createElement('div');
-            el.className = `toast-item ${type}`;
-            el.innerHTML = `
-                <span class="material-symbols-outlined">${icon}</span>
-                <span>${message}</span>
-            `;
-            stack.appendChild(el);
-
-            setTimeout(() => {
-                el.classList.add('leaving');
-                setTimeout(() => el.remove(), 200);
-            }, 3500);
-        }
-
-        function confirmAction(message, onConfirm) {
-            document.getElementById('confirmModalMessage').textContent = message;
-            const modalEl = document.getElementById('confirmModal');
-            const modal = new bootstrap.Modal(modalEl);
-            const actionBtn = document.getElementById('confirmModalAction');
-
-            const handler = () => {
-                modal.hide();
-                onConfirm();
-                actionBtn.removeEventListener('click', handler);
-            };
-            actionBtn.addEventListener('click', handler);
-            modal.show();
-        }
-
-        /* ==========================================================================
-           ÉTATS DE CHARGEMENT / VIDE (réutilisables pour les 3 tableaux)
-           ========================================================================== */
-
-        function renderSkeletonRows(tbodyId, mobileId, columns, rows = 3) {
-            const tbody = document.getElementById(tbodyId);
-            const mobile = document.getElementById(mobileId);
-            if (tbody) {
-                tbody.innerHTML = Array.from({ length: rows }).map(() => `
-                    <tr>${Array.from({ length: columns }).map(() => `
-                        <td><span class="skeleton-bar" style="width: ${40 + Math.random() * 40}%;"></span></td>
-                    `).join('')}</tr>
-                `).join('');
-            }
-            if (mobile) {
-                mobile.innerHTML = Array.from({ length: rows }).map(() => `
-                    <div class="mobile-item-card">
-                        <span class="skeleton-bar" style="width: 60%; margin-bottom:8px;"></span>
-                        <span class="skeleton-bar" style="width: 40%;"></span>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function renderEmptyState(tbodyId, mobileId, colspan, title, subtitle) {
-            const emptyMarkup = `
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 3c-3.2 0-5.6 1.9-5.6 4.3 0 1.3.9 2.1 1.9 2.1.6 0 1-.3 1.3-.7-.6.4-1.7.3-1.7-.9 0-1.4 1.7-2.4 3.4-2.4 2.1 0 3.9 1.2 3.9 2.9 0 1.1-.7 1.7-1.5 1.7-.5 0-.9-.2-1.1-.5.3.6-.1 1.1-.8 1.1-1 0-1.6-.8-1.6-1.8" stroke="#051613" stroke-width="1.3" stroke-linecap="round"/>
-                    <path d="M12 10.5V21" stroke="#051613" stroke-width="1.6" stroke-linecap="round"/>
-                    <path d="M12 14.5c-1.4 0-2.6.9-2.6 2.4M12 17c1.2 0 2.2.8 2.2 2.1" stroke="#051613" stroke-width="1.2" stroke-linecap="round"/>
-                </svg>
-                <div class="empty-title font-display">${title}</div>
-                <div class="empty-subtitle">${subtitle}</div>
-            `;
-            const tbody = document.getElementById(tbodyId);
-            const mobile = document.getElementById(mobileId);
-            if (tbody) tbody.innerHTML = `<tr><td colspan="${colspan}"><div class="empty-state">${emptyMarkup}</div></td></tr>`;
-            if (mobile) mobile.innerHTML = `<div class="empty-state">${emptyMarkup}</div>`;
-        }
-
-        /* ==========================================================================
-           NAVIGATION
-           ========================================================================== */
 
         document.addEventListener("DOMContentLoaded", () => {
             loadCircuits();
@@ -675,32 +438,18 @@
 
         function handleLogout() {
             localStorage.removeItem('token');
-            window.location.href = '/admin-login.html';
+            window.location.href = '/login'; 
         }
 
-        /* ==========================================================================
-           CIRCUITS
-           ========================================================================== */
-
         async function loadCircuits() {
-            renderSkeletonRows('circuits-tbody', 'circuits-mobile-flow', 7);
             try {
-                // Endpoint admin dédié : la route publique "/api/circuits" reste
-                // toujours filtrée sur actif=true, même avec ?all=true en query.
-                const response = await apiFetch('/api/circuits/admin/all');
-                if (!response) return;
+                const response = await fetch('/api/circuits?all=true', { headers: getHeaders() });
                 const resData = await response.json();
                 if (!resData.success) return;
 
                 const circuits = resData.data;
                 const tbody = document.getElementById('circuits-tbody');
                 const mobileFlow = document.getElementById('circuits-mobile-flow');
-
-                if (!circuits.length) {
-                    renderEmptyState('circuits-tbody', 'circuits-mobile-flow', 7, 'Aucun circuit pour le moment', 'Créez votre premier circuit pour l\'ajouter au catalogue.');
-                    return;
-                }
-
                 tbody.innerHTML = '';
                 mobileFlow.innerHTML = '';
 
@@ -722,8 +471,8 @@
                             <td>${statusBadge}</td>
                             <td class="text-end">
                                 <div class="d-flex justify-content-end gap-2">
-                                    <button class="action-btn" onclick="openEditModal(${c.id})" title="Modifier"><span class="material-symbols-outlined fs-5">edit</span></button>
-                                    <button class="action-btn btn-action-delete" onclick="deleteCircuit(${c.id})" title="Supprimer"><span class="material-symbols-outlined fs-5">delete</span></button>
+                                    <button class="action-btn" onclick="openEditModal(${c.id})"><span class="material-symbols-outlined fs-5">edit</span></button>
+                                    <button class="action-btn btn-action-delete" onclick="deleteCircuit(${c.id})"><span class="material-symbols-outlined fs-5">delete</span></button>
                                 </div>
                             </td>
                         </tr>
@@ -744,16 +493,13 @@
                                 <div>Capacité: <strong>${c.capacity} pl.</strong></div>
                             </div>
                             <div class="d-flex justify-content-end gap-2 mt-2">
-                                <button onclick="openEditModal(${c.id})" class="btn btn-sm btn-light border py-1 px-3" style="font-size:11px; font-weight:600; border-radius:20px;">Modifier</button>
-                                <button onclick="deleteCircuit(${c.id})" class="btn btn-sm btn-danger py-1 px-3" style="font-size:11px; font-weight:600; border-radius:20px; background-color:var(--color-secondary);">Supprimer</button>
+                                <button onclick="openEditModal(${c.id})" class="btn btn-sm btn-light border py-1 px-3 style-font" style="font-size:11px; font-weight:600; border-radius:20px;">Modifier</button>
+                                <button onclick="deleteCircuit(${c.id})" class="btn btn-sm btn-danger py-1 px-3 style-font" style="font-size:11px; font-weight:600; border-radius:20px; background-color:var(--color-secondary);">Supprimer</button>
                             </div>
                         </div>
                     `;
                 });
-            } catch (err) {
-                console.error(err);
-                showToast("Impossible de charger les circuits.", 'error');
-            }
+            } catch (err) { console.error(err); }
         }
 
         function openCreateModal() {
@@ -764,10 +510,9 @@
 
         async function openEditModal(id) {
             try {
-                const response = await apiFetch(`/api/circuits/${id}`);
-                if (!response) return;
+                const response = await fetch(`/api/circuits/${id}`, { headers: getHeaders() });
                 const resData = await response.json();
-                if (!resData.success) return;
+                if(!resData.success) return;
 
                 const c = resData.data;
                 document.getElementById('circuitModalLabel').innerText = "Modifier le Circuit";
@@ -784,17 +529,13 @@
                 document.getElementById('form-actif').checked = c.actif;
 
                 new bootstrap.Modal(document.getElementById('circuitModal')).show();
-            } catch (err) {
-                console.error(err);
-                showToast("Impossible de charger ce circuit.", 'error');
-            }
+            } catch (err) { console.error(err); }
         }
 
         async function saveCircuit(event) {
             event.preventDefault();
             const id = document.getElementById('form-circuit-id').value;
-            const submitBtn = document.getElementById('circuit-submit-btn');
-
+            
             const formData = new FormData();
             formData.append('title', document.getElementById('form-title').value);
             formData.append('description', document.getElementById('form-description').value);
@@ -806,90 +547,55 @@
             formData.append('date_fin_voyage', document.getElementById('form-date-fin').value);
             formData.append('date_fin_reservation', document.getElementById('form-date-cloture').value);
             formData.append('actif', document.getElementById('form-actif').checked);
-
+            
             const imageFile = document.getElementById('form-image').files[0];
             if (imageFile) formData.append('image', imageFile);
 
             const url = id ? `/api/circuits/${id}` : '/api/circuits';
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Enregistrement...';
-
+            
+            // CORRECTIF MAJEUR : On laisse l'objet Request gérer le boundary du FormData (pas de Content-Type forcé)
+            // Mais on injecte TOUJOURS le jeton d'autorisation Bearer pour que le middleware admin accepte la création
             try {
-                // Ne PAS forcer de Content-Type : le navigateur gère le boundary du FormData
-                const response = await apiFetch(url, {
+                const response = await fetch(url, {
                     method: id ? 'PUT' : 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
                 });
-                if (!response) return;
-
                 const data = await response.json();
-                if (data.success) {
+                if(data.success) {
                     bootstrap.Modal.getInstance(document.getElementById('circuitModal')).hide();
-                    showToast(id ? "Circuit mis à jour avec succès." : "Circuit créé avec succès.", 'success');
                     loadCircuits();
                 } else {
-                    showToast("Erreur : " + data.message, 'error');
+                    alert("Erreur: " + data.message);
                 }
-            } catch (err) {
-                console.error(err);
-                showToast("Une erreur réseau est survenue.", 'error');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Enregistrer';
-            }
+            } catch(err) { console.error(err); alert("Une erreur réseau est survenue."); }
         }
 
-        function deleteCircuit(id) {
-            confirmAction("Supprimer définitivement ce circuit ?", async () => {
-                try {
-                    const response = await apiFetch(`/api/circuits/${id}`, { method: 'DELETE' });
-                    if (!response) return;
-                    const data = await response.json();
-                    if (data.success) {
-                        showToast("Circuit supprimé.", 'success');
-                        loadCircuits();
-                    } else {
-                        showToast("Erreur : " + data.message, 'error');
-                    }
-                } catch (err) {
-                    console.error(err);
-                    showToast("Impossible de supprimer ce circuit.", 'error');
-                }
-            });
+        async function deleteCircuit(id) {
+            if(!confirm("Supprimer ce circuit ?")) return;
+            try {
+                const response = await fetch(`/api/circuits/${id}`, { method: 'DELETE', headers: getHeaders() });
+                const data = await response.json();
+                if(data.success) loadCircuits();
+            } catch(err) { console.error(err); }
         }
-
-        /* ==========================================================================
-           RÉSERVATIONS
-           ========================================================================== */
 
         async function loadReservations() {
-            renderSkeletonRows('reservations-tbody', 'reservations-mobile-flow', 6);
             try {
-                const response = await apiFetch('/api/reservations/admin-flux');
-                if (!response) return;
-                if (!response.ok) {
-                    showToast("Impossible de charger le flux des réservations.", 'error');
-                    return;
-                }
+                const response = await fetch('/api/reservations/admin-flux', { headers: getHeaders() });
+                if (!response.ok) return;
                 const reservations = await response.json();
 
                 const tbody = document.getElementById('reservations-tbody');
                 const mobileFlow = document.getElementById('reservations-mobile-flow');
-
-                if (!reservations.length) {
-                    renderEmptyState('reservations-tbody', 'reservations-mobile-flow', 6, 'Aucune réservation', 'Les nouvelles réservations clients apparaîtront ici.');
-                    return;
-                }
-
                 tbody.innerHTML = '';
                 mobileFlow.innerHTML = '';
 
                 reservations.forEach(r => {
-                    const tags = r.places_choisies.map(p => `<span class="seat-tag">${p < 10 ? '0' + p : p}</span>`).join('');
+                    const tags = r.places_choisies.map(p => `<span class="seat-tag">${p < 10 ? '0'+p : p}</span>`).join('');
                     let badgeClass = 'pending'; let statusLabel = 'En attente';
-                    if (r.statut === 'confirme') { badgeClass = 'active'; statusLabel = 'Validé'; }
-                    if (r.statut === 'annule') { badgeClass = 'cancelled'; statusLabel = 'Annulé'; }
+                    if(r.statut === 'confirme') { badgeClass = 'active'; statusLabel = 'Validé'; }
+                    if(r.statut === 'annule') { badgeClass = 'cancelled'; statusLabel = 'Annulé'; }
 
                     tbody.innerHTML += `
                         <tr>
@@ -900,8 +606,8 @@
                             <td><span class="badge-status ${badgeClass}">${statusLabel}</span></td>
                             <td class="text-end">
                                 ${r.statut === 'en_attente' ? `
-                                    <button onclick="updateReservationStatus(${r.id}, 'confirme')" class="action-btn btn-action-verify" title="Valider"><span class="material-symbols-outlined fs-5">check</span></button>
-                                    <button onclick="updateReservationStatus(${r.id}, 'annule')" class="action-btn btn-action-delete" title="Refuser"><span class="material-symbols-outlined fs-5">close</span></button>
+                                    <button onclick="updateReservationStatus(${r.id}, 'confirme')" class="action-btn btn-action-verify"><span class="material-symbols-outlined fs-5">check</span></button>
+                                    <button onclick="updateReservationStatus(${r.id}, 'annule')" class="action-btn btn-action-delete"><span class="material-symbols-outlined fs-5">close</span></button>
                                 ` : '-'}
                             </td>
                         </tr>
@@ -924,75 +630,50 @@
                         </div>
                     `;
                 });
-            } catch (err) {
-                console.error(err);
-                showToast("Impossible de charger le flux des réservations.", 'error');
-            }
+            } catch (err) { console.error(err); }
         }
 
         async function updateReservationStatus(id, newStatus) {
             try {
-                const response = await apiFetch(`/api/reservations/${id}/statut-admin`, {
+                const response = await fetch(`/api/reservations/${id}/statut-admin`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { ...getHeaders(), 'Content-Type': 'application/json' },
                     body: JSON.stringify({ statut: newStatus })
                 });
-                if (!response) return;
-                if (response.ok) {
-                    showToast(newStatus === 'confirme' ? "Réservation validée." : "Réservation refusée.", 'success');
-                    loadReservations();
-                } else {
-                    const data = await response.json().catch(() => ({}));
-                    showToast("Erreur : " + (data.message || "action impossible."), 'error');
-                }
-            } catch (err) {
-                console.error(err);
-                showToast("Impossible de mettre à jour cette réservation.", 'error');
-            }
+                if(response.ok) loadReservations();
+            } catch (err) { console.error(err); }
         }
 
-        /* ==========================================================================
-           UTILISATEURS
-           ========================================================================== */
-
         async function loadUsers() {
-            renderSkeletonRows('users-tbody', 'users-mobile-flow', 4);
             try {
-                const response = await apiFetch('/api/users');
-                if (!response) return;
+                const response = await fetch('/api/users', { headers: getHeaders() });
                 const resData = await response.json();
                 if (!resData.success) return;
 
                 const users = resData.data;
                 const tbody = document.getElementById('users-tbody');
                 const mobileFlow = document.getElementById('users-mobile-flow');
-
-                if (!users.length) {
-                    renderEmptyState('users-tbody', 'users-mobile-flow', 4, 'Aucun utilisateur', 'Les comptes créés sur le site apparaîtront ici.');
-                    return;
-                }
-
                 tbody.innerHTML = '';
                 mobileFlow.innerHTML = '';
 
                 users.forEach(u => {
                     let roleClass = 'neutral';
-                    if (u.role === 'admin') roleClass = 'active';
-                    if (u.role === 'banni') roleClass = 'cancelled';
+                    if(u.role === 'admin') roleClass = 'active';
+                    if(u.role === 'banni') roleClass = 'cancelled';
 
                     tbody.innerHTML += `
                         <tr>
                             <td><div class="fw-bold text-dark">${u.nom || 'Utilisateur'} ${u.prenom || ''}</div></td>
                             <td><span class="font-monospace text-muted small">${u.email}</span></td>
-                            <td><span class="badge-status ${roleClass}">${u.role || 'client'}</span></td>
+                            <td><span class="badge-status ${roleClass}">${u.role}</span></td>
                             <td class="text-end">
                                 <div class="d-flex justify-content-end gap-2">
                                     ${u.role !== 'admin' && u.role !== 'banni' ? `
-                                        <button onclick="changeUserRole(${u.id}, 'admin')" class="action-btn btn-action-verify" title="Promouvoir admin"><span class="material-symbols-outlined fs-5">shield</span></button>
-                                        <button onclick="changeUserRole(${u.id}, 'banni')" class="action-btn btn-action-ban" title="Bannir"><span class="material-symbols-outlined fs-5">gavel</span></button>
+                                        <button onclick="changeUserRole(${u.id}, 'admin')" class="action-btn btn-action-verify"><span class="material-symbols-outlined fs-5">shield</span></button>
+                                        <button onclick="changeUserRole(${u.id}, 'banni')" class="action-btn btn-action-ban"><span class="material-symbols-outlined fs-5">gavel</span></button>
                                     ` : ''}
                                     ${u.role === 'banni' ? `
-                                        <button onclick="changeUserRole(${u.id}, 'client')" class="action-btn" title="Réhabiliter"><span class="material-symbols-outlined fs-5">settings_backup_restore</span></button>
+                                        <button onclick="changeUserRole(${u.id}, 'client')" class="action-btn"><span class="material-symbols-outlined fs-5">settings_backup_restore</span></button>
                                     ` : ''}
                                 </div>
                             </td>
@@ -1003,7 +684,7 @@
                         <div class="mobile-item-card">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="fw-bold text-dark small">${u.nom || 'Client'} ${u.prenom || ''}</span>
-                                <span class="badge-status ${roleClass}">${u.role || 'client'}</span>
+                                <span class="badge-status ${roleClass}">${u.role}</span>
                             </div>
                             <div class="text-muted font-monospace mb-2" style="font-size:11px;">${u.email}</div>
                             <div class="d-flex justify-content-end gap-2 mt-2 pt-2 border-top">
@@ -1018,34 +699,19 @@
                         </div>
                     `;
                 });
-            } catch (err) {
-                console.error(err);
-                showToast("Impossible de charger les utilisateurs.", 'error');
-            }
+            } catch (err) { console.error(err); }
         }
 
-        function changeUserRole(id, targetRole) {
-            const labels = { admin: 'promouvoir administrateur', banni: 'bannir', client: 'réhabiliter en client' };
-            confirmAction(`Confirmer : ${labels[targetRole] || 'modifier le rôle de'} cet utilisateur ?`, async () => {
-                try {
-                    const response = await apiFetch(`/api/users/${id}/role`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ role: targetRole })
-                    });
-                    if (!response) return;
-                    const data = await response.json();
-                    if (data.success) {
-                        showToast("Rôle mis à jour.", 'success');
-                        loadUsers();
-                    } else {
-                        showToast(data.message || "Impossible de modifier ce rôle.", 'error');
-                    }
-                } catch (err) {
-                    console.error(err);
-                    showToast("Impossible de modifier ce rôle.", 'error');
-                }
-            });
+        async function changeUserRole(id, targetRole) {
+            try {
+                const response = await fetch(`/api/users/${id}/role`, {
+                    method: 'PUT',
+                    headers: { ...getHeaders(), 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: targetRole })
+                });
+                const data = await response.json();
+                if(data.success) loadUsers(); else alert(data.message);
+            } catch(err) { console.error(err); }
         }
     </script>
 </body>

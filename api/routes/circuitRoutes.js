@@ -1,15 +1,15 @@
 import express from 'express';
 import multer from 'multer';
 import circuitController from '../controllers/circuitController.js';
+import { verifyToken, requireAdmin } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// Configuration de Multer : stockage en mémoire pour Vercel
 const storage = multer.memoryStorage();
-const upload = multer({ 
+const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // Limite à 5 Mo max
+    fileSize: 5 * 1024 * 1024 // 5 Mo max
   }
 });
 
@@ -17,19 +17,29 @@ const upload = multer({
    ROUTES API (Montées sur "/api/circuits" via index.js)
    ========================================================================== */
 
-// GET /api/circuits -> Récupérer tous les circuits
-router.get('/', circuitController.apiGetAllCircuits);
+// GET /api/circuits -> Circuits ACTIFS uniquement (Public)
+// On force query.all à 'false' pour empêcher un accès anonyme aux circuits masqués
+router.get('/', (req, res, next) => {
+  req.query.all = 'false';
+  next();
+}, circuitController.apiGetAllCircuits);
 
-// GET /api/circuits/:id -> Obtenir un circuit spécifique
+// GET /api/circuits/admin/all -> TOUS les circuits, y compris masqués (Admin uniquement)
+router.get('/admin/all', verifyToken, requireAdmin, (req, res, next) => {
+  req.query.all = 'true';
+  next();
+}, circuitController.apiGetAllCircuits);
+
+// GET /api/circuits/:id -> Un circuit spécifique (Public)
 router.get('/:id', circuitController.apiGetCircuitById);
 
-// POST /api/circuits -> Ajouter un circuit avec son image
-router.post('/', upload.single('image'), circuitController.apiCreateCircuit);
+// POST /api/circuits -> Créer un circuit (Admin uniquement)
+router.post('/', verifyToken, requireAdmin, upload.single('image'), circuitController.apiCreateCircuit);
 
-// PUT /api/circuits/:id -> Modifier un circuit
-router.put('/:id', upload.single('image'), circuitController.apiUpdateCircuit);
+// PUT /api/circuits/:id -> Modifier un circuit (Admin uniquement)
+router.put('/:id', verifyToken, requireAdmin, upload.single('image'), circuitController.apiUpdateCircuit);
 
-// DELETE /api/circuits/:id -> Supprimer un circuit
-router.delete('/:id', circuitController.apiDeleteCircuit);
+// DELETE /api/circuits/:id -> Supprimer un circuit (Admin uniquement)
+router.delete('/:id', verifyToken, requireAdmin, circuitController.apiDeleteCircuit);
 
 export default router;

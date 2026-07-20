@@ -1,13 +1,19 @@
 import { UserModel } from '../models/UserModel.js';
 
+// Valeurs confirmées par authController.js (default 'client' à l'inscription,
+// vérification "role === 'banni'" au login) et UserModel.js.
+// ⚠️ À vérifier une dernière fois côté SQL avec :
+// SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'users_role_check';
+// pour confirmer que la contrainte CHECK autorise bien ces 3 valeurs.
+const ROLES_VALIDES = ['client', 'admin', 'banni'];
+
 const userController = {
   /**
    * API : Récupérer tous les utilisateurs (Pour le tableau de bord Admin)
-   * GET /api/users
+   * GET /api/users — route protégée par verifyToken + requireAdmin
    */
   apiGetAllUsers: async (req, res) => {
     try {
-      // Optionnel : Tu peux ajouter une sécurité ici pour vérifier si req.user.role === 'admin'
       const users = await UserModel.getAllUsers();
       res.status(200).json({ success: true, data: users });
     } catch (error) {
@@ -18,15 +24,26 @@ const userController = {
 
   /**
    * API : Modifier le rôle d'un utilisateur (Changer les droits ou bannir)
-   * PUT /api/users/:id/role
+   * PUT /api/users/:id/role — route protégée par verifyToken + requireAdmin
    */
   apiUpdateUserRole: async (req, res) => {
     try {
       const { id } = req.params;
-      const { role } = req.body; // ex: { "role": "banni" } ou { "role": "admin" }
+      const { role } = req.body;
 
-      if (!role) {
-        return res.status(400).json({ success: false, message: "Le champ 'role' est requis." });
+      if (!role || !ROLES_VALIDES.includes(role)) {
+        return res.status(400).json({
+          success: false,
+          message: `Le champ 'role' est requis et doit être l'un de : ${ROLES_VALIDES.join(', ')}.`
+        });
+      }
+
+      // Empêche un admin de se rétrograder lui-même par erreur et de perdre l'accès
+      if (parseInt(id, 10) === req.user.id && role !== 'admin') {
+        return res.status(400).json({
+          success: false,
+          message: "Vous ne pouvez pas modifier votre propre rôle administrateur."
+        });
       }
 
       const updatedUser = await UserModel.updateRole(id, role);
@@ -35,10 +52,10 @@ const userController = {
         return res.status(404).json({ success: false, message: "Utilisateur introuvable." });
       }
 
-      res.status(200).json({ 
-        success: true, 
-        message: `Le rôle de l'utilisateur a été mis à jour avec succès vers '${role}'.`, 
-        data: updatedUser 
+      res.status(200).json({
+        success: true,
+        message: `Le rôle de l'utilisateur a été mis à jour avec succès vers '${role}'.`,
+        data: updatedUser
       });
     } catch (error) {
       console.error("Erreur lors de la modification du rôle :", error);

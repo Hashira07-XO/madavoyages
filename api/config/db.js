@@ -2,36 +2,39 @@ import dotenv from 'dotenv';
 import path from 'path';
 import pg from 'pg';
 
-// 1. Configuration de dotenv
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+// 1. Configuration hybride de dotenv (Local + Production)
+dotenv.config(); // Charge le .env classique ou les variables système (Vercel)
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local'), override: true }); // Surcharge avec le local si présent
 
 const { Pool } = pg;
 
-console.log("DATABASE_URL chargée :", process.env.DATABASE_URL);
+// Validation de sécurité pour éviter le crash silencieux
+if (!process.env.DATABASE_URL) {
+  console.error("❌ ALERTE : La variable DATABASE_URL n'est pas définie dans l'environnement !");
+} else {
+  console.log("✅ DATABASE_URL détectée avec succès.");
+}
 
-// 2. Initialisation de la connexion adaptée à Supabase
+// 2. Initialisation du pool Supabase
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // Indispensable pour Supabase
+    rejectUnauthorized: false // Requis pour la sécurité Supabase
   },
   max: 20,
-  // Ajustements pour éviter le "Connection terminated due to connection timeout"
-  idleTimeoutMillis: 0,          // Ferme les connexions inactives immédiatement (recommandé pour le port 6543)
-  connectionTimeoutMillis: 5000  // Donne 5 secondes à Supabase pour répondre au lieu de 2
+  idleTimeoutMillis: 10000,      // Garde les connexions actives 10s pour le chaînage des requêtes admin
+  connectionTimeoutMillis: 5000  // Temps d'attente maximal de reconnexion
 });
 
-// Évite que l'application Node ne crashe si Supabase ferme une connexion en tâche de fond
 pool.on('error', (err) => {
   console.error('Liaison Supabase interrompue en tâche de fond :', err.message);
 });
 
-// 3. Extraction de la fonction de requête directe
+// 3. Exportation de la fonction de requête directe
 export const query = (text, params) => pool.query(text, params);
 
-// 4. Exports nommés (Pour UserModel.js qui utilise { pool })
+// 4. Export nommé pour UserModel.js
 export { pool };
 
-// 5. EXPORT PAR DÉFAUT RECTIFIÉ (Pour circuitModel et reservationModel qui utilisent 'db')
-// On exporte DIRECTEMENT l'instance du pool. Comme ça, db.query() fonctionnera partout !
+// 5. Export par défaut pour circuitModel.js et reservationModel.js
 export default pool;

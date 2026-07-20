@@ -1,11 +1,11 @@
 import express from 'express';
 import userController from '../controllers/userController.js';
-import { verifyToken } from '../middlewares/authMiddleware.js'; // Ton middleware JWT existant
+import { verifyToken, requireAdmin } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// Routes protégées par token (idéalement à coupler avec une vérification du rôle Admin)
-router.get('/', verifyToken, userController.apiGetAllUsers);
-router.put('/:id/role', verifyToken, userController.apiUpdateUserRole);
+// Routes protégées : réservées aux administrateurs
+router.get('/', verifyToken, requireAdmin, userController.apiGetAllUsers);
+router.put('/:id/role', verifyToken, requireAdmin, userController.apiUpdateUserRole);
 
 export default router;

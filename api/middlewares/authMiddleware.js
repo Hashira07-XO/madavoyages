@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 export const verifyToken = (req, res, next) => {
   // Récupérer le token depuis le header Authorization (converti par Express en minuscules)
   const authHeader = req.headers['authorization'];
-  
+
   // Sécurité : Vérifie la présence du header et le préfixe standardisé Bearer
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: "Accès refusé. Token manquant." });
@@ -16,13 +16,27 @@ export const verifyToken = (req, res, next) => {
   try {
     // Authentification via le secret d'environnement
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+
     // Attache le payload { id, role } à l'objet de requête global
-    req.user = decoded; 
-    
+    req.user = decoded;
+
     next();
   } catch (error) {
     console.error("Échec de la validation du JWT :", error.message);
     return res.status(403).json({ message: "Token invalide ou expiré." });
   }
+};
+
+/**
+ * Doit être utilisé APRÈS verifyToken (req.user doit déjà exister).
+ * Bloque l'accès si le rôle attaché au token n'est pas 'admin'.
+ */
+export const requireAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      message: "Accès refusé : réservé aux administrateurs."
+    });
+  }
+  next();
 };
