@@ -403,7 +403,7 @@
                 <table class="table custom-table">
                     <thead>
                         <tr>
-                            <th>ID & Client</th>
+                            <th>Email</th>
                             <th>Circuit Sélectionné</th>
                             <th>Sièges Réservés</th>
                             <th>Notes Particulières</th>
@@ -893,7 +893,7 @@
 
                     tbody.innerHTML += `
                         <tr>
-                            <td><div class="fw-bold">Client #${r.user_id}</div><div class="text-muted small">RES-${r.id}</div></td>
+                            <td><div class="fw-bold">${r.user_email}</div><div class="text-muted small">RES-${r.id}</div></td>
                             <td><div class="small">Circuit #${r.circuit_id}</div></td>
                             <td><div class="seat-badge-container">${tags}</div></td>
                             <td><div class="text-muted small text-truncate" style="max-width:180px;">${r.remarques || '-'}</div></td>
