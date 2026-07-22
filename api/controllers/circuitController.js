@@ -2,9 +2,6 @@ import Circuit from '../models/circuitModel.js';
 import { put } from '@vercel/blob';
 
 const circuitController = {
-  /**
-   * Rendu de la page publique des circuits via EJS
-   */
   renderCircuitsPage: async (req, res) => {
     try {
       const rawVoyages = await Circuit.getAll(true);
@@ -23,10 +20,6 @@ const circuitController = {
     }
   },
 
-  /**
-   * API : Créer un nouveau circuit avec téléversement d'image sur Vercel Blob
-   * (route protégée par verifyToken + requireAdmin)
-   */
   apiCreateCircuit: async (req, res) => {
     try {
       const {
@@ -41,8 +34,6 @@ const circuitController = {
         date_fin_reservation
       } = req.body;
 
-      // Validation des champs NOT NULL en base : on vérifie l'absence réelle,
-      // pas la "falsy-ness", pour ne pas rejeter un 0 légitime
       if (
         title === undefined || title === "" ||
         description === undefined || description === "" ||
@@ -86,10 +77,6 @@ const circuitController = {
     }
   },
 
-  /**
-   * API : Mettre à jour un circuit (avec remplacement d'image optionnel)
-   * (route protégée par verifyToken + requireAdmin)
-   */
   apiUpdateCircuit: async (req, res) => {
     try {
       const id = req.params.id;
@@ -119,8 +106,6 @@ const circuitController = {
         date_fin_reservation
       } = req.body;
 
-      // Fix : on teste "!== undefined" au lieu de "||" pour ne pas écraser
-      // silencieusement un 0 (price, capacity) par l'ancienne valeur
       const circuitData = {
         title: title !== undefined ? title : currentCircuit.title,
         description: description !== undefined ? description : currentCircuit.description,
@@ -153,10 +138,6 @@ const circuitController = {
     }
   },
 
-  /**
-   * API : Obtenir tous les circuits (JSON) — Public (toujours actif=true,
-   * voir circuitRoutes.js qui force req.query.all='false' sur cette route)
-   */
   apiGetAllCircuits: async (req, res) => {
     try {
       const showAll = req.query.all === 'true';
@@ -167,9 +148,6 @@ const circuitController = {
     }
   },
 
-  /**
-   * API : Obtenir un circuit par ID (JSON) — Public
-   */
   apiGetCircuitById: async (req, res) => {
     try {
       const circuit = await Circuit.getById(req.params.id);
@@ -182,9 +160,6 @@ const circuitController = {
     }
   },
 
-  /**
-   * API : Supprimer un circuit (route protégée par verifyToken + requireAdmin)
-   */
   apiDeleteCircuit: async (req, res) => {
     try {
       const deleted = await Circuit.delete(req.params.id);

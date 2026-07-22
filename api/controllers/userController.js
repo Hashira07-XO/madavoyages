@@ -1,17 +1,8 @@
 import { UserModel } from '../models/UserModel.js';
 
-// Valeurs confirmées par authController.js (default 'client' à l'inscription,
-// vérification "role === 'banni'" au login) et UserModel.js.
-// ⚠️ À vérifier une dernière fois côté SQL avec :
-// SELECT pg_get_constraintdef(oid) FROM pg_constraint WHERE conname = 'users_role_check';
-// pour confirmer que la contrainte CHECK autorise bien ces 3 valeurs.
 const ROLES_VALIDES = ['client', 'admin', 'banni'];
 
 const userController = {
-  /**
-   * API : Récupérer tous les utilisateurs (Pour le tableau de bord Admin)
-   * GET /api/users — route protégée par verifyToken + requireAdmin
-   */
   apiGetAllUsers: async (req, res) => {
     try {
       const users = await UserModel.getAllUsers();
@@ -22,10 +13,6 @@ const userController = {
     }
   },
 
-  /**
-   * API : Modifier le rôle d'un utilisateur (Changer les droits ou bannir)
-   * PUT /api/users/:id/role — route protégée par verifyToken + requireAdmin
-   */
   apiUpdateUserRole: async (req, res) => {
     try {
       const { id } = req.params;
@@ -38,7 +25,6 @@ const userController = {
         });
       }
 
-      // Empêche un admin de se rétrograder lui-même par erreur et de perdre l'accès
       if (parseInt(id, 10) === req.user.id && role !== 'admin') {
         return res.status(400).json({
           success: false,

@@ -310,15 +310,12 @@
 </head>
 <body>
 
-    <!-- ZONE DE NOTIFICATIONS -->
     <div id="toast-stack" aria-live="polite"></div>
 
-    <!-- NAVBAR -->
     <nav class="admin-navbar">
         <div class="container-fluid d-flex align-items-center justify-content-between gap-2 px-0">
             <div class="d-flex align-items-center gap-2">
                 <span class="brand-mark" aria-hidden="true">
-                    <!-- Signature : silhouette de baobab, symbole du catalogue MadaVoyages -->
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 3c-3.2 0-5.6 1.9-5.6 4.3 0 1.3.9 2.1 1.9 2.1.6 0 1-.3 1.3-.7-.6.4-1.7.3-1.7-.9 0-1.4 1.7-2.4 3.4-2.4 2.1 0 3.9 1.2 3.9 2.9 0 1.1-.7 1.7-1.5 1.7-.5 0-.9-.2-1.1-.5.3.6-.1 1.1-.8 1.1-1 0-1.6-.8-1.6-1.8" stroke="#ffe5c9" stroke-width="1.3" stroke-linecap="round"/>
                         <path d="M12 10.5V21" stroke="#ffe5c9" stroke-width="1.6" stroke-linecap="round"/>
@@ -347,10 +344,8 @@
         </div>
     </nav>
 
-    <!-- CONTENU PRINCIPAL -->
     <main class="container-fluid py-4 px-2 px-md-5" style="max-width: 1600px;">
 
-        <!-- ENVELOPPE DE DEFILEMENT DES ONGLETS -->
         <div class="tabs-wrapper">
             <div class="custom-tabs">
                 <a href="#" class="nav-link-custom active" onclick="switchTab(event, 'view-circuits')">Gestion des Circuits</a>
@@ -359,7 +354,7 @@
             </div>
         </div>
 
-        <!-- VIEW 1: GESTION DES CIRCUITS -->
+
         <div id="view-circuits" class="admin-panel-view active-view">
             <div class="title-section d-flex align-items-center justify-content-between mb-4">
                 <div>
@@ -390,7 +385,6 @@
             <div class="mobile-card-flow" id="circuits-mobile-flow"></div>
         </div>
 
-        <!-- VIEW 2: RÉSERVATIONS CLIENTS -->
         <div id="view-reservations" class="admin-panel-view">
             <div class="title-section d-flex align-items-center justify-content-between mb-4">
                 <div>
@@ -417,7 +411,6 @@
             <div class="mobile-card-flow" id="reservations-mobile-flow"></div>
         </div>
 
-        <!-- VIEW 3: CONTRÔLE DES UTILISATEURS -->
         <div id="view-users" class="admin-panel-view">
             <div class="title-section d-flex align-items-center justify-content-between mb-4">
                 <div>
@@ -444,7 +437,6 @@
 
     </main>
 
-    <!-- MODAL UNIQUE AJOUT / MODIFICATION CIRCUIT -->
     <div class="modal fade" id="circuitModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content" style="border-radius: 16px;">
@@ -513,7 +505,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE CONFIRMATION GÉNÉRIQUE (remplace window.confirm) -->
     <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 16px;">
@@ -534,12 +525,6 @@
         const token = localStorage.getItem('token') || '';
         if (!token) window.location.href = '/admin-login.html';
 
-        /* ==========================================================================
-           AUTHENTIFICATION & RÔLE
-           ========================================================================== */
-
-        // Décodage non sécurisé du payload JWT, uniquement pour l'affichage (UX).
-        // La sécurité réelle est appliquée côté serveur via requireAdmin.
         function getPayloadFromToken(t) {
             try {
                 return JSON.parse(atob(t.split('.')[1]));
@@ -556,7 +541,6 @@
 
         const getHeaders = () => ({ 'Authorization': `Bearer ${token}` });
 
-        // Wrapper centralisé : gère les cas token expiré (401) et accès refusé (403)
         async function apiFetch(url, options = {}) {
             const response = await fetch(url, {
                 ...options,
@@ -578,9 +562,6 @@
             return response;
         }
 
-        /* ==========================================================================
-           TOASTS & CONFIRMATION
-           ========================================================================== */
 
         function showToast(message, type = 'success') {
             const stack = document.getElementById('toast-stack');
@@ -615,9 +596,6 @@
             modal.show();
         }
 
-        /* ==========================================================================
-           ÉTATS DE CHARGEMENT / VIDE (réutilisables pour les 3 tableaux)
-           ========================================================================== */
 
         function renderSkeletonRows(tbodyId, mobileId, columns, rows = 3) {
             const tbody = document.getElementById(tbodyId);
@@ -655,9 +633,6 @@
             if (mobile) mobile.innerHTML = `<div class="empty-state">${emptyMarkup}</div>`;
         }
 
-        /* ==========================================================================
-           NAVIGATION
-           ========================================================================== */
 
         document.addEventListener("DOMContentLoaded", () => {
             loadCircuits();
@@ -678,15 +653,10 @@
             window.location.href = '/admin-login.html';
         }
 
-        /* ==========================================================================
-           CIRCUITS
-           ========================================================================== */
 
         async function loadCircuits() {
             renderSkeletonRows('circuits-tbody', 'circuits-mobile-flow', 7);
             try {
-                // Endpoint admin dédié : la route publique "/api/circuits" reste
-                // toujours filtrée sur actif=true, même avec ?all=true en query.
                 const response = await apiFetch('/api/circuits/admin/all');
                 if (!response) return;
                 const resData = await response.json();
@@ -816,7 +786,6 @@
             submitBtn.textContent = 'Enregistrement...';
 
             try {
-                // Ne PAS forcer de Content-Type : le navigateur gère le boundary du FormData
                 const response = await apiFetch(url, {
                     method: id ? 'PUT' : 'POST',
                     body: formData
@@ -859,9 +828,6 @@
             });
         }
 
-        /* ==========================================================================
-           RÉSERVATIONS
-           ========================================================================== */
 
         async function loadReservations() {
             renderSkeletonRows('reservations-tbody', 'reservations-mobile-flow', 6);
@@ -898,7 +864,7 @@
                             <td><div class="seat-badge-container">${tags}</div></td>
                             <td><div class="text-muted small text-truncate" style="max-width:180px;">${r.remarques || '-'}</div></td>
                             <td><span class="badge-status ${badgeClass}">${statusLabel}</span></td>
-                            <td class="text-end">
+                            <td class="text-end d-flex justify-content-end gap-2">
                                 ${r.statut === 'en_attente' ? `
                                     <button onclick="updateReservationStatus(${r.id}, 'confirme')" class="action-btn btn-action-verify" title="Valider"><span class="material-symbols-outlined fs-5">check</span></button>
                                     <button onclick="updateReservationStatus(${r.id}, 'annule')" class="action-btn btn-action-delete" title="Refuser"><span class="material-symbols-outlined fs-5">close</span></button>
@@ -951,10 +917,6 @@
             }
         }
 
-        /* ==========================================================================
-           UTILISATEURS
-           ========================================================================== */
-
         async function loadUsers() {
             renderSkeletonRows('users-tbody', 'users-mobile-flow', 4);
             try {
@@ -988,7 +950,6 @@
                             <td class="text-end">
                                 <div class="d-flex justify-content-end gap-2">
                                     ${u.role !== 'admin' && u.role !== 'banni' ? `
-                                        <button onclick="changeUserRole(${u.id}, 'admin')" class="action-btn btn-action-verify" title="Promouvoir admin"><span class="material-symbols-outlined fs-5">shield</span></button>
                                         <button onclick="changeUserRole(${u.id}, 'banni')" class="action-btn btn-action-ban" title="Bannir"><span class="material-symbols-outlined fs-5">gavel</span></button>
                                     ` : ''}
                                     ${u.role === 'banni' ? `
@@ -1008,7 +969,6 @@
                             <div class="text-muted font-monospace mb-2" style="font-size:11px;">${u.email}</div>
                             <div class="d-flex justify-content-end gap-2 mt-2 pt-2 border-top">
                                 ${u.role !== 'admin' && u.role !== 'banni' ? `
-                                    <button onclick="changeUserRole(${u.id}, 'admin')" class="btn btn-sm btn-outline-dark px-3 py-1 rounded-pill" style="font-size:11px;">Admin</button>
                                     <button onclick="changeUserRole(${u.id}, 'banni')" class="btn btn-sm btn-danger px-3 py-1 rounded-pill" style="font-size:11px; background-color:var(--color-secondary);">Bannir</button>
                                 ` : ''}
                                 ${u.role === 'banni' ? `

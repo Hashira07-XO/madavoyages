@@ -1,17 +1,10 @@
-// api/controllers/ReservationController.js
 import Reservation from '../models/reservationModel.js';
 import Circuit from '../models/circuitModel.js';
 
-// ⚠️ PROVISOIRE : à aligner sur la contrainte réelle "reservations_statut_check".
-// Confirmée jusqu'ici : 'en_attente'. Complète cette liste avec les valeurs
-// exactes renvoyées par : SELECT pg_get_constraintdef(oid) FROM pg_constraint
-// WHERE conname = 'reservations_statut_check';
 const STATUTS_VALIDES = ['en_attente', 'confirme', 'annule'];
 
 const ReservationController = {
-  /**
-   * 1. Affiche la page du formulaire de réservation (GET /reservations)
-   */
+
   renderReservationPage: async (req, res) => {
     try {
       const { circuit_id } = req.query;
@@ -38,9 +31,6 @@ const ReservationController = {
     }
   },
 
-  /**
-   * 2. Crée une nouvelle réservation (POST /api/reservations)
-   */
   createReservation: async (req, res) => {
     try {
       const { circuit_id, nombre_personnes, places_choisies, remarques } = req.body;
@@ -93,9 +83,6 @@ const ReservationController = {
     }
   },
 
-  /**
-   * 3. Récupère l'historique de voyage de l'utilisateur connecté
-   */
   getUserHistory: async (req, res) => {
     try {
       const user_id = req.user.id;
@@ -107,9 +94,6 @@ const ReservationController = {
     }
   },
 
-  /**
-   * 4. Annule une réservation (PUT /api/reservations/:id/annuler)
-   */
   cancelReservation: async (req, res) => {
     try {
       const reservationId = req.params.id;
@@ -137,10 +121,6 @@ const ReservationController = {
     }
   },
 
-  /**
-   * 5. API ADMIN : Récupérer TOUTES les réservations du site
-   * (route protégée par verifyToken + requireAdmin)
-   */
   getAllReservationsForAdmin: async (req, res) => {
     try {
       const reservations = await Reservation.getAllGlobal();
@@ -151,10 +131,6 @@ const ReservationController = {
     }
   },
 
-  /**
-   * 6. API ADMIN : Muter le statut d'une réservation
-   * (route protégée par verifyToken + requireAdmin)
-   */
   updateReservationStatusByAdmin: async (req, res) => {
     try {
       const reservationId = req.params.id;

@@ -192,13 +192,10 @@
             const successDiv = document.getElementById('reservation-success');
             const subtitle = document.getElementById('reservation-subtitle');
 
-            // 1. BLOCAGE SI NON CONNECTÉ (Avec affichage de l'alerte Bootstrap intégrée)
             if (!localStorage.getItem('token')) {
-                // On cache le formulaire pour éviter toute action
+
                 form.classList.add('d-none');
                 if(subtitle) subtitle.classList.add('d-none');
-
-                // On affiche le message d'alerte dans le conteneur existant
                 errorDiv.innerHTML = `
                     <div class="py-2">
                         <span class="material-symbols-outlined align-middle me-2" style="font-size: 28px;">lock</span>
@@ -208,15 +205,13 @@
                 `;
                 errorDiv.classList.remove('d-none');
 
-                // Redirection après 3.5 secondes
                 setTimeout(() => {
                     window.location.href = '/register.html?redirect=' + encodeURIComponent(window.location.pathname);
                 }, 3500);
 
-                return; // On arrête complètement l'exécution du reste du script
+                return; 
             }
 
-            // --- LE RESTE DU CODE S'EXÉCUTE UNIQUEMENT SI L'UTILISATEUR EST CONNECTÉ ---
             const seatGrid = document.getElementById('seat-grid');
             const placesChoisies = new Set();
             const inputNombrePersonnes = document.getElementById('nombre-personnes');

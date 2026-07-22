@@ -183,7 +183,6 @@
 
     <div class="split-container">
         
-        <!-- PANNEAU ILLUSTRATION GAUCHE -->
         <div class="illustration-panel">
             <div class="firefly-container" id="firefly-container"></div>
             
@@ -221,7 +220,6 @@
             </div>
         </div>
 
-        <!-- PANNEAU FORMULAIRE DROITE -->
         <div class="form-panel">
             <a href="index.html" class="d-lg-none label-caps text-decoration-none d-flex align-items-center gap-1 mb-4">
                 <span class="material-symbols-outlined fs-6" style="font-weight: 700;">arrow_back</span> Retour au site
@@ -233,7 +231,6 @@
                 <p class="text-muted small mb-0" style="font-size: 13px;">Identifiez-vous pour gérer les circuits et superviser les demandes de réservation.</p>
             </div>
 
-            <!-- Messages d'Alerte -->
             <div id="auth-error-message" class="alert alert-danger d-none py-2 px-3 mb-3 small" role="alert" style="border-radius: 10px;"></div>
 
             <form id="admin-login-form" class="d-flex flex-column gap-3">
@@ -267,7 +264,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         (function() {
-            // Animation des lucioles (Copie exacte de register.html)
             const fContainer = document.getElementById('firefly-container');
             function addFirefly() {
                 if (!fContainer || fContainer.children.length > 12) return;
@@ -280,7 +276,6 @@
             }
             if (fContainer) setInterval(addFirefly, 1500);
 
-            // Soumission du formulaire d'authentification de l'admin
             const authForm = document.getElementById('admin-login-form');
             const submitBtn = document.getElementById('submit-btn');
             const btnText = document.getElementById('btn-text');
@@ -300,7 +295,6 @@
                     btnText.textContent = "Vérification des droits...";
 
                     try {
-                        // Requête vers ton contrôleur d'authentification existant
                         const response = await fetch('/api/auth/login', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -310,16 +304,13 @@
                         const data = await response.json();
                         if (!response.ok) throw new Error(data.error || "Identifiants incorrects.");
 
-                        // Sécurité critique côté client : vérifier le rôle retourné par le token/user
                         if (data.user.role !== 'admin') {
                             throw new Error("Accès refusé. Vous ne possédez pas les droits administrateur.");
                         }
 
-                        // Stockage des sessions
                         localStorage.setItem('token', data.token);
                         localStorage.setItem('user', JSON.stringify(data.user));
 
-                        // Redirection vers le tableau de bord d'administration
                         window.location.href = 'admin.html';
                         
                     } catch (err) {

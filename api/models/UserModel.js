@@ -1,4 +1,3 @@
-// api/models/UserModel.js
 import { pool } from '../config/db.js';
 
 export const UserModel = {
@@ -7,7 +6,6 @@ export const UserModel = {
     return result.rows[0];
   },
 
-  // 'role' par défaut fixé à 'client' pour éviter les NULL en base
   async create(nom, prenom, email, hashedPassword, verificationToken) {
     const queryText = `
       INSERT INTO users (nom, prenom, email, password_hash, role, is_verified, verification_token)

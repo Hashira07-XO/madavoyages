@@ -2,11 +2,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/UserModel.js'; 
 
-// 1. INSCRIPTION AVEC ENVOI VIA RESEND
 export const register = async (req, res) => {
     const { nom, prenom, email, password } = req.body;
 
-    // Détection automatique de l'environnement (Vercel ou Local)
     const isProduction = process.env.NODE_ENV === 'production' || (process.env.API_URL && !process.env.API_URL.includes('localhost'));
 
     console.log("=== [INSCRIPTION RESEND - EXAMEN] ===");
@@ -27,13 +25,12 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const verificationToken = globalThis.crypto.randomUUID().replace(/-/g, '');
 
-        // Enregistrement dans ta base PostgreSQL Supabase
+ 
         const newUser = await UserModel.create(nom, prenom, email, hashedPassword, verificationToken); 
 
         const verificationLink = `${process.env.API_URL}/api/auth/verify/${verificationToken}`;
 
         if (isProduction) {
-            // --- ENVOI RÉEL VIA L'API RESEND EN PRODUCTION ---
             try {
                 console.log(`📨 Appel API Resend pour l'adresse : ${email}`);
                 const response = await fetch('https://api.resend.com/emails', {
@@ -43,7 +40,7 @@ export const register = async (req, res) => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        from: "MadaVoyages <onboarding@resend.dev>", // Domaine gratuit par défaut de Resend
+                        from: "MadaVoyages <onboarding@resend.dev>", 
                         to: [email], 
                         subject: "Vérifiez votre compte MadaVoyages",
                         html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -67,7 +64,6 @@ export const register = async (req, res) => {
                 console.error("❌ Exception réseau lors de l'appel Resend :", mailError.message);
             }
         } else {
-            // --- MODE LOCAL : AFFICHAGE DU LIEN DANS TON TERMINAL ---
             console.log("\n=======================================================================");
             console.log(`📨 [LOCAL] Compte créé ! Simulé pour : ${email}`);
             console.log("🔗 CLIQUE SUR CE LIEN POUR SIMULER LA VÉRIFICATION (Ctrl + Clic) :");
@@ -86,7 +82,6 @@ export const register = async (req, res) => {
     }
 };
 
-// 2. VÉRIFICATION DE L'E-MAIL (Lien cliqué par ton prof ou toi)
 export const verifyEmail = async (req, res) => {
     const { token } = req.params;
     try {
@@ -100,7 +95,6 @@ export const verifyEmail = async (req, res) => {
                 </div>
             `);
         }
-        // Redirection réussie vers ton formulaire avec le flag verified
         return res.redirect('/register.html?verified=true');
     } catch (error) {
         console.error("Erreur de vérification :", error);
@@ -108,7 +102,6 @@ export const verifyEmail = async (req, res) => {
     }
 };
 
-// 3. CONNEXION
 export const login = async (req, res) => {
     const { email, password } = req.body;
 
@@ -124,7 +117,6 @@ export const login = async (req, res) => {
             return res.status(401).json({ error: "Email ou mot de passe incorrect." });
         }
         
-        // 🔒 VÉRIFICATION DE L'UTILISATEUR BANNI
         if (user.role === 'banni') {
             return res.status(403).json({ error: "Votre compte a été suspendu par un administrateur." });
         }

@@ -268,7 +268,7 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.05) !important;
         }
-        .history-card.confirme { border-left-color: #198754; }
+        .history-card.valide { border-left-color: #198754; }
         .history-card.annule { border-left-color: #dc3545; }
 
         .watermark-text {
@@ -329,6 +329,7 @@
                         <a href="#historique" class="text-dark d-flex align-items-center text-decoration-none" title="Historique" style="transition: transform 0.3s ease;">
                             <span class="material-symbols-outlined fs-4" style="color: var(--color-primary); transition: color 0.3s;" onmouseover="this.style.color='var(--color-secondary)'" onmouseout="this.style.color='var(--color-primary)'">history</span>
                         </a>
+                        <!-- Icône de Déconnexion Premium Dynamique -->
                         <a href="#explorer" class="btn-premium text-decoration-none text-center">Trouver un Circuit</a>
                         <a href="#" id="btn-logout" class="text-dark d-none d-flex align-items-center text-decoration-none" title="Déconnexion" onclick="logoutUser()" style="transition: transform 0.3s ease;">
                             <span class="material-symbols-outlined fs-4 text-danger" style="transition: opacity 0.3s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">logout</span>
@@ -340,6 +341,7 @@
     </header>
 
     <main>
+        <!-- HERO -->
         <section class="position-relative vh-100 d-flex align-items-center justify-content-center overflow-hidden">
             <div class="position-absolute inset-0 w-100 h-100" style="z-index: 0; top: 0; left: 0;">
                 <img id="hero-bg" alt="Nosy Be" class="w-100 h-100 object-fit-cover" style="filter: brightness(0.6) contrast(1.02); transform: scale(1.05); will-change: transform;" src="/assets/piscine_nosyBe.png"/>
@@ -359,6 +361,7 @@
             </div>
         </section>
 
+        <!-- RECHERCHE & FILTRAGE -->
         <section id="explorer" class="bg-sunset-amber py-5">
             <div class="container">
                 <div class="search-glass-card p-4 p-lg-5 mt-n5 position-relative z-3">
@@ -392,10 +395,9 @@
                             <div class="input-group" style="background-color: #f5eee5; border-radius: 30px; overflow: hidden; padding: 2px 10px;">
                                 <select id="transport-filter" class="form-select bg-transparent border-0 py-2 shadow-none" style="font-size: 13px;">
                                     <option value="all">Tous</option>
-                                    <option value="prado">4x4</option>
-                                    <option value="bus">Bus</option>
+                                    <option value="4x4">prado</option>
+                                    <option value="bateau">Bus</option>
                                     <option value="avion">Avion / Vol interne</option>
-                                    <option value="mixte">Combiné / Autre</option>
                                 </select>
                             </div>
                         </div>
@@ -407,6 +409,7 @@
             </div>
         </section>
 
+        <!-- CATALOGUE -->
         <section class="bg-sunset-glow section-gap">
             <div class="position-absolute top-0 start-0 watermark-text text-parallax" data-speed-x="-0.2">EXPLORE</div>
             <div class="container position-relative z-1">
@@ -419,6 +422,7 @@
             </div>
         </section>
 
+        <!-- HISTORIQUE SÉCURISÉ DES RÉSERVATIONS -->
         <section id="historique" class="bg-sunset-warm section-gap">
             <div class="position-absolute bottom-0 end-0 watermark-text text-parallax" data-speed-x="0.2">JOURNEYS</div>
             <div class="container position-relative z-1">
@@ -446,6 +450,7 @@
         </section>
     </main>
 
+    <!-- MODALE FICHE D'ÉVASION & INFOS EXTENSIBLES -->
     <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="background-color: var(--color-surface-cream); border-radius: 0px; overflow: hidden;">
@@ -508,6 +513,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         (function() {
+            // Configuration Canvas Shader WebGL d'Arrière-Plan
             const canvas = document.getElementById('shader-canvas');
             function syncSize() { if(canvas) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; } }
             syncSize(); window.addEventListener('resize', syncSize);
@@ -628,6 +634,7 @@
                 }).join('');
             }
 
+            // Rendu de l'Historique Épuré
             async function fetchHistory() {
                 const token = localStorage.getItem('token');
                 const authBlock = document.getElementById('history-auth');
@@ -653,20 +660,18 @@
 
                     listContainer.innerHTML = reservations.map(r => {
                         const dateRef = r.date_debut_voyage ? formatDate(r.date_debut_voyage) : 'À planifier';
-                        // Valeurs réelles en base : 'en_attente' | 'confirme' | 'annule'
-                        const badgeColor = r.statut === 'confirme' ? 'bg-success' : (r.statut === 'annule' ? 'bg-danger' : 'bg-warning text-dark');
-                        const cardStatusClass = r.statut === 'confirme' ? 'confirme' : (r.statut === 'annule' ? 'annule' : '');
-                        const statusLabel = r.statut === 'confirme' ? 'Validé' : (r.statut === 'annule' ? 'Annulé' : 'En attente');
+                        const badgeColor = r.statut === 'valide' ? 'bg-success' : (r.statut === 'annule' ? 'bg-danger' : 'bg-warning text-dark');
+                        const cardStatusClass = r.statut === 'valide' ? 'valide' : (r.statut === 'annule' ? 'annule' : '');
 
                         return `
                             <div class="history-card ${cardStatusClass} p-4 mb-2 bg-white">
                                 <div class="row align-items-center g-3">
                                     <div class="col-12 col-md-8">
                                         <div class="d-flex align-items-center gap-3 mb-2">
-                                            <span class="badge ${badgeColor} label-caps px-3 py-2 rounded-pill" style="font-size:8px; font-weight:700;">${statusLabel}</span>
+                                            <span class="badge ${badgeColor} label-caps px-3 py-2 rounded-pill" style="font-size:8px; font-weight:700;">${r.statut.toUpperCase()}</span>
                                             <span class="text-muted small">Départ : ${dateRef}</span>
                                         </div>
-                                        <h5 class="font-display fw-bold text-dark mb-0">${r.circuit_title || 'Circuit Privé d\'Exception'}</h5>
+                                        <h5 class="font-display fw-bold text-dark mb-0">${r.title || 'Circuit Privé d\'Exception'}</h5>
                                     </div>
                                     <div class="col-12 col-md-4 text-md-end">
                                         <button onclick="openReservationDetails('${r.id || r._id}')" class="btn btn-outline-premium rounded-pill px-4" style="font-size:11px; font-weight:700; letter-spacing:0.05em;">
@@ -681,30 +686,26 @@
                 }
             }
 
+            // Ouvre la pop-up pour les éléments de l'historique
             window.openReservationDetails = function(resId) {
                 const res = currentReservationsRaw.find(item => String(item.id || item._id) === String(resId));
                 if (!res) return;
 
                 const startD = formatDate(res.date_debut_voyage);
                 const endD = formatDate(res.date_fin_voyage);
+                const seats = res.nombre_personnes || (res.places_choisies ? res.places_choisies.length : 1);
 
-                const formattedPrice = (res.circuit_price !== undefined && res.circuit_price !== null)
-                    ? `${new Intl.NumberFormat('fr-FR').format(res.circuit_price)} € / ${new Intl.NumberFormat('fr-FR').format(res.circuit_price_ariary || 0)} Ar`
-                    : "Sur mesure";
-
-                const statusLabel = res.statut === 'confirme' ? 'VALIDÉ' : (res.statut === 'annule' ? 'ANNULÉ' : 'EN ATTENTE');
-
-                document.getElementById('detail-modal-img').src = res.circuit_image_url || '/assets/baobab3.webp';
-                document.getElementById('detail-modal-title').textContent = res.circuit_title || "Circuit Privé d'Exception";
-                document.getElementById('detail-modal-description').textContent = res.circuit_description || "Détails personnalisés enregistrés pour votre demande d'évasion privée.";
-                document.getElementById('detail-modal-capacity').textContent = res.places_choisies ? `Sièges : ${res.places_choisies.join(', ')}` : `${res.nombre_personnes || 1} Voyageur(s)`;
-                document.getElementById('detail-modal-price').textContent = formattedPrice;
-                document.getElementById('detail-modal-transport').textContent = res.circuit_type_transport || "Véhicule Privé 4x4";
+                document.getElementById('detail-modal-img').src = res.image_url || '/assets/baobab3.webp';
+                document.getElementById('detail-modal-title').textContent = res.title || "Circuit Privé d'Exception";
+                document.getElementById('detail-modal-description').textContent = res.description || "Détails personnalisés enregistrés pour votre demande d'évasion privée.";
+                document.getElementById('detail-modal-capacity').textContent = res.places_choisies ? `Sièges : ${res.places_choisies.join(', ')}` : `${seats} Voyageur(s)`;
+                document.getElementById('detail-modal-price').textContent = res.prix_total ? `${new Intl.NumberFormat('fr-FR').format(res.prix_total)} €` : "Sur mesure";
+                document.getElementById('detail-modal-transport').textContent = res.type_transport || "Véhicule Privé 4x4";
                 document.getElementById('detail-modal-dates').textContent = (startD && endD) ? `Du ${startD} au ${endD}` : "Dates réservées";
-                document.getElementById('detail-modal-deadline').textContent = `STATUT ACTUEL : ${statusLabel}`;
-
+                document.getElementById('detail-modal-deadline').textContent = `STATUT ACTUEL : ${res.statut.toUpperCase()}`;
+                
                 document.getElementById('detail-modal-reserve-btn').classList.add('d-none');
-
+                
                 const cancelBtn = document.getElementById('detail-modal-cancel-btn');
                 if (res.statut === 'en_attente') {
                     cancelBtn.classList.remove('d-none');
@@ -717,6 +718,7 @@
                 new bootstrap.Modal(document.getElementById('detailsModal')).show();
             };
 
+            // Ouvre la pop-up pour les éléments du catalogue général
             window.openCatalogDetails = function(id) {
                 const circuit = allCircuits.find(c => String(c.id || c._id) === String(id));
                 if (!circuit) return;
@@ -767,45 +769,6 @@
                 localStorage.removeItem('token');
                 window.location.reload();
             };
-
-            const filterForm = document.getElementById('filter-form');
-            if (filterForm) {
-                filterForm.addEventListener('submit', (e) => {
-                    e.preventDefault(); 
-
-                    const searchTerm = (document.getElementById('search-input').value || '').trim().toLowerCase();
-                    const capacityValue = document.getElementById('capacity-filter').value;
-                    const priceRaw = document.getElementById('price-filter').value;
-                    const maxPrice = priceRaw ? parseFloat(priceRaw) : null;
-                    const transportValue = document.getElementById('transport-filter').value;
-
-                    const filtered = allCircuits.filter(c => {
-                        const matchesSearch = !searchTerm ||
-                            (c.title && c.title.toLowerCase().includes(searchTerm)) ||
-                            (c.description && c.description.toLowerCase().includes(searchTerm));
-
-                        const capacity = c.capacity || 0;
-                        const matchesCapacity =
-                            capacityValue === 'all' ? true :
-                            capacityValue === '4' ? capacity <= 4 :
-                            capacityValue === '10' ? capacity <= 10 :
-                            capacity > 10; // option "Plus de 10 pers."
-
-                        const matchesPrice = maxPrice === null || isNaN(maxPrice)
-                            ? true
-                            : (c.price || 0) <= maxPrice;
-
-                        const matchesTransport = transportValue === 'all'
-                            ? true
-                            : (c.type_transport || '').toLowerCase().includes(transportValue.toLowerCase());
-
-                        return matchesSearch && matchesCapacity && matchesPrice && matchesTransport;
-                    });
-
-                    renderCircuits(filtered);
-                    document.getElementById('circuits-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                });
-            }
 
             renderCircuits(allCircuits);
             fetchHistory();

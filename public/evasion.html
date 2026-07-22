@@ -5,13 +5,11 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>MADAVOYAGES | L'Ame de l'Ile</title>
     
-    <!-- Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
     <style>
-        /* Variables Thématiques issues de la configuration originale */
         :root {
             --color-primary: #000c09;
             --color-forest-deep: #01261f;
@@ -39,7 +37,6 @@
             overflow-x: hidden;
         }
 
-        /* --- Typographies & Utilitaires Utiles --- */
         .font-display { font-family: var(--font-display); }
         .font-body { font-family: var(--font-body); }
         
@@ -66,7 +63,6 @@
             padding-bottom: 120px;
         }
 
-        /* --- Effets de Design Premium (MadaVoyages) --- */
         .offset-border {
             position: relative;
         }
@@ -110,13 +106,11 @@
             filter: blur(1px);
         }
         
-        /* Refined Parallax & Reveal Utilities */
         .parallax-layer {
             will-change: transform;
             transform: translateY(calc(var(--scroll-y) * var(--parallax-speed, 0.1) * 1px));
         }
         
-        /* Smooth entrance animations using IntersectionObserver */
         .reveal-on-scroll {
             opacity: 0;
             transform: translateY(30px);
@@ -136,31 +130,29 @@
             overflow: visible;
         }
 
-        /* Aspect ratio helpers non-natifs dans Bootstrap brut */
+
         .aspect-2-3 { aspect-ratio: 2 / 3; }
         .aspect-3-4 { aspect-ratio: 3 / 4; }
         .aspect-4-5 { aspect-ratio: 4 / 5; }
         .aspect-4-3 { aspect-ratio: 4 / 3; }
         .aspect-21-9 { aspect-ratio: 21 / 9; }
 
-        /* Prevent background jitter on mobile */
         @media (hover: none) {
             .parallax-layer {
                 transform: none !important;
             }
         }
 
-        /* --- BOUTON DE RETOUR INDEX STYLÉ --- */
         .btn-back-index {
             position: fixed;
             top: 24px;
             left: 24px;
             z-index: 1050;
-            background: rgba(1, 38, 31, 0.85); /* Forest deep transparent */
+            background: rgba(1, 38, 31, 0.85); 
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             color: var(--color-surface-cream);
-            border: 1px solid rgba(255, 215, 0, 0.2); /* Glow gold léger */
+            border: 1px solid rgba(255, 215, 0, 0.2); 
             padding: 10px 20px;
             border-radius: 50px;
             font-family: var(--font-body);
@@ -186,16 +178,13 @@
 </head>
 <body>
 
-    <!-- Bouton Absolute/Fixed pour retourner à l'index conforme au design -->
     <a href="index.html" class="btn-back-index">
         <span class="material-symbols-outlined fs-6">arrow_back</span>
         Accueil
     </a>
 
-    <!-- Firefly Container -->
     <div id="firefly-container"></div>
 
-    <!-- Hero Section -->
     <section class="position-relative vh-100 w-100 d-flex align-items-center overflow-hidden">
         <div class="position-absolute inset-0 top-0 start-0 w-100 h-100 z-0">
             <div class="position-absolute inset-0 w-100 h-100 bg-dark opacity-25 z-10" style="background-color: var(--color-forest-deep) !important;"></div>
@@ -220,7 +209,6 @@
         </div>
     </section>
 
-    <!-- Curator's Note -->
     <section class="py-section-gap mx-auto px-4 px-md-5" style="max-width: 1280px;">
         <div class="row g-4 g-md-5 align-items-center">
             <div class="col-12 col-md-5 position-relative reveal-on-scroll">
@@ -248,7 +236,6 @@
         </div>
     </section>
 
-    <!-- Exhibition Gallery -->
     <section class="bg-surface-bright py-section-gap overflow-hidden">
         <div class="mx-auto px-4 px-md-5 mb-5 reveal-on-scroll" style="max-width: 1280px;">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-4">
@@ -260,7 +247,6 @@
         </div>
         <div class="mx-auto px-4 px-md-5" style="max-width: 1400px;">
             <div class="row g-5">
-                <!-- Large Vertical Card -->
                 <div class="col-12 col-md-5 pt-0 pt-md-5 reveal-on-scroll">
                     <div class="hover-reveal position-relative overflow-hidden group">
                         <div class="overflow-hidden aspect-3-4">
@@ -280,7 +266,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Right Column -->
+
                 <div class="col-12 col-md-7 d-flex flex-column gap-5">
                     <div class="row g-4">
                         <div class="col-12 col-md-6">
@@ -323,7 +309,6 @@
         </div>
     </section>
 
-    <!-- Gallery Expansion -->
     <section class="bg-surface py-section-gap overflow-hidden position-relative" style="z-index: 10;">
         <div class="mx-auto px-4 px-md-5" style="max-width: 1280px;">
             <div class="mb-5 reveal-on-scroll" style="max-width: 850px;">
@@ -384,9 +369,7 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="bg-surface-bright dark-footer w-full" style="border-top: 1px solid rgba(255, 215, 0, 0.1);">
-        <!-- Styles d'arrière-plan adaptatifs pour reproduire le dark:bg-forest-deep de Tailwind -->
         <style>
             @media (prefers-color-scheme: dark) {
                 .dark-footer { background-color: var(--color-forest-deep) !important; color: var(--color-surface-cream) !important; }
@@ -410,11 +393,9 @@
         </div>
     </footer>
 
-    <!-- Bootstrap 5.3.3 Bundle JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // 1. Optimized Scroll Tracking
         let lastKnownScrollPosition = 0;
         let ticking = false;
 
@@ -432,7 +413,6 @@
 
         window.addEventListener('scroll', handleScroll, { passive: true });
 
-        // 2. Intersection Observer for Smooth Entrance
         const observerOptions = {
             threshold: 0.15,
             rootMargin: "0px 0px -50px 0px"
@@ -450,7 +430,7 @@
             entranceObserver.observe(el);
         });
 
-        // 3. Natural Flow Fireflies
+
         const fireflyCount = 24;
         const container = document.getElementById('firefly-container');
 
@@ -492,10 +472,8 @@
             }).onfinish = () => resetFirefly(el);
         }
 
-        // Initialize position and initial reveals
         document.addEventListener('DOMContentLoaded', () => {
             handleScroll();
-            // Trigger immediate visibility check for top-of-page elements
             setTimeout(() => {
                 document.querySelectorAll('section:first-of-type .reveal-on-scroll').forEach(el => el.classList.add('active'));
             }, 100);

@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
     <style>
-        /* Variables Thématiques & Couleurs Premium */
         :root {
             --color-primary: #000c09;
             --color-secondary: #a53c19;
@@ -22,7 +21,6 @@
             --font-body: 'Montserrat', sans-serif;
         }
 
-        /* Correctif Maître contre le bris de layout responsive */
         html, body {
             width: 100%;
             max-width: 100%;
@@ -40,7 +38,6 @@
             color: rgba(0, 12, 9, 0.65) !important;
         }
 
-        /* Arrière-plan Texturé & Effet de Grain */
         .magical-bg::before {
             content: "";
             position: fixed;
@@ -51,7 +48,6 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* Gradients de transition de sections et confinement anti-débordement */
         section {
             position: relative;
             overflow: hidden !important;
@@ -62,7 +58,6 @@
         .bg-sunset-glow { background: linear-gradient(180deg, #fff4e5 0%, #ffe9d1 100%); }
         .bg-sunset-warm { background: linear-gradient(180deg, #ffe9d1 0%, #fbf9f5 100%); }
 
-        /* Typographies & Utilitaires de Style */
         .font-display { font-family: var(--font-display); }
         .letter-magical { letter-spacing: 0.12em; }
         .label-caps { font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.15em; }
@@ -75,7 +70,6 @@
             margin: 1.5rem auto;
         }
 
-        /* --- LOGIQUE DE NAVIGATION --- */
         .glass-nav {
             background: rgba(251, 249, 245, 0.92);
             backdrop-filter: blur(20px);
@@ -148,7 +142,6 @@
             .navbar-toggler { z-index: 1040; position: relative; }
         }
 
-        /* Boutons */
         .btn-premium {
             background-color: var(--color-primary);
             color: #fff;
@@ -170,7 +163,6 @@
             transform: translateY(-2px);
         }
 
-        /* --- CIRCUITS --- */
         .circuit-card {
             position: relative;
             height: 490px;
@@ -255,7 +247,6 @@
             }
         }
 
-        /* Container image about */
         @media (max-width: 991.98px) {
             .about-image-container {
                 height: 390px !important;
@@ -263,7 +254,6 @@
             }
         }
 
-        /* --- FLOTTE --- */
         .fleet-interactive-item {
             cursor: pointer;
             position: relative;
@@ -304,7 +294,6 @@
             transform: scale(1.03);
         }
 
-        /* --- SECTION EVASION --- */
         .evasion-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -345,7 +334,6 @@
         .evasion-box:hover .evasion-overlay { opacity: 0.7; }
         .evasion-box:hover::before { opacity: 0.6; }
 
-        /* Décors & Parallaxe */
         .watermark-text {
             font-family: var(--font-display);
             font-size: 12vw; font-weight: 900;
@@ -374,7 +362,6 @@
             background-color: rgba(255, 244, 229, 0.3) !important;
         }
 
-        /* Lucioles */
         .firefly-container { position: fixed; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
         .firefly {
             position: absolute; width: 4px; height: 4px; background: #aacec3; border-radius: 50%;
@@ -390,13 +377,11 @@
 </head>
 <body class="magical-bg">
 
-    <!-- ARRIÈRE-PLAN CANVAS SÉCURISÉ -->
     <div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: -2; pointer-events: none;">
         <canvas id="shader-canvas" class="w-100 h-100 d-block"></canvas>
     </div>
     <div class="firefly-container" id="firefly-container"></div>
 
-    <!-- NAVIGATION -->
     <header class="fixed-top glass-nav">
         <nav class="navbar navbar-expand-lg custom-navbar py-2 py-lg-3">
             <div class="container">
@@ -421,7 +406,6 @@
     </header>
 
     <main style="margin-top: 70px;">
-        <!-- HERO -->
         <section class="position-relative vh-100 d-flex align-items-center justify-content-center overflow-hidden">
             <div class="position-absolute inset-0 w-100 h-100" style="z-index: 0;">
                 <img id="hero-bg" alt="Avenue des Baobabs" class="w-100 h-100 object-fit-cover" style="filter: brightness(0.75) contrast(1.05);" src="./assets/baobab2.webp"/>
@@ -441,7 +425,6 @@
             </div>
         </section>
 
-        <!-- À PROPOS -->
         <section id="a-propos" class="bg-sunset-amber section-gap">
             <div class="position-absolute top-0 start-0 watermark-text text-parallax" data-speed-x="-0.2">HERITAGE</div>
             <div class="container position-relative z-1">
@@ -482,7 +465,6 @@
             </div>
         </section>
 
-        <!-- CIRCUITS -->
         <section id="circuits" class="bg-sunset-glow section-gap">
             <div class="container">
                 <div class="text-center mb-5 reveal">
@@ -491,7 +473,7 @@
                     <div class="golden-separator"></div>
                 </div>
                 <div class="row g-4">
-                    <!-- Carte 1 -->
+                    
                     <div class="col-12 col-md-4 reveal">
                         <div class="circuit-card">
                             <img alt="L'Ouest" src="./assets/baobab3.webp" loading="lazy"/>
@@ -507,7 +489,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Carte 2 -->
+                    
                     <div class="col-12 col-md-4 reveal" style="transition-delay: 0.1s;">
                         <div class="circuit-card">
                             <img alt="Le Sud" src="./assets/fenetre_isalo.png" loading="lazy"/>
@@ -523,7 +505,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Carte 3 -->
+                    
                     <div class="col-12 col-md-4 reveal" style="transition-delay: 0.2s;">
                         <div class="circuit-card">
                             <img alt="Le Nord" src="./assets/piscine_nosyBe.png" loading="lazy"/>
@@ -543,7 +525,7 @@
             </div>
         </section>
 
-        <!-- SECTION FLOTTE -->
+        
         <section class="bg-sunset-warm section-gap">
             <div class="position-absolute bottom-0 end-0 watermark-text text-parallax" data-speed-x="0.2">FLEET</div>
             <div class="container position-relative z-1">
@@ -573,7 +555,6 @@
             </div>
         </section>
 
-        <!-- ÉVASIONS -->
         <section id="evasions" class="bg-sunset-glow section-gap">
             <div class="container">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5 reveal">
@@ -621,7 +602,6 @@
             </div>
         </section>
 
-        <!-- TÉMOIGNAGES -->
         <section class="bg-sunset-amber section-gap">
             <div class="container">
                 <div class="text-center mb-5 reveal">
@@ -664,21 +644,18 @@
             </div>
         </section>
 
-        <!-- SECTION CONNEXION SCINDÉE (DYNAMIQUE) -->
         <section id="connexion" class="bg-sunset-glow section-gap">
             <div class="container">
                 <div class="row g-0 rounded-4 overflow-hidden shadow-lg mx-auto reveal" style="max-width: 1000px; min-height: 550px; border: 1px solid rgba(165, 60, 25, 0.08);">
                     
-                    <!-- Colonne Gauche : Illustration stylisée -->
                     <div class="col-12 col-md-6 d-flex flex-column justify-content-between p-4 p-lg-5 text-center position-relative" style="background-color: #f5dfcd;">
-                        <!-- Lien Retour au site -->
                         <div class="text-start mb-4">
                             <a href="#" class="text-decoration-none label-caps text-dark d-inline-flex align-items-center gap-2" style="font-size: 9px; letter-spacing: 0.12em;">
                                 <span class="material-symbols-outlined fs-6">arrow_back</span> RETOUR AU SITE
                             </a>
                         </div>
                         
-                        <!-- Contenu SVG Baobab & Textes -->
+    
                         <div class="my-auto">
                             <div class="mb-4">
                                 <svg viewBox="0 0 400 240" class="w-100 h-auto mx-auto" style="max-width: 300px;">
@@ -699,12 +676,11 @@
                         </div>
                     </div>
                     
-                    <!-- Colonne Droite : Formulaire de Connexion -->
+                
                     <div class="col-12 col-md-6 d-flex flex-column justify-content-center p-4 p-lg-5 bg-white" style="background-color: #fdfcfb !important;">
                         <div style="max-width: 380px;" class="w-100 mx-auto py-3">
                             <span class="label-caps text-secondary mb-2 d-block" style="font-size: 9px; letter-spacing: 0.15em;">ESPACE CLIENT</span>
                             
-                            <!-- Messages d'état de connexion -->
                             <div id="connexion-info-block" class="d-none text-center py-4">
                                 <h2 class="font-display fs-3 text-dark fw-bold mb-3">Bonjour <span id="connected-user-name"></span></h2>
                                 <p class="text-muted small mb-4">Vous êtes actuellement connecté à votre espace MadaVoyages.</p>
@@ -751,7 +727,6 @@
         </section>
     </main>
 
-    <!-- FOOTER -->
     <footer class="bg-dark text-white py-5 mt-auto">
         <div class="container">
             <div class="row g-5 mb-5">
@@ -783,7 +758,6 @@
 
     <script>
         (function() {
-            // Setup WebGL Background Canvas
             const canvas = document.getElementById('shader-canvas');
             function syncSize() { if(canvas) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; } }
             syncSize(); window.addEventListener('resize', syncSize);
@@ -800,8 +774,6 @@
                 function render(timestamp) { gl.viewport(0, 0, canvas.width, canvas.height); if (tLoc) gl.uniform1f(tLoc, timestamp * 0.001); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); requestAnimationFrame(render); }
                 render(0);
             }
-
-            // Fireflies Effect
             const fContainer = document.getElementById('firefly-container');
             function addFirefly() {
                 if (fContainer.children.length > 20) return;
@@ -812,13 +784,11 @@
             }
             setInterval(addFirefly, 1000);
 
-            // Scroll Reveal
             const obs = new IntersectionObserver((entries) => {
                 entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
             }, { threshold: 0.1 });
             document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-            // FONDU ENCHAÎNÉ DE LA FLOTTE
             const fleetItems = document.querySelectorAll('.fleet-interactive-item');
             fleetItems.forEach(item => {
                 const triggerAction = () => {
@@ -839,7 +809,7 @@
                 item.addEventListener('click', triggerAction);
             });
 
-            // Parallax Scroll
+
             window.addEventListener('scroll', () => {
                 const scrolled = window.scrollY;
                 const heroBg = document.getElementById('hero-bg');
@@ -862,7 +832,6 @@
                 }
             });
 
-            // Fermeture auto du menu mobile
             const navbarCollapse = document.getElementById('mainNavbar');
             const mobileLinks = document.querySelectorAll('.custom-navbar .nav-link, .custom-navbar .btn-premium');
             
@@ -877,9 +846,6 @@
                 });
             }
 
-            /* ==========================================
-               GESTION ET INTÉGRATION DE L'AUTHENTIFICATION
-               ========================================== */
             const navAuthItem = document.getElementById('nav-auth-item');
             const connexionFormBlock = document.getElementById('connexion-form-block');
             const connexionInfoBlock = document.getElementById('connexion-info-block');

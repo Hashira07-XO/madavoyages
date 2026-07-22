@@ -20,15 +20,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 
-// Moteur de rendu
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, '../public'))); 
 
-// Rendu Vue EJS
 app.get('/circuits', circuitController.renderCircuitsPage);
 
-// Enregistrement des préfixes de routes
 app.use('/api/circuits', circuitRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

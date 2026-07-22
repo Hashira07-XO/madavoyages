@@ -58,11 +58,9 @@ const Reservation = {
       const sql = `
         SELECT r.*,
                c.title AS circuit_title,
-               c.description AS circuit_description,
                c.price AS circuit_price,
                c.price_ariary AS circuit_price_ariary,
                c.image_url AS circuit_image_url,
-               c.type_transport AS circuit_type_transport,
                c.date_debut_voyage,
                c.date_fin_voyage
         FROM reservations r
